@@ -168,8 +168,8 @@ function NavBar() {
   }, []);
 
   const navBg = scrolled
-    ? C.blueDark
-    : "rgba(30,80,128,0.96)";
+    ? "#000000"
+    : "rgba(0,0,0,0.97)";
 
   return (
     <nav
