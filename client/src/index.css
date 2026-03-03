@@ -4,10 +4,21 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * KMS DESIGN SYSTEM — Industrial Precision / Dark Steel Aesthetic
- * Brand: Deep Navy (#0a1929, #0d2137) + Lime Green (#8dc63f) + White
+ * KMS DESIGN SYSTEM — Real Brand Colors from kmstx.com Logo
+ *
+ * Extracted from KMS-Logo400.png:
+ *   KMS Blue (lettermark):    #1E5080  — steel blue
+ *   KMS Blue (header/nav):    #3796D2  — sky blue
+ *   KMS Blue (buttons/dark):  #235A91  — deep steel blue
+ *   KMS Green (gear icon):    #78A546  — olive-lime green
+ *
+ * Design: Clean, professional industrial B2B
+ *   - White/light gray backgrounds for content sections
+ *   - KMS Blue (#1E5080 / #235A91) for headers, nav, dark sections
+ *   - KMS Green (#78A546) for CTAs, accents, highlights
+ *   - Steel blue gradient for hero/header
+ *
  * Typography: Barlow Condensed (headlines) + Source Sans 3 (body)
- * Philosophy: Dark, authoritative, precision-engineered feel
  */
 
 @theme inline {
@@ -34,48 +45,51 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  /* KMS Brand Colors */
-  --color-kms-navy: #0a1929;
-  --color-kms-navy-mid: #0d2137;
-  --color-kms-navy-light: #1a3a5c;
-  --color-kms-green: #8dc63f;
-  --color-kms-green-dark: #6fa32e;
-  --color-kms-green-light: #a8d85a;
-  --color-kms-steel: #1e2d3d;
-  --color-kms-steel-light: #2a3f55;
+
+  /* KMS Brand Color Tokens */
+  --color-kms-blue-dark:   #1E5080;
+  --color-kms-blue-mid:    #235A91;
+  --color-kms-blue-sky:    #3796D2;
+  --color-kms-blue-light:  #4BAAE0;
+  --color-kms-green:       #78A546;
+  --color-kms-green-dark:  #5E8535;
+  --color-kms-green-light: #8FBF58;
+  --color-kms-gray-dark:   #1A2535;
+  --color-kms-gray-mid:    #2C3E55;
+  --color-kms-gray-light:  #F4F7FA;
 }
 
 :root {
   --radius: 0.25rem;
-  --background: oklch(0.98 0.002 240);
-  --foreground: oklch(0.15 0.02 240);
+  --background: oklch(0.99 0.002 240);
+  --foreground: oklch(0.15 0.025 240);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.02 240);
+  --card-foreground: oklch(0.15 0.025 240);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.02 240);
-  /* KMS Navy as primary */
-  --primary: oklch(0.22 0.07 240);
-  --primary-foreground: oklch(0.98 0 0);
+  --popover-foreground: oklch(0.15 0.025 240);
+  /* KMS Blue as primary */
+  --primary: oklch(0.38 0.1 240);
+  --primary-foreground: oklch(0.99 0 0);
   /* KMS Green as accent */
-  --accent: oklch(0.72 0.18 120);
-  --accent-foreground: oklch(0.1 0.02 240);
-  --secondary: oklch(0.94 0.005 240);
-  --secondary-foreground: oklch(0.25 0.04 240);
-  --muted: oklch(0.94 0.005 240);
-  --muted-foreground: oklch(0.5 0.02 240);
+  --accent: oklch(0.63 0.14 130);
+  --accent-foreground: oklch(0.15 0.025 240);
+  --secondary: oklch(0.94 0.008 240);
+  --secondary-foreground: oklch(0.3 0.04 240);
+  --muted: oklch(0.95 0.005 240);
+  --muted-foreground: oklch(0.52 0.02 240);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.88 0.01 240);
-  --input: oklch(0.88 0.01 240);
-  --ring: oklch(0.72 0.18 120);
-  --sidebar: oklch(0.15 0.04 240);
-  --sidebar-foreground: oklch(0.9 0.005 240);
-  --sidebar-primary: oklch(0.72 0.18 120);
-  --sidebar-primary-foreground: oklch(0.1 0.02 240);
-  --sidebar-accent: oklch(0.22 0.07 240);
-  --sidebar-accent-foreground: oklch(0.9 0.005 240);
-  --sidebar-border: oklch(0.3 0.04 240);
-  --sidebar-ring: oklch(0.72 0.18 120);
+  --border: oklch(0.88 0.012 240);
+  --input: oklch(0.88 0.012 240);
+  --ring: oklch(0.63 0.14 130);
+  --sidebar: oklch(0.25 0.05 240);
+  --sidebar-foreground: oklch(0.92 0.005 240);
+  --sidebar-primary: oklch(0.63 0.14 130);
+  --sidebar-primary-foreground: oklch(0.15 0.025 240);
+  --sidebar-accent: oklch(0.35 0.08 240);
+  --sidebar-accent-foreground: oklch(0.92 0.005 240);
+  --sidebar-border: oklch(0.35 0.06 240);
+  --sidebar-ring: oklch(0.63 0.14 130);
 }
 
 @layer base {
@@ -130,34 +144,37 @@
     }
   }
 
-  /* KMS Custom Components */
-  .kms-section-dark {
-    background-color: #0a1929;
+  /* ── KMS Section Backgrounds ── */
+  .kms-section-blue-dark {
+    background-color: #1E5080;
     color: white;
   }
-
-  .kms-section-navy {
-    background-color: #0d2137;
+  .kms-section-blue-mid {
+    background-color: #235A91;
     color: white;
   }
-
-  .kms-section-steel {
-    background-color: #1e2d3d;
+  .kms-section-blue-sky {
+    /* Header gradient: sky blue to steel blue */
+    background: linear-gradient(135deg, #3796D2 0%, #235A91 60%, #1E5080 100%);
     color: white;
   }
-
+  .kms-section-gray-dark {
+    background-color: #1A2535;
+    color: white;
+  }
   .kms-section-light {
-    background-color: #f4f6f8;
-    color: #0a1929;
+    background-color: #F4F7FA;
+    color: #1A2535;
   }
 
-  .kms-btn-primary {
-    background-color: #8dc63f;
-    color: #0a1929;
+  /* ── KMS Buttons ── */
+  .kms-btn-green {
+    background-color: #78A546;
+    color: white;
     font-family: 'Barlow Condensed', sans-serif;
     font-weight: 700;
     font-size: 1rem;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
     padding: 0.75rem 2rem;
     border: none;
@@ -165,114 +182,139 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    text-decoration: none;
   }
-
-  .kms-btn-primary:hover {
-    background-color: #6fa32e;
+  .kms-btn-green:hover {
+    background-color: #5E8535;
     transform: translateY(-1px);
   }
 
-  .kms-btn-outline {
+  .kms-btn-blue {
+    background-color: #235A91;
+    color: white;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 0.75rem 2rem;
+    border: none;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+  .kms-btn-blue:hover {
+    background-color: #1E5080;
+    transform: translateY(-1px);
+  }
+
+  .kms-btn-outline-white {
     background-color: transparent;
     color: white;
     font-family: 'Barlow Condensed', sans-serif;
     font-weight: 700;
     font-size: 1rem;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
     padding: 0.75rem 2rem;
-    border: 2px solid #8dc63f;
+    border: 2px solid white;
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    text-decoration: none;
+  }
+  .kms-btn-outline-white:hover {
+    background-color: white;
+    color: #235A91;
   }
 
-  .kms-btn-outline:hover {
-    background-color: #8dc63f;
-    color: #0a1929;
+  .kms-btn-outline-green {
+    background-color: transparent;
+    color: #78A546;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 0.75rem 2rem;
+    border: 2px solid #78A546;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+  .kms-btn-outline-green:hover {
+    background-color: #78A546;
+    color: white;
   }
 
+  /* ── KMS Typography Helpers ── */
   .kms-label {
     font-family: 'Barlow', sans-serif;
     font-weight: 600;
     font-size: 0.75rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: #8dc63f;
+    color: #78A546;
   }
-
+  .kms-label-blue {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #3796D2;
+  }
   .kms-headline {
     font-family: 'Barlow Condensed', sans-serif;
     font-weight: 800;
     line-height: 1.05;
     letter-spacing: 0.01em;
   }
-
   .kms-green-rule {
     width: 3rem;
     height: 3px;
-    background-color: #8dc63f;
+    background-color: #78A546;
+    margin-bottom: 1rem;
+  }
+  .kms-blue-rule {
+    width: 3rem;
+    height: 3px;
+    background-color: #3796D2;
     margin-bottom: 1rem;
   }
 
-  /* Diagonal section divider */
-  .kms-diagonal-bottom {
-    position: relative;
-  }
-  .kms-diagonal-bottom::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background: inherit;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 0);
-    z-index: 1;
-  }
-
-  /* Fade-in animation */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(24px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-fade-in-up {
-    animation: fadeInUp 0.6s ease forwards;
-  }
-
-  /* Counter animation */
-  @keyframes countUp {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  /* Service card hover */
+  /* ── Service Card ── */
   .kms-service-card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     border-bottom: 3px solid transparent;
   }
-
   .kms-service-card:hover {
     transform: translateY(-4px);
-    border-bottom-color: #8dc63f;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-bottom-color: #78A546;
+    box-shadow: 0 12px 32px rgba(30,80,128,0.15);
   }
 
-  /* Testimonial card */
+  /* ── Testimonial Card ── */
   .kms-testimonial-card {
-    border-left: 4px solid #8dc63f;
+    border-left: 4px solid #78A546;
   }
 
-  /* FAQ accordion */
+  /* ── FAQ ── */
   .kms-faq-item {
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(30,80,128,0.12);
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease forwards;
   }
 }
