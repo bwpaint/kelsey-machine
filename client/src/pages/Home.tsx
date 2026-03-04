@@ -26,7 +26,8 @@ import {
 // ─── Assets ──────────────────────────────────────────────────────────────────
 const LOGO_WHITE  = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_logo_transparent_8e6e2d25.webp";
 const LOGO_COLOR  = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_logo_color_eea8bb18.png";
-const HERO_BG     = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_hero_bg-FhL2AhnuEFCMaJqftGWfSv.webp";
+const HERO_BG     = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_hero_worker-BarhmkLYqaHciRs3YKpN9W.webp";
+const CENTRIFUGE_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_centrifuge_worker-SSJGvC4NhNHTDbkuJKW8D3.webp";
 const GEARBOX_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_gearbox-h5T3axMBYGX9CurgWAZUE6.webp";
 const PUMP_IMG    = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_pump_repair-g86HADnbNUHRj7jQcs4iiJ.webp";
 const WORKSHOP_IMG= "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_workshop-heC7X4jJCiyh8Q7vNLsLyL.webp";
@@ -57,7 +58,7 @@ const SERVICES = [
     title: "Centrifuge Repair",
     description: "Comprehensive repair, rebuild, and reconditioning for all types of industrial centrifuges — decanter, basket, disc stack, and more. We service all major brands including Alfa Laval, Andritz, Bird, Sharples, and Flottweg.",
     keywords: "centrifuge repair, decanter centrifuge repair, industrial centrifuge rebuild",
-    image: HERO_BG,
+    image: CENTRIFUGE_IMG,
     href: "/services/centrifuge-repair",
   },
   {
@@ -293,7 +294,7 @@ function HeroSection() {
             <div className="kms-label mb-3" style={{ color: C.greenLight }}>
               Houston, TX · Serving All 50 States + Canada &amp; Mexico
             </div>
-            <h1 className="kms-headline text-white mb-5" style={{ fontSize: "clamp(2.6rem, 5vw, 4.2rem)" }}>
+            <h1 className="kms-headline text-white mb-5" style={{ fontSize: "clamp(3.4rem, 6.5vw, 5.5rem)" }}>
               YOUR PARTNER IN
               <br />
               <span style={{ color: C.green }}>ROTATING EQUIPMENT</span>
@@ -426,10 +427,10 @@ function TrustBar() {
               <div style={{ width: 52, height: 52, background: "rgba(120,165,70,0.12)", border: "1px solid rgba(120,165,70,0.3)", borderRadius: "2px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 {icon}
               </div>
-              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.05rem", color: C.blueDark }}>
+              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.26rem", color: C.blueDark }}>
                 {title}
               </div>
-              <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.88rem", color: C.textMid, lineHeight: 1.55 }}>
+              <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1.06rem", color: C.textMid, lineHeight: 1.55 }}>
                 {desc}
               </p>
             </div>
