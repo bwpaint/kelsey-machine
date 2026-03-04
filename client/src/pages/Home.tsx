@@ -282,56 +282,14 @@ function HeroSection() {
       aria-label="Hero — Kelsey Machine Services rotating equipment repair"
     >
       {/* BG image */}
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${HERO_BG})` }} />
-      {/* Gradient overlay — steel blue tinted, darker on left for text legibility */}
-      <div className="absolute inset-0" style={{ background: `linear-gradient(105deg, rgba(30,80,128,0.93) 0%, rgba(35,90,145,0.85) 45%, rgba(30,80,128,0.65) 100%)` }} />
+      <div className="absolute inset-0 bg-cover" style={{ backgroundImage: `url(${HERO_BG})`, backgroundPosition: "60% center" }} />
+      {/* Gradient overlay — darker on left (form side) for readability, lighter on right to reveal worker */}
+      <div className="absolute inset-0" style={{ background: `linear-gradient(105deg, rgba(26,37,53,0.97) 0%, rgba(30,80,128,0.88) 40%, rgba(30,80,128,0.35) 70%, rgba(30,80,128,0.15) 100%)` }} />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 py-16 lg:py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
 
-          {/* Left — headline + CTAs */}
-          <div>
-            <div className="kms-label mb-3" style={{ color: C.greenLight }}>
-              Houston, TX · Serving All 50 States + Canada &amp; Mexico
-            </div>
-            <h1 className="kms-headline text-white mb-5" style={{ fontSize: "clamp(3.4rem, 6.5vw, 5.5rem)" }}>
-              YOUR PARTNER IN
-              <br />
-              <span style={{ color: C.green }}>ROTATING EQUIPMENT</span>
-              <br />
-              UPTIME
-            </h1>
-            <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1.1rem", color: C.textLight, lineHeight: 1.7, maxWidth: 520, marginBottom: "1.5rem" }}>
-              Kelsey Machine Services delivers expert repair, rebuild, and maintenance for centrifuges, gearboxes, pumps, blowers, and hydraulic drives — backed by an industry-leading{" "}
-              <strong style={{ color: C.greenLight }}>24-month warranty</strong> and available{" "}
-              <strong style={{ color: C.greenLight }}>24/7 for emergencies</strong>.
-            </p>
-
-            {/* Trust badges */}
-            <div className="flex flex-wrap gap-3 mb-8">
-              {[
-                { icon: <Truck size={13} />, text: "Free Nationwide Pickup" },
-                { icon: <Shield size={13} />, text: "24-Month Warranty" },
-                { icon: <Zap size={13} />, text: "24/7 Emergency Service" },
-                { icon: <Globe size={13} />, text: "All 50 States" },
-              ].map(({ icon, text }) => (
-                <div key={text} className="flex items-center gap-2 px-3 py-1.5" style={{ background: "rgba(120,165,70,0.15)", border: "1px solid rgba(120,165,70,0.4)", color: C.greenLight, fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.78rem", letterSpacing: "0.05em", borderRadius: "2px" }}>
-                  {icon} {text}
-                </div>
-              ))}
-            </div>
-
-            <div className="flex flex-wrap gap-4">
-              <a href="#contact" className="kms-btn-green" style={{ fontSize: "1rem", padding: "0.8rem 2rem" }}>
-                Get a Free Quote <ArrowRight size={16} />
-              </a>
-              <a href="tel:3463501464" className="kms-btn-outline-white" style={{ fontSize: "1rem", padding: "0.8rem 2rem" }}>
-                <Phone size={16} /> Call Now
-              </a>
-            </div>
-          </div>
-
-          {/* Right — lead form */}
+          {/* Left — lead form */}
           <div style={{ background: "rgba(26,37,53,0.95)", border: `1px solid rgba(120,165,70,0.35)`, padding: "2rem", backdropFilter: "blur(12px)", borderRadius: "2px" }}>
             {submitted ? (
               <div className="text-center py-8">
@@ -397,6 +355,50 @@ function HeroSection() {
               </>
             )}
           </div>
+
+          {/* Right — headline + CTAs */}
+          <div>
+            <div className="kms-label mb-3" style={{ color: C.greenLight }}>
+              Houston, TX · Serving All 50 States + Canada &amp; Mexico
+            </div>
+            <h1 className="kms-headline text-white mb-5" style={{ fontSize: "clamp(3.4rem, 6.5vw, 5.5rem)" }}>
+              YOUR PARTNER IN
+              <br />
+              <span style={{ color: C.green }}>ROTATING EQUIPMENT</span>
+              <br />
+              UPTIME
+            </h1>
+            <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1.1rem", color: C.textLight, lineHeight: 1.7, maxWidth: 520, marginBottom: "1.5rem" }}>
+              Kelsey Machine Services delivers expert repair, rebuild, and maintenance for centrifuges, gearboxes, pumps, blowers, and hydraulic drives — backed by an industry-leading{" "}
+              <strong style={{ color: C.greenLight }}>24-month warranty</strong> and available{" "}
+              <strong style={{ color: C.greenLight }}>24/7 for emergencies</strong>.
+            </p>
+
+            {/* Trust badges */}
+            <div className="flex flex-wrap gap-3 mb-8">
+              {[
+                { icon: <Truck size={13} />, text: "Free Nationwide Pickup" },
+                { icon: <Shield size={13} />, text: "24-Month Warranty" },
+                { icon: <Zap size={13} />, text: "24/7 Emergency Service" },
+                { icon: <Globe size={13} />, text: "All 50 States" },
+              ].map(({ icon, text }) => (
+                <div key={text} className="flex items-center gap-2 px-3 py-1.5" style={{ background: "rgba(120,165,70,0.15)", border: "1px solid rgba(120,165,70,0.4)", color: C.greenLight, fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.78rem", letterSpacing: "0.05em", borderRadius: "2px" }}>
+                  {icon} {text}
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-4">
+              <a href="#contact" className="kms-btn-green" style={{ fontSize: "1rem", padding: "0.8rem 2rem" }}>
+                Get a Free Quote <ArrowRight size={16} />
+              </a>
+              <a href="tel:3463501464" className="kms-btn-outline-white" style={{ fontSize: "1rem", padding: "0.8rem 2rem" }}>
+                <Phone size={16} /> Call Now
+              </a>
+            </div>
+          </div>
+
+          {/* (form now on left — see above) */}
         </div>
       </div>
 
