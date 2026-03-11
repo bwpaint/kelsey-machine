@@ -5,11 +5,13 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import SeoReport from "./pages/SeoReport";
 
 function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/seo-report/kelsey-machine"} component={SeoReport} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
