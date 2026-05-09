@@ -27,10 +27,14 @@ import {
 const LOGO_WHITE  = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_logo_transparent_8e6e2d25.webp";
 const LOGO_COLOR  = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_logo_color_eea8bb18.png";
 const HERO_BG     = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_hero_worker_left-JagH4rLnrkpmpu4gFMtpAV.webp";
-const CENTRIFUGE_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_centrifuge_worker-SSJGvC4NhNHTDbkuJKW8D3.webp";
-const GEARBOX_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_gearbox-h5T3axMBYGX9CurgWAZUE6.webp";
-const PUMP_IMG    = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_pump_repair-g86HADnbNUHRj7jQcs4iiJ.webp";
-const WORKSHOP_IMG= "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_workshop-heC7X4jJCiyh8Q7vNLsLyL.webp";
+// Real KMS shop photos from Jimmy (uploaded to CDN via /manus-storage proxy)
+const CENTRIFUGE_IMG  = "/manus-storage/centrifuge-welding_eff094a0.jpg";
+const GEARBOX_IMG     = "/manus-storage/gearbox-rebuilt_7fc60bce.jpg";
+const BLOWER_IMG      = "/manus-storage/blower-roots_0527c999.jpg";
+const PUMP_IMG        = "/manus-storage/oilfield-pumps_33a94f39.jpg";
+const FLUID_END_IMG   = "/manus-storage/fluid-end-module_97356062.jpg";
+const OILFIELD_IMG    = "/manus-storage/oilfield-hero_0ecb24ac.jpg";
+const WORKSHOP_IMG    = "/manus-storage/gearbox-open_e1ff237b.jpg";
 
 // ─── Brand Tokens ─────────────────────────────────────────────────────────────
 const C = {
@@ -64,34 +68,42 @@ const SERVICES = [
   {
     id: "gearbox",
     title: "Gearbox Repair",
-    description: "Full-service gearbox repair and overhaul for speed reducers, speed increasers, planetary gearboxes, and cooling tower drives. We handle all phases from inspection to final balancing.",
+    description: "Full-service gearbox repair and overhaul for speed reducers, speed increasers, planetary gearboxes, and cooling tower drives. We handle all phases from inspection to final balancing. Brands: Falk, Lufkin, Amarillo, Rexnord, Sumitomo, Flender, SEW, David Brown, Voith, and more.",
     keywords: "gearbox repair, industrial gearbox overhaul, speed reducer repair",
     image: GEARBOX_IMG,
-    href: "#contact",
+    href: "/services/gearbox-repair",
   },
   {
     id: "pump",
     title: "Pump Repair & Rebuild",
-    description: "Expert repair for all pump types — centrifugal, vertical turbine, horizontal split case, positive displacement, and more. Impeller rebuilds, hard-facing, and seal replacement included.",
+    description: "Expert repair for all pump types — centrifugal, vertical turbine, horizontal split case, and positive displacement. Impeller rebuilds, hard-facing, and seal replacement included. All major brands serviced.",
     keywords: "pump repair, centrifugal pump repair, industrial pump rebuild",
     image: PUMP_IMG,
-    href: "#contact",
+    href: "/services/pump-repair",
   },
   {
     id: "blower",
     title: "Blower & Compressor Repair",
-    description: "Keep your operations running at peak capacity with our comprehensive blower and compressor repair services. We service positive displacement, screw, and regenerative blowers from all major manufacturers.",
+    description: "Keep your operations running at peak capacity with comprehensive blower and compressor repair. We service Roots, Dresser, Tuthill, Aerzen, Kaeser, Spencer, Hoffman, and all major manufacturers.",
     keywords: "blower repair, compressor repair, industrial blower rebuild",
-    image: WORKSHOP_IMG,
-    href: "#contact",
+    image: BLOWER_IMG,
+    href: "/services/blower-repair",
   },
   {
     id: "hydraulic",
     title: "Hydraulic Drive Service",
     description: "Over 40 years of experience rebuilding hydraulic pumps and drives. We service Bosch Rexroth, Parker, Eaton, and all major brands with rapid turnaround to minimize your downtime.",
     keywords: "hydraulic drive repair, hydraulic pump rebuild, hydraulic service",
-    image: GEARBOX_IMG,
-    href: "#contact",
+    image: WORKSHOP_IMG,
+    href: "/services/hydraulic-drive-service",
+  },
+  {
+    id: "fluid-power-end",
+    title: "Fluid End & Power End Repair",
+    description: "Specialized repair and refurbishment for oilfield mud pump fluid ends and power ends. We restore fluid end modules — one-piece, two-piece, L-shaped, and valve-over-valve — using proprietary welding and machining. Brands: Lewco, Kerr, NOV, Gardner Denver, Weatherford, Emsco, and more.",
+    keywords: "fluid end repair, power end repair, mud pump repair, frac pump repair",
+    image: FLUID_END_IMG,
+    href: "/services/fluid-end-power-end-repair",
   },
 ];
 
@@ -209,12 +221,37 @@ function NavBar() {
 
         {/* Desktop links */}
         <div className="hidden lg:flex items-center gap-7">
+          {/* Services dropdown */}
+          <div className="relative group">
+            <a
+              href="#services"
+              style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.82rem", color: "rgba(255,255,255,0.88)", letterSpacing: "0.07em", textTransform: "uppercase", textDecoration: "none", transition: "color 0.2s", display: "flex", alignItems: "center", gap: "0.25rem" }}
+              onMouseEnter={e => (e.currentTarget.style.color = C.green)}
+              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.88)")}
+            >
+              Services <ChevronDown size={13} />
+            </a>
+            <div className="absolute top-full left-0 mt-1 hidden group-hover:block" style={{ background: "#0d1a2a", border: `1px solid ${C.green}33`, borderRadius: 4, minWidth: 220, boxShadow: "0 8px 24px rgba(0,0,0,0.5)", zIndex: 100 }}>
+              {[
+                { label: "Centrifuge Repair", href: "/services/centrifuge-repair" },
+                { label: "Gearbox Repair", href: "/services/gearbox-repair" },
+                { label: "Pump Repair & Rebuild", href: "/services/pump-repair" },
+                { label: "Blower & Compressor Repair", href: "/services/blower-repair" },
+                { label: "Hydraulic Drive Service", href: "/services/hydraulic-drive-service" },
+                { label: "Fluid End & Power End Repair", href: "/services/fluid-end-power-end-repair" },
+              ].map(({ label, href }) => (
+                <a key={label} href={href} style={{ display: "block", padding: "0.6rem 1rem", fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.78rem", color: "rgba(255,255,255,0.8)", textDecoration: "none", letterSpacing: "0.04em", borderBottom: "1px solid rgba(255,255,255,0.06)", transition: "background 0.15s, color 0.15s" }}
+                  onMouseEnter={e => { e.currentTarget.style.background = C.green + "22"; e.currentTarget.style.color = C.green; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(255,255,255,0.8)"; }}
+                >{label}</a>
+              ))}
+            </div>
+          </div>
           {[
-            { label: "Services", href: "#services" },
-            { label: "Why KMS", href: "#why-kms" },
+            { label: "About", href: "#why-kms" },
             { label: "Testimonials", href: "#testimonials" },
             { label: "Industries", href: "#industries" },
-            { label: "FAQ", href: "#faq" },
+            { label: "Blog", href: "/blog" },
             { label: "Contact", href: "#contact" },
           ].map(({ label, href }) => (
             <a
@@ -248,14 +285,25 @@ function NavBar() {
       {/* Mobile menu */}
       {open && (
         <div style={{ backgroundColor: C.blueDark, borderTop: `1px solid rgba(120,165,70,0.3)` }} className="lg:hidden px-4 py-4 flex flex-col gap-3">
-          {["Services", "Why KMS", "Testimonials", "Industries", "FAQ", "Contact"].map(item => (
+          {[
+            { label: "Centrifuge Repair", href: "/services/centrifuge-repair" },
+            { label: "Gearbox Repair", href: "/services/gearbox-repair" },
+            { label: "Pump Repair", href: "/services/pump-repair" },
+            { label: "Blower Repair", href: "/services/blower-repair" },
+            { label: "Hydraulic Drive", href: "/services/hydraulic-drive-service" },
+            { label: "Fluid End & Power End", href: "/services/fluid-end-power-end-repair" },
+            { label: "About", href: "#why-kms" },
+            { label: "Testimonials", href: "#testimonials" },
+            { label: "Blog", href: "/blog" },
+            { label: "Contact", href: "#contact" },
+          ].map(({ label, href }) => (
             <a
-              key={item}
-              href={`#${item.toLowerCase().replace(" ", "-")}`}
+              key={label}
+              href={href}
               onClick={() => setOpen(false)}
               style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.1rem", color: "white", letterSpacing: "0.06em", textTransform: "uppercase", padding: "0.5rem 0", borderBottom: "1px solid rgba(255,255,255,0.08)", textDecoration: "none" }}
             >
-              {item}
+              {label}
             </a>
           ))}
           <a href="tel:3463501464" className="kms-btn-green mt-2 justify-center">
@@ -738,11 +786,12 @@ function CTASection() {
 // ─── Footer ───────────────────────────────────────────────────────────────────
 function Footer() {
   const serviceLinks = [
-    { label: "Centrifuge Repair", href: "#services" },
-    { label: "Gearbox Repair", href: "#services" },
-    { label: "Pump Repair", href: "#services" },
-    { label: "Blower & Compressor Repair", href: "#services" },
-    { label: "Hydraulic Drive Service", href: "#services" },
+    { label: "Centrifuge Repair", href: "/services/centrifuge-repair" },
+    { label: "Gearbox Repair", href: "/services/gearbox-repair" },
+    { label: "Pump Repair & Rebuild", href: "/services/pump-repair" },
+    { label: "Blower & Compressor Repair", href: "/services/blower-repair" },
+    { label: "Hydraulic Drive Service", href: "/services/hydraulic-drive-service" },
+    { label: "Fluid End & Power End Repair", href: "/services/fluid-end-power-end-repair" },
     { label: "Emergency Repair", href: "#contact" },
   ];
   const companyLinks = [
@@ -750,6 +799,7 @@ function Footer() {
     { label: "Why Choose KMS", href: "#why-kms" },
     { label: "Testimonials", href: "#testimonials" },
     { label: "Industries Served", href: "#industries" },
+    { label: "Blog", href: "/blog" },
     { label: "FAQ", href: "#faq" },
     { label: "Contact & Quote", href: "#contact" },
   ];
