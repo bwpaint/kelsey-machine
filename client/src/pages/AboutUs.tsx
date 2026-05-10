@@ -8,7 +8,7 @@
  */
 
 import { Link } from "wouter";
-import { NavBar, Footer, NewsletterBar, InlineQuoteForm, CtaBanner } from "@/components/KmsLayout";
+import { NavBar, Footer, NewsletterBar, InlineQuoteForm } from "@/components/KmsLayout";
 import { useEffect } from "react";
 
 const ABOUT_HERO = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_about_hero-fuqjkLUCWaGrchXL2i3nWu.webp";

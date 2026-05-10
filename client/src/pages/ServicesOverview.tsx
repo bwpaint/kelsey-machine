@@ -5,7 +5,7 @@
  */
 
 import { Link } from "wouter";
-import { NavBar, Footer, NewsletterBar, PageHero, InlineQuoteForm, FaqSection, CtaBanner, C, KMS_PHONE, KMS_PHONE_HREF } from "@/components/KmsLayout";
+import { NavBar, Footer, NewsletterBar, PageHero, InlineQuoteForm, FaqSection, C, KMS_PHONE, KMS_PHONE_HREF } from "@/components/KmsLayout";
 import { ArrowRight, CheckCircle } from "lucide-react";
 
 const SERVICES = [

@@ -6,7 +6,7 @@
  */
 
 import { Link } from "wouter";
-import { NavBar, Footer, NewsletterBar, PageHero, QuickAnswerBox, InlineQuoteForm, FaqSection, CtaBanner, C, KMS_PHONE, KMS_PHONE_HREF } from "@/components/KmsLayout";
+import { NavBar, Footer, NewsletterBar, PageHero, QuickAnswerBox, InlineQuoteForm, FaqSection, C, KMS_PHONE, KMS_PHONE_HREF } from "@/components/KmsLayout";
 import { CheckCircle, AlertTriangle, Wrench, Shield, Clock, ArrowRight } from "lucide-react";
 
 const HERO_BG = "/images/centrifuge-repair.webp";
@@ -360,10 +360,6 @@ export default function CentrifugeRepair() {
       </main>
 
       <FaqSection faqs={FAQS} pageName="Industrial Centrifuge Repair" showForm service="centrifuge" />
-      <CtaBanner
-        headline="Ready to Get Your Centrifuge Back Online?"
-        subtext="Request a free quote or call our emergency line — we respond within the hour, 24/7, from all 50 states, Canada, and Mexico."
-      />
       <NewsletterBar />
       <Footer />
     </>

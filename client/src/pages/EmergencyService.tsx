@@ -4,7 +4,7 @@
  */
 
 import { Link } from "wouter";
-import { NavBar, Footer, NewsletterBar, PageHero, FaqSection, CtaBanner, C, KMS_PHONE, KMS_PHONE_HREF } from "@/components/KmsLayout";
+import { NavBar, Footer, NewsletterBar, PageHero, FaqSection, C, KMS_PHONE, KMS_PHONE_HREF } from "@/components/KmsLayout";
 import { Phone, Clock, Truck, CheckCircle } from "lucide-react";
 
 const STEPS = [

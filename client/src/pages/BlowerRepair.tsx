@@ -5,7 +5,7 @@
  */
 
 import { Link } from "wouter";
-import { NavBar, Footer, NewsletterBar, PageHero, QuickAnswerBox, InlineQuoteForm, FaqSection, CtaBanner, C, KMS_PHONE, KMS_PHONE_HREF } from "@/components/KmsLayout";
+import { NavBar, Footer, NewsletterBar, PageHero, QuickAnswerBox, InlineQuoteForm, FaqSection, C, KMS_PHONE, KMS_PHONE_HREF } from "@/components/KmsLayout";
 import { CheckCircle, AlertTriangle, ArrowRight } from "lucide-react";
 
 const BLOWER_TYPES = [

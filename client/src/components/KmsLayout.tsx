@@ -416,7 +416,7 @@ export function NewsletterBar() {
           <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1rem", color: "rgba(255,255,255,0.65)", maxWidth: 560, margin: "0 auto 1.5rem" }}>
             The right people, the right equipment, the right technology — keeping your operations running since 1984.
           </p>
-          {/* Call & Email buttons */}
+          {/* Call, Email & Emergency buttons */}
           <div className="flex flex-wrap justify-center gap-4" style={{ marginBottom: "2.5rem" }}>
             <a href={KMS_PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1rem", letterSpacing: "0.08em", textTransform: "uppercase", padding: "0.75rem 2rem", borderRadius: 2, textDecoration: "none" }}>
               <Phone size={16} /> Call {KMS_PHONE}
@@ -424,6 +424,9 @@ export function NewsletterBar() {
             <a href={`mailto:${KMS_EMAIL}`} style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "transparent", color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1rem", letterSpacing: "0.08em", textTransform: "uppercase", padding: "0.75rem 2rem", borderRadius: 2, border: "2px solid rgba(255,255,255,0.3)", textDecoration: "none" }}>
               <Mail size={16} /> Email Us
             </a>
+            <Link href="/emergency-service" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "transparent", color: C.green, fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1rem", letterSpacing: "0.08em", textTransform: "uppercase", padding: "0.75rem 2rem", borderRadius: 2, border: `2px solid ${C.green}66`, textDecoration: "none" }}>
+              <Clock size={16} /> 24/7 Emergency Service
+            </Link>
           </div>
         </div>
 
