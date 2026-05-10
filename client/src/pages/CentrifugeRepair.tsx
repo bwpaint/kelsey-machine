@@ -359,7 +359,7 @@ export default function CentrifugeRepair() {
         </div>
       </main>
 
-      <FaqSection faqs={FAQS} pageName="Industrial Centrifuge Repair" />
+      <FaqSection faqs={FAQS} pageName="Industrial Centrifuge Repair" showForm service="centrifuge" />
       <CtaBanner
         headline="Ready to Get Your Centrifuge Back Online?"
         subtext="Request a free quote or call our emergency line — we respond within the hour, 24/7, from all 50 states, Canada, and Mexico."

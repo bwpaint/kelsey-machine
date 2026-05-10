@@ -16,6 +16,7 @@ import Warranty from "./pages/Warranty";
 import EmergencyService from "./pages/EmergencyService";
 import Contact from "./pages/Contact";
 import { LpCentrifuge, LpGearbox, LpBlower, LpCompressor, LpFluidEnd } from "./pages/LandingPages";
+import Industries from "./pages/Industries";
 
 function Router() {
   return (
@@ -40,6 +41,7 @@ function Router() {
       <Route path="/lp/fluid-power-end-repair" component={LpFluidEnd} />
 
       <Route path="/about" component={AboutUs} />
+      <Route path="/industries" component={Industries} />
       {/* 404 */}
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />

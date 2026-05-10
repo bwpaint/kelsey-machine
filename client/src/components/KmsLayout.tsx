@@ -29,11 +29,14 @@ export const C = {
   black:      "#000000",
 };
 
-export const KMS_LOGO = "/images/KMS-Logo-white-400.png";
+export const KMS_LOGO = "/images/KMS-Logo-transparent.webp";
 export const KMS_PHONE = "346-350-1464";
 export const KMS_PHONE_HREF = "tel:3463501464";
 export const KMS_EMAIL = "info@kmstx.com";
-export const KMS_ADDRESS = "Stafford, TX 77477";
+export const KMS_ADDRESS_LINE1 = "814 Summer Park Dr";
+export const KMS_ADDRESS_LINE2 = "Building #600";
+export const KMS_ADDRESS_LINE3 = "Stafford, TX 77477";
+export const KMS_ADDRESS = "814 Summer Park Dr, Building #600, Stafford, TX 77477";
 
 // ─── Service Nav Items ─────────────────────────────────────────────────────────
 export const SERVICE_NAV = [
@@ -107,7 +110,8 @@ export function NavBar() {
               { label: "Warranty",  href: "/warranty" },
               { label: "Emergency", href: "/emergency-service" },
               { label: "Blog",      href: "/blog" },
-              { label: "About",     href: "/#why-kms" },
+              { label: "Industries", href: "/industries" },
+              { label: "About",     href: "/about" },
               { label: "Contact",   href: "/contact" },
             ].map(({ label, href }) => (
               <Link key={label} href={href} style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 700, fontSize: "0.82rem", color: location === href ? C.green : "rgba(255,255,255,0.88)", letterSpacing: "0.07em", textTransform: "uppercase", textDecoration: "none", transition: "color 0.2s" }}
@@ -149,7 +153,8 @@ export function NavBar() {
             { label: "Warranty",  href: "/warranty" },
             { label: "Emergency", href: "/emergency-service" },
             { label: "Blog",      href: "/blog" },
-            { label: "About",     href: "/#why-kms" },
+            { label: "Industries", href: "/industries" },
+            { label: "About",     href: "/about" },
             { label: "Contact",   href: "/contact" },
           ].map(({ label, href }) => (
             <Link key={label} href={href} onClick={() => setOpen(false)} style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.1rem", color: "white", letterSpacing: "0.06em", textTransform: "uppercase", padding: "0.5rem 0", borderBottom: "1px solid rgba(255,255,255,0.08)", textDecoration: "none", display: "block" }}>
@@ -328,7 +333,7 @@ export function InlineQuoteForm({ service = "", dark = false }: QuoteFormProps) 
 // ─── FAQ Section (with FAQPage schema) ────────────────────────────────────────
 interface FAQ { q: string; a: string; }
 
-export function FaqSection({ faqs, pageName }: { faqs: FAQ[]; pageName: string }) {
+export function FaqSection({ faqs, pageName, showForm, service }: { faqs: FAQ[]; pageName: string; showForm?: boolean; service?: string }) {
   const [open, setOpen] = useState<number | null>(null);
 
   const schema = {
@@ -342,35 +347,51 @@ export function FaqSection({ faqs, pageName }: { faqs: FAQ[]; pageName: string }
     }))
   };
 
+  const faqContent = (
+    <div>
+      <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "clamp(1.75rem, 4vw, 2.5rem)", color: C.blueDark, textTransform: "uppercase", letterSpacing: "-0.01em", marginBottom: "0.5rem" }}>
+        Frequently Asked Questions
+      </h2>
+      <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1rem", color: C.textMid, marginBottom: "2.5rem" }}>
+        Can't find your answer? Call us at <a href={KMS_PHONE_HREF} style={{ color: C.green, fontWeight: 700 }}>{KMS_PHONE}</a> — we pick up 24/7.
+      </p>
+      <div className="flex flex-col gap-2">
+        {faqs.map((faq, i) => (
+          <div key={i} style={{ background: "white", border: `1px solid ${open === i ? C.green : "#dde3ec"}`, borderRadius: 4, overflow: "hidden", transition: "border-color 0.2s" }}>
+            <button
+              onClick={() => setOpen(open === i ? null : i)}
+              style={{ width: "100%", textAlign: "left", padding: "1.1rem 1.25rem", background: "none", border: "none", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}
+            >
+              <span style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 700, fontSize: "1rem", color: C.textDark, lineHeight: 1.4 }}>{faq.q}</span>
+              <ChevronDown size={18} style={{ color: C.green, flexShrink: 0, transform: open === i ? "rotate(180deg)" : "none", transition: "transform 0.2s" }} />
+            </button>
+            {open === i && (
+              <div style={{ padding: "0 1.25rem 1.25rem", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.95rem", color: C.textMid, lineHeight: 1.7 }}>
+                {faq.a}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
   return (
     <section style={{ background: C.lightBg, padding: "4rem 0" }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      <div className="max-w-4xl mx-auto px-4">
-        <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "clamp(1.75rem, 4vw, 2.5rem)", color: C.blueDark, textTransform: "uppercase", letterSpacing: "-0.01em", marginBottom: "0.5rem" }}>
-          Frequently Asked Questions
-        </h2>
-        <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1rem", color: C.textMid, marginBottom: "2.5rem" }}>
-          Can't find your answer? Call us at <a href={KMS_PHONE_HREF} style={{ color: C.green, fontWeight: 700 }}>{KMS_PHONE}</a> — we pick up 24/7.
-        </p>
-        <div className="flex flex-col gap-2">
-          {faqs.map((faq, i) => (
-            <div key={i} style={{ background: "white", border: `1px solid ${open === i ? C.green : "#dde3ec"}`, borderRadius: 4, overflow: "hidden", transition: "border-color 0.2s" }}>
-              <button
-                onClick={() => setOpen(open === i ? null : i)}
-                style={{ width: "100%", textAlign: "left", padding: "1.1rem 1.25rem", background: "none", border: "none", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}
-              >
-                <span style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 700, fontSize: "1rem", color: C.textDark, lineHeight: 1.4 }}>{faq.q}</span>
-                <ChevronDown size={18} style={{ color: C.green, flexShrink: 0, transform: open === i ? "rotate(180deg)" : "none", transition: "transform 0.2s" }} />
-              </button>
-              {open === i && (
-                <div style={{ padding: "0 1.25rem 1.25rem", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.95rem", color: C.textMid, lineHeight: 1.7 }}>
-                  {faq.a}
-                </div>
-              )}
+      {showForm ? (
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            <div className="lg:col-span-2">{faqContent}</div>
+            <div className="lg:col-span-1">
+              <div style={{ position: "sticky", top: 100 }}>
+                <InlineQuoteForm service={service || ""} dark={false} />
+              </div>
             </div>
-          ))}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="max-w-4xl mx-auto px-4">{faqContent}</div>
+      )}
     </section>
   );
 }
@@ -395,7 +416,7 @@ export function NewsletterBar() {
             The right people, the right equipment, the right technology — keeping your operations running since 1984.
           </p>
           {/* Call & Email buttons */}
-          <div className="flex flex-wrap justify-center gap-4" style={{ marginBottom: "2rem" }}>
+          <div className="flex flex-wrap justify-center gap-4" style={{ marginBottom: "2.5rem" }}>
             <a href={KMS_PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1rem", letterSpacing: "0.08em", textTransform: "uppercase", padding: "0.75rem 2rem", borderRadius: 2, textDecoration: "none" }}>
               <Phone size={16} /> Call {KMS_PHONE}
             </a>
@@ -406,7 +427,7 @@ export function NewsletterBar() {
         </div>
 
         {/* Newsletter signup */}
-        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "2rem", marginTop: "0" }}>
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "2rem", marginTop: "0.5rem" }}>
           <div className="text-center mb-4">
             <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.1rem", color: "white", textTransform: "uppercase", letterSpacing: "0.06em" }}>
               Join Our Newsletter
@@ -461,7 +482,7 @@ export function Footer() {
     { label: "Fluid & Power End Repair", href: "/services/fluid-power-end-repair" },
   ];
   const companyLinks = [
-    { label: "About KMS",          href: "/#why-kms" },
+    { label: "About KMS",          href: "/about" },
     { label: "Our Warranty",       href: "/warranty" },
     { label: "24/7 Emergency",     href: "/emergency-service" },
     { label: "Blog",               href: "/blog" },
@@ -481,7 +502,6 @@ export function Footer() {
             {[
               { icon: <Phone size={14} />, text: KMS_PHONE, href: KMS_PHONE_HREF },
               { icon: <Mail size={14} />, text: KMS_EMAIL, href: `mailto:${KMS_EMAIL}` },
-              { icon: <MapPin size={14} />, text: KMS_ADDRESS, href: undefined },
             ].map(({ icon, text, href }) => (
               <div key={text} className="flex items-center gap-2 mb-2">
                 <span style={{ color: C.green }}>{icon}</span>
@@ -490,6 +510,15 @@ export function Footer() {
                   : <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.83rem", color: "rgba(255,255,255,0.6)" }}>{text}</span>}
               </div>
             ))}
+            {/* Address — 3 separate lines */}
+            <div className="flex items-start gap-2 mt-1">
+              <span style={{ color: C.green, marginTop: 2 }}><MapPin size={14} /></span>
+              <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.83rem", color: "rgba(255,255,255,0.6)", lineHeight: 1.7 }}>
+                <div>814 Summer Park Dr</div>
+                <div>Building #600</div>
+                <a href="https://maps.google.com/?q=814+Summer+Park+Dr+Building+600+Stafford+TX+77477" target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>Stafford, TX 77477</a>
+              </div>
+            </div>
           </div>
 
           {/* Services */}
@@ -534,15 +563,7 @@ export function Footer() {
                 <Phone size={15} /> {KMS_PHONE}
               </a>
             </div>
-            <div style={{ background: "rgba(30,80,128,0.2)", border: "1px solid rgba(30,80,128,0.4)", borderRadius: 4, padding: "1rem" }}>
-              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1rem", color: "white", marginBottom: "0.4rem" }}>24-MONTH WARRANTY</div>
-              <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.82rem", color: "rgba(255,255,255,0.6)", lineHeight: 1.5, marginBottom: "0.6rem" }}>
-                Industry-leading warranty on every rebuild — because we stand behind our work.
-              </p>
-              <Link href="/warranty" style={{ display: "flex", alignItems: "center", gap: 6, color: C.green, fontFamily: "'Barlow', sans-serif", fontWeight: 700, fontSize: "0.82rem", textDecoration: "none", letterSpacing: "0.04em" }}>
-                <Shield size={13} /> View Warranty Details →
-              </Link>
-            </div>
+
           </div>
         </div>
       </div>

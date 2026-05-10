@@ -160,7 +160,7 @@ export default function BlowerRepair() {
           </div>
         </div>
       </main>
-      <FaqSection faqs={FAQS} pageName="Industrial Blower Repair" />
+      <FaqSection faqs={FAQS} pageName="Industrial Blower Repair" showForm service="blower" />
       <CtaBanner headline="Ready to Get Your Blower Back Online?" subtext="Request a free quote or call our emergency line — we respond within the hour, 24/7." />
       <NewsletterBar />
       <Footer />

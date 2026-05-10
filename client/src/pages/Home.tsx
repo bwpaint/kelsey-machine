@@ -17,7 +17,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { NewsletterBar as KmsNewsletterBar } from "@/components/KmsLayout";
+import { NavBar, NewsletterBar as KmsNewsletterBar, Footer } from "@/components/KmsLayout";
 import {
   Phone, Mail, MapPin, Clock, ChevronDown, ChevronUp,
   Star, CheckCircle, ArrowRight, Truck, Shield, Zap,
@@ -139,14 +139,14 @@ const FAQS = [
 ];
 
 const INDUSTRIES = [
-  { name: "Oil & Gas", icon: "🛢️" },
-  { name: "Petrochemical", icon: "🏭" },
-  { name: "Food & Beverage", icon: "🌾" },
-  { name: "Wastewater", icon: "💧" },
-  { name: "Power Generation", icon: "⚡" },
-  { name: "Pulp & Paper", icon: "📄" },
-  { name: "Pharmaceutical", icon: "⚗️" },
-  { name: "Manufacturing", icon: "🔩" },
+  { name: "Oil & Gas", icon: "🛢️", href: "/industries#oil-gas" },
+  { name: "Petrochemical", icon: "🏭", href: "/industries#petrochemical" },
+  { name: "Food & Beverage", icon: "🌾", href: "/industries#food-beverage" },
+  { name: "Wastewater", icon: "💧", href: "/industries#wastewater" },
+  { name: "Power Generation", icon: "⚡", href: "/industries#power-generation" },
+  { name: "Pulp & Paper", icon: "📄", href: "/industries#pulp-paper" },
+  { name: "Pharmaceutical", icon: "⚗️", href: "/industries#pharmaceutical" },
+  { name: "Manufacturing", icon: "🔩", href: "/industries#manufacturing" },
 ];
 
 const BRANDS = [
@@ -169,149 +169,6 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   transition: "border-color 0.2s",
 };
-
-// ─── NavBar ───────────────────────────────────────────────────────────────────
-function NavBar() {
-  const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", handler);
-    return () => window.removeEventListener("scroll", handler);
-  }, []);
-
-  const navBg = scrolled
-    ? "#000000"
-    : "rgba(0,0,0,0.97)";
-
-  return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-      style={{ backgroundColor: navBg, backdropFilter: "blur(8px)", boxShadow: scrolled ? "0 2px 16px rgba(0,0,0,0.25)" : "none" }}
-      role="navigation"
-      aria-label="Main navigation"
-    >
-      {/* Utility bar */}
-      <div style={{ backgroundColor: C.green, color: "white" }} className="hidden md:block py-1.5 px-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <span style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.72rem", letterSpacing: "0.1em" }}>
-            24/7 EMERGENCY SERVICE &amp; FREE NATIONWIDE PICKUP &amp; DELIVERY
-          </span>
-          <div className="flex items-center gap-6">
-            <a href="tel:3463501464" className="flex items-center gap-1.5 hover:underline" style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.78rem" }}>
-              <Phone size={12} /> 346-350-1464
-            </a>
-            <a href="mailto:service@kmstx.com" className="flex items-center gap-1.5 hover:underline" style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.78rem" }}>
-              <Mail size={12} /> service@kmstx.com
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Main nav row */}
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-        {/* Logo */}
-        <a href="/" aria-label="Kelsey Machine Services home">
-          <img
-            src={LOGO_WHITE}
-            alt="Kelsey Machine Services Logo"
-            style={{ height: 52, width: "auto" }}
-          />
-        </a>
-
-        {/* Desktop links */}
-        <div className="hidden lg:flex items-center gap-7">
-          {/* Services dropdown */}
-          <div className="relative group">
-            <a
-              href="#services"
-              style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.82rem", color: "rgba(255,255,255,0.88)", letterSpacing: "0.07em", textTransform: "uppercase", textDecoration: "none", transition: "color 0.2s", display: "flex", alignItems: "center", gap: "0.25rem" }}
-              onMouseEnter={e => (e.currentTarget.style.color = C.green)}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.88)")}
-            >
-              Services <ChevronDown size={13} />
-            </a>
-            <div className="absolute top-full left-0 mt-1 hidden group-hover:block" style={{ background: "#0d1a2a", border: `1px solid ${C.green}33`, borderRadius: 4, minWidth: 220, boxShadow: "0 8px 24px rgba(0,0,0,0.5)", zIndex: 100 }}>
-              {[
-                { label: "Services Overview", href: "/services" },
-                { label: "Centrifuge Repair", href: "/services/centrifuge-repair" },
-                { label: "Industrial Blower Repair", href: "/services/industrial-blower-repair" },
-                { label: "Gearbox Repair", href: "/services/gearbox-repair" },
-                { label: "Industrial Compressors", href: "/services/industrial-compressors" },
-                { label: "Fluid & Power End Repair", href: "/services/fluid-power-end-repair" },
-              ].map(({ label, href }) => (
-                <a key={label} href={href} style={{ display: "block", padding: "0.6rem 1rem", fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.78rem", color: "rgba(255,255,255,0.8)", textDecoration: "none", letterSpacing: "0.04em", borderBottom: "1px solid rgba(255,255,255,0.06)", transition: "background 0.15s, color 0.15s" }}
-                  onMouseEnter={e => { e.currentTarget.style.background = C.green + "22"; e.currentTarget.style.color = C.green; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(255,255,255,0.8)"; }}
-                >{label}</a>
-              ))}
-            </div>
-          </div>
-          {[
-            { label: "About", href: "#why-kms" },
-            { label: "Testimonials", href: "#testimonials" },
-            { label: "Industries", href: "#industries" },
-            { label: "Blog", href: "/blog" },
-            { label: "Contact", href: "#contact" },
-          ].map(({ label, href }) => (
-            <a
-              key={label}
-              href={href}
-              style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.82rem", color: "rgba(255,255,255,0.88)", letterSpacing: "0.07em", textTransform: "uppercase", textDecoration: "none", transition: "color 0.2s" }}
-              onMouseEnter={e => (e.currentTarget.style.color = C.green)}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.88)")}
-            >
-              {label}
-            </a>
-          ))}
-        </div>
-
-        {/* CTA */}
-        <div className="hidden lg:flex items-center gap-3">
-          <a href="#contact" className="kms-btn-green" style={{ padding: "0.5rem 1.25rem", fontSize: "0.85rem" }}>
-            Get Free Quote
-          </a>
-        </div>
-
-        {/* Mobile toggle */}
-        <button className="lg:hidden text-white p-2" onClick={() => setOpen(!open)} aria-label="Toggle menu">
-          {open ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      {open && (
-        <div style={{ backgroundColor: C.blueDark, borderTop: `1px solid rgba(120,165,70,0.3)` }} className="lg:hidden px-4 py-4 flex flex-col gap-3">
-          {[
-            { label: "Centrifuge Repair", href: "/services/centrifuge-repair" },
-            { label: "Gearbox Repair", href: "/services/gearbox-repair" },
-            { label: "Pump Repair", href: "/services/pump-repair" },
-            { label: "Blower Repair", href: "/services/blower-repair" },
-            { label: "Hydraulic Drive", href: "/services/hydraulic-drive-service" },
-            { label: "Fluid End & Power End", href: "/services/fluid-end-power-end-repair" },
-            { label: "About", href: "#why-kms" },
-            { label: "Testimonials", href: "#testimonials" },
-            { label: "Blog", href: "/blog" },
-            { label: "Contact", href: "#contact" },
-          ].map(({ label, href }) => (
-            <a
-              key={label}
-              href={href}
-              onClick={() => setOpen(false)}
-              style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.1rem", color: "white", letterSpacing: "0.06em", textTransform: "uppercase", padding: "0.5rem 0", borderBottom: "1px solid rgba(255,255,255,0.08)", textDecoration: "none" }}
-            >
-              {label}
-            </a>
-          ))}
-          <a href="tel:3463501464" className="kms-btn-green mt-2 justify-center">
-            <Phone size={16} /> Call 346-350-1464
-          </a>
-        </div>
-      )}
-    </nav>
-  );
-}
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 function HeroSection() {
@@ -762,15 +619,15 @@ function IndustriesSection() {
           PROUDLY SERVING A WIDE RANGE<br />OF INDUSTRIES
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
-          {INDUSTRIES.map(({ name, icon }) => (
-            <div key={name} className="flex flex-col items-center gap-2 py-4 px-2"
-              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "2px", transition: "all 0.2s" }}
+          {INDUSTRIES.map(({ name, icon, href }) => (
+            <a key={name} href={href} className="flex flex-col items-center gap-2 py-4 px-2"
+              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "2px", transition: "all 0.2s", textDecoration: "none" }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(120,165,70,0.15)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(120,165,70,0.4)"; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.1)"; }}
             >
               <span style={{ fontSize: "1.75rem" }}>{icon}</span>
               <span style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.7rem", color: "rgba(255,255,255,0.8)", letterSpacing: "0.06em", textTransform: "uppercase", textAlign: "center", lineHeight: 1.3 }}>{name}</span>
-            </div>
+            </a>
           ))}
         </div>
       </div>
@@ -868,133 +725,6 @@ function CTASection() {
         </p>
       </div>
     </section>
-  );
-}
-
-// ─── Footer ───────────────────────────────────────────────────────────────────
-function Footer() {
-  const serviceLinks = [
-    { label: "Services Overview", href: "/services" },
-    { label: "Centrifuge Repair", href: "/services/centrifuge-repair" },
-    { label: "Industrial Blower Repair", href: "/services/industrial-blower-repair" },
-    { label: "Gearbox Repair", href: "/services/gearbox-repair" },
-    { label: "Industrial Compressors", href: "/services/industrial-compressors" },
-    { label: "Fluid & Power End Repair", href: "/services/fluid-power-end-repair" },
-  ];
-  const companyLinks = [
-    { label: "About KMS", href: "/#why-kms" },
-    { label: "24-Month Warranty", href: "/warranty" },
-    { label: "24/7 Emergency Service", href: "/emergency-service" },
-    { label: "Testimonials", href: "#testimonials" },
-    { label: "Blog", href: "/blog" },
-    { label: "Contact & Quote", href: "/contact" },
-  ];
-
-  return (
-    <footer style={{ background: C.darkBg, borderTop: `3px solid ${C.green}` }} role="contentinfo">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
-          {/* Brand */}
-          <div>
-            <img src={LOGO_WHITE} alt="Kelsey Machine Services" style={{ height: 60, width: "auto", marginBottom: "1rem" }} />
-            <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.88rem", color: "rgba(255,255,255,0.55)", lineHeight: 1.7, marginBottom: "1rem" }}>
-              The right people, the right equipment, and the right technology — keeping Kelsey Machine on the leading edge of rotating equipment service since 1984.
-            </p>
-            <div className="flex flex-col gap-2">
-              {/* Address — 3 lines */}
-              <div className="flex items-start gap-2">
-                <span style={{ color: C.green, marginTop: 2, flexShrink: 0 }}><MapPin size={14} /></span>
-                <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.83rem", color: "rgba(255,255,255,0.6)", lineHeight: 1.6 }}>
-                  814 Summer Park Dr<br />
-                  Building #600<br />
-                  Stafford, TX 77477
-                </div>
-              </div>
-              {/* Phone */}
-              <div className="flex items-start gap-2">
-                <span style={{ color: C.green, marginTop: 2, flexShrink: 0 }}><Phone size={14} /></span>
-                <a href="tel:3463501464" style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.83rem", color: "rgba(255,255,255,0.6)", textDecoration: "none" }}
-                  onMouseEnter={e => (e.currentTarget.style.color = C.green)}
-                  onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.6)")}
-                >346-350-1464</a>
-              </div>
-              {/* Email */}
-              <div className="flex items-start gap-2">
-                <span style={{ color: C.green, marginTop: 2, flexShrink: 0 }}><Mail size={14} /></span>
-                <a href="mailto:service@kmstx.com" style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.83rem", color: "rgba(255,255,255,0.6)", textDecoration: "none" }}
-                  onMouseEnter={e => (e.currentTarget.style.color = C.green)}
-                  onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.6)")}
-                >service@kmstx.com</a>
-              </div>
-              {/* Hours */}
-              <div className="flex items-start gap-2">
-                <span style={{ color: C.green, marginTop: 2, flexShrink: 0 }}><Clock size={14} /></span>
-                <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.83rem", color: "rgba(255,255,255,0.6)" }}>24/7 Emergency Service Available</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Services */}
-          <div>
-            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1rem", color: "white", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: `2px solid ${C.green}`, display: "inline-block" }}>Our Services</div>
-            <ul className="flex flex-col gap-2">
-              {serviceLinks.map(({ label, href }) => (
-                <li key={label}>
-                  <a href={href} style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.88rem", color: "rgba(255,255,255,0.6)", textDecoration: "none", display: "flex", alignItems: "center", gap: "0.375rem", transition: "color 0.2s" }}
-                    onMouseEnter={e => (e.currentTarget.style.color = C.green)}
-                    onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.6)")}
-                  ><ArrowRight size={12} style={{ color: C.green }} />{label}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1rem", color: "white", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: `2px solid ${C.green}`, display: "inline-block" }}>Company</div>
-            <ul className="flex flex-col gap-2">
-              {companyLinks.map(({ label, href }) => (
-                <li key={label}>
-                  <a href={href} style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.88rem", color: "rgba(255,255,255,0.6)", textDecoration: "none", display: "flex", alignItems: "center", gap: "0.375rem", transition: "color 0.2s" }}
-                    onMouseEnter={e => (e.currentTarget.style.color = C.green)}
-                    onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.6)")}
-                  ><ArrowRight size={12} style={{ color: C.green }} />{label}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Emergency CTA */}
-          <div>
-            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1rem", color: "white", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: `2px solid ${C.green}`, display: "inline-block" }}>Emergency Service</div>
-            <div style={{ background: "rgba(120,165,70,0.1)", border: "1px solid rgba(120,165,70,0.3)", borderRadius: "2px", padding: "1.25rem" }}>
-              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.1rem", color: C.green, marginBottom: "0.5rem" }}>EQUIPMENT DOWN?</div>
-              <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.85rem", color: "rgba(255,255,255,0.65)", lineHeight: 1.6, marginBottom: "1rem" }}>
-                We respond immediately, 24 hours a day, 7 days a week. Free pickup available now.
-              </p>
-              <a href="tel:3463501464" className="kms-btn-green" style={{ width: "100%", justifyContent: "center", fontSize: "0.9rem" }}>
-                <Phone size={15} /> 346-350-1464
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "1.25rem 0" }}>
-        <div className="max-w-7xl mx-auto px-4 flex flex-wrap justify-between items-center gap-3">
-          <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.8rem", color: "rgba(255,255,255,0.35)" }}>
-            © {new Date().getFullYear()} Kelsey Machine Services. All rights reserved. | Stafford, TX 77477
-          </p>
-          <div className="flex gap-4">
-            {["Privacy Policy", "Terms of Service"].map(link => (
-              <a key={link} href="#" style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.8rem", color: "rgba(255,255,255,0.35)", textDecoration: "none", transition: "color 0.2s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = C.green)}
-                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.35)")}
-              >{link}</a>
-            ))}
-          </div>
-        </div>
-      </div>
-    </footer>
   );
 }
 
