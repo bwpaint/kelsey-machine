@@ -69,7 +69,7 @@ export function NavBar() {
           </div>
           <div className="flex items-center gap-4">
             <span style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.78rem", color: "white", letterSpacing: "0.04em" }}>
-              <MapPin size={12} style={{ display: "inline", marginRight: 4 }} />{KMS_ADDRESS}
+              <MapPin size={12} style={{ display: "inline", marginRight: 4 }} />Stafford, Texas 77477
             </span>
             <Link href="/emergency-service" style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 700, fontSize: "0.78rem", color: "white", textDecoration: "none", letterSpacing: "0.04em", background: "rgba(0,0,0,0.2)", padding: "0.15rem 0.6rem", borderRadius: 2 }}>
               24/7 EMERGENCY
