@@ -21,6 +21,7 @@ export default function Contact() {
     <>
       <NavBar />
       <PageHero
+        bgImage="/manus-storage/kms_hero_bg_v2_36f4d26f.jpg"
         h1="Get a Free Quote — Or Just Give Us a Call"
         subheading="No automated phone trees. No chatbots. No waiting three days for a reply. Fill out the form below or call us directly — we respond fast, because we know your downtime clock is running."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Contact / Get a Quote" }]}

@@ -26,10 +26,10 @@ import {
 // ─── Assets ──────────────────────────────────────────────────────────────────
 const LOGO_WHITE  = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_logo_transparent_8e6e2d25.webp";
 const LOGO_COLOR  = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_logo_color_eea8bb18.png";
-const HERO_BG     = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_hero_worker_left-JagH4rLnrkpmpu4gFMtpAV.webp";
+const HERO_BG     = "/manus-storage/kms_hero_bg_v2_36f4d26f.jpg";
 // Real KMS shop photos from Jimmy (uploaded to CDN via /manus-storage proxy)
 const CENTRIFUGE_IMG  = "/manus-storage/centrifuge-welding_eff094a0.jpg";
-const GEARBOX_IMG     = "/manus-storage/gearbox-rebuilt_7fc60bce.jpg";
+const GEARBOX_IMG     = "/manus-storage/kms_gearbox_v2_1ed0ac8d.jpg";
 const BLOWER_IMG      = "/manus-storage/blower-roots_0527c999.jpg";
 const PUMP_IMG        = "/manus-storage/oilfield-pumps_33a94f39.jpg";
 const FLUID_END_IMG   = "/manus-storage/fluid-end-module_97356062.jpg";

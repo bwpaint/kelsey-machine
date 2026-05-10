@@ -102,6 +102,7 @@ export default function GearboxRepair() {
       <NavBar />
 
       <PageHero
+        bgImage="/manus-storage/kms_gearbox_v2_1ed0ac8d.jpg"
         h1="Industrial Gearbox Repair & Rebuild — All Types, All Brands"
         subheading="A gearbox failure doesn't have to mean a new gearbox — or a six-week OEM wait. KMS rebuilds industrial gearboxes of all types and sizes, with in-house machining, a 24-month warranty, and emergency service that actually means something."
         breadcrumbs={[

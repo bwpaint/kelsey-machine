@@ -38,6 +38,7 @@ export default function Warranty() {
     <>
       <NavBar />
       <PageHero
+        bgImage="/manus-storage/gearbox-open_e1ff237b.jpg"
         h1="Our 24-Month Rebuilt Warranty — In Writing, Not Just Words"
         subheading="Most repair shops give you a handshake and a 90-day warranty. We give you 24 months, in writing, on every single repair. That's not a marketing claim — it's a document you can hold us to."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Our Warranty" }]}

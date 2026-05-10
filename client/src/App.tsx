@@ -5,6 +5,7 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import AboutUs from "./pages/AboutUs";
 import ServicesOverview from "./pages/ServicesOverview";
 import CentrifugeRepair from "./pages/CentrifugeRepair";
 import GearboxRepair from "./pages/GearboxRepair";
@@ -38,8 +39,9 @@ function Router() {
       <Route path="/lp/industrial-compressors" component={LpCompressor} />
       <Route path="/lp/fluid-power-end-repair" component={LpFluidEnd} />
 
+      <Route path="/about" component={AboutUs} />
       {/* 404 */}
-      <Route path="/404" component={NotFound} />
+      <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
   );

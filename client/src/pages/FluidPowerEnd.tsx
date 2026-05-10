@@ -60,6 +60,7 @@ export default function FluidPowerEnd() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <NavBar />
       <PageHero
+        bgImage="/manus-storage/fluid-end-module_97356062.jpg"
         h1="Fluid End & Power End Repair — Mud Pumps, Oilfield Tools"
         subheading="Rig downtime is the most expensive downtime in the business. KMS has been rebuilding mud pump fluid ends, power ends, and oilfield tools for over 40 years — with emergency service, nationwide coverage, and a 24-month warranty."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Services", href: "/services" }, { label: "Fluid & Power End Repair" }]}
