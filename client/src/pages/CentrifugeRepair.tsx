@@ -9,7 +9,7 @@ import { Link } from "wouter";
 import { NavBar, Footer, NewsletterBar, PageHero, QuickAnswerBox, InlineQuoteForm, FaqSection, CtaBanner, C, KMS_PHONE, KMS_PHONE_HREF } from "@/components/KmsLayout";
 import { CheckCircle, AlertTriangle, Wrench, Shield, Clock, ArrowRight } from "lucide-react";
 
-const HERO_BG = "/manus-storage/centrifuge-repair_9e8b2a3f_1fb6d9f4.jpg";
+const HERO_BG = "/images/centrifuge-repair.webp";
 
 const CENTRIFUGE_TYPES = [
   {
