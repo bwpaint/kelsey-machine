@@ -244,7 +244,6 @@ export default function GearboxRepair() {
       </main>
 
       <FaqSection faqs={FAQS} pageName="Industrial Gearbox Repair" showForm service="gearbox" />
-      <CtaBanner headline="Ready to Get Your Gearbox Back Online?" subtext="Request a free quote or call our emergency line — we respond within the hour, 24/7." />
       <NewsletterBar />
       <Footer />
     </>

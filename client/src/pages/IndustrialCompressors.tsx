@@ -160,7 +160,6 @@ export default function IndustrialCompressors() {
         </div>
       </main>
       <FaqSection faqs={FAQS} pageName="Industrial Compressor Repair" showForm service="compressors" />
-      <CtaBanner headline="Ready to Get Your Compressor Back Online?" subtext="Request a free quote or call our emergency line — we respond within the hour, 24/7." />
       <NewsletterBar />
       <Footer />
     </>

@@ -91,7 +91,6 @@ export default function ServicesOverview() {
         </div>
       </main>
       <FaqSection faqs={FAQS} pageName="Rotating Equipment Repair Services" />
-      <CtaBanner headline="Ready to Get Your Equipment Back Online?" subtext="One call to KMS gets you a free quote, a written warranty, and 40 years of expertise on your side." />
       <NewsletterBar />
       <Footer />
     </>

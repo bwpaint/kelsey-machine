@@ -160,7 +160,6 @@ export default function FluidPowerEnd() {
         </div>
       </main>
       <FaqSection faqs={FAQS} pageName="Fluid End and Power End Repair" showForm service="fluid-power-end" />
-      <CtaBanner headline="Ready to Get Your Mud Pump Back Online?" subtext="Request a free quote or call our emergency line — we respond within the hour, 24/7." />
       <NewsletterBar />
       <Footer />
     </>
