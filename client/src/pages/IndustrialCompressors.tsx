@@ -60,7 +60,7 @@ export default function IndustrialCompressors() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <NavBar />
       <PageHero
-        bgImage="/manus-storage/kms_gearbox_v2_1ed0ac8d.jpg"
+        bgImage="/manus-storage/kms_gearbox_v2_1ed0ac8d_314d35cc.jpg"
         h1="Industrial Compressor Repair & Rebuild — All Types, All Brands"
         subheading="Compressor down? Whether it's a centrifugal, reciprocating, or screw unit, KMS has been getting industrial compressors back online for over 40 years — with a 24-month warranty and emergency service that actually shows up."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Services", href: "/services" }, { label: "Industrial Compressors" }]}
