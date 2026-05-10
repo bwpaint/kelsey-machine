@@ -46,11 +46,21 @@ export default function ServicesOverview() {
       />
       <main style={{ background: "white" }}>
         <div className="max-w-7xl mx-auto px-4 py-12">
-          <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1.08rem", color: C.textDark, lineHeight: 1.8, marginBottom: "1.5rem", maxWidth: 780 }}>
-            Kelsey Machine Services has been the go-to rotating equipment repair shop for industrial facilities, oilfield operations, and petrochemical plants across the country for over 40 years. We repair centrifuges, gearboxes, blowers, compressors, and mud pump fluid ends and power ends — all in-house, with our own machining capability, and backed by a written <Link href="/warranty" style={{ color: C.green, fontWeight: 700, textDecoration: "none" }}>24-month warranty</Link>. Our <Link href="/emergency-service" style={{ color: C.green, fontWeight: 700, textDecoration: "none" }}>24/7 emergency service</Link> is answered every day of the year.
-          </p>
+          {/* Intro row: paragraph left, quote form right */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-10 items-start">
+            <div className="lg:col-span-2">
+              <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1.08rem", color: C.textDark, lineHeight: 1.8, margin: 0 }}>
+                Kelsey Machine Services has been the go-to rotating equipment repair shop for industrial facilities, oilfield operations, and petrochemical plants across the country for over 40 years. We repair centrifuges, gearboxes, blowers, compressors, and mud pump fluid ends and power ends — all in-house, with our own machining capability, and backed by a written <Link href="/warranty" style={{ color: C.green, fontWeight: 700, textDecoration: "none" }}>24-month warranty</Link>. Our <Link href="/emergency-service" style={{ color: C.green, fontWeight: 700, textDecoration: "none" }}>24/7 emergency service</Link> is answered every day of the year.
+              </p>
+            </div>
+            <div className="lg:col-span-1">
+              <div style={{ position: "sticky", top: 100 }}>
+                <InlineQuoteForm service="" dark={false} />
+              </div>
+            </div>
+          </div>
 
-          <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "clamp(1.6rem, 3vw, 2.2rem)", color: C.blueDark, textTransform: "uppercase", letterSpacing: "-0.01em", marginBottom: "1.5rem", marginTop: "2.5rem" }}>
+          <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "clamp(1.6rem, 3vw, 2.2rem)", color: C.blueDark, textTransform: "uppercase", letterSpacing: "-0.01em", marginBottom: "1.5rem", marginTop: "0.5rem" }}>
             Our Service Lines
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
@@ -90,7 +100,7 @@ export default function ServicesOverview() {
           </div>
         </div>
       </main>
-      <FaqSection faqs={FAQS} pageName="Rotating Equipment Repair Services" />
+      <FaqSection faqs={FAQS} pageName="Rotating Equipment Repair Services" showForm service="" />
       <NewsletterBar />
       <Footer />
     </>
