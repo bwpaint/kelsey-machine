@@ -415,13 +415,16 @@ function ServicesSection() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {SERVICES.map(svc => (
             <article key={svc.id} className="kms-service-card" style={{ background: C.lightBg, boxShadow: "0 2px 12px rgba(30,80,128,0.08)", borderRadius: "2px", overflow: "hidden" }}>
-              <div style={{ height: 200, overflow: "hidden", position: "relative" }}>
-                <img src={svc.image} alt={`${svc.title} — Kelsey Machine Services`} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+              <a href={svc.href} style={{ display: "block", height: 200, overflow: "hidden", position: "relative", textDecoration: "none" }}>
+                <img src={svc.image} alt={`${svc.title} — Kelsey Machine Services`} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.35s ease" }}
+                  onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.04)")}
+                  onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
+                  loading="lazy" />
                 <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(30,80,128,0.65) 0%, transparent 55%)" }} />
                 <div style={{ position: "absolute", bottom: 10, left: 12, fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.68rem", color: C.greenLight, letterSpacing: "0.12em", textTransform: "uppercase" }}>
                   {svc.keywords.split(",")[0].trim()}
                 </div>
-              </div>
+              </a>
               <div style={{ padding: "1.25rem" }}>
                 <h3 className="kms-headline" style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}>
                   <a href={svc.href} style={{ color: C.blueDark, textDecoration: "none" }}
