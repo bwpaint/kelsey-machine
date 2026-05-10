@@ -194,21 +194,7 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* ── Quick Answer Box ── */}
-      <section className="bg-white py-12">
-        <div className="container">
-          <div className="max-w-3xl mx-auto bg-[#f0f6e8] border-l-4 border-[#78A546] rounded-lg p-8">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-[#78A546] text-lg">✦</span>
-              <span className="text-[#78A546] font-bold text-sm uppercase tracking-widest">Quick Answer</span>
-            </div>
-            <h2 className="text-xl font-bold text-[#1E5080] mb-3">What is Kelsey Machine Services?</h2>
-            <p className="text-gray-700 leading-relaxed">
-              Kelsey Machine Services (KMS) is a family-owned rotating equipment repair company founded in 1983 and based in Stafford, Texas. KMS specializes in the repair, rebuild, and recertification of centrifuges, industrial gearboxes, blowers, compressors, and fluid end & power end components. The company serves customers across all 50 states, Canada, and Mexico with free nationwide pickup and delivery, 72-hour standard turnaround, 24/7 emergency service, and an industry-leading 24-month warranty on all rebuilt equipment.
-            </p>
-          </div>
-        </div>
-      </section>
+
 
       {/* ── Our Story ── */}
       <section className="bg-gray-50 py-16">
@@ -411,9 +397,21 @@ export default function AboutUs() {
       <section className="bg-gray-50 py-16">
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-            {/* Left: FAQs (2/3 width) */}
+            {/* Left: Quick Answer + FAQs (2/3 width) */}
             <div className="lg:col-span-2">
-              <h2 className="font-['Barlow_Condensed'] text-4xl font-black text-[#1E5080] uppercase mb-10">
+              {/* Quick Answer Box */}
+              <div className="bg-[#f0f6e8] border-l-4 border-[#78A546] rounded-lg p-6 mb-8">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[#78A546] text-lg">✦</span>
+                  <span className="text-[#78A546] font-bold text-sm uppercase tracking-widest">Quick Answer</span>
+                </div>
+                <h2 className="text-xl font-bold text-[#1E5080] mb-2">What is Kelsey Machine Services?</h2>
+                <p className="text-gray-700 leading-relaxed">
+                  Kelsey Machine Services (KMS) is a family-owned rotating equipment repair company founded in 1983 and based in Stafford, Texas. KMS specializes in the repair, rebuild, and recertification of centrifuges, industrial gearboxes, blowers, compressors, and fluid end &amp; power end components. The company serves customers across all 50 states, Canada, and Mexico with free nationwide pickup and delivery, 72-hour standard turnaround, 24/7 emergency service, and an industry-leading 24-month warranty on all rebuilt equipment.
+                </p>
+              </div>
+              {/* FAQs */}
+              <h2 className="font-['Barlow_Condensed'] text-4xl font-black text-[#1E5080] uppercase mb-6">
                 Frequently Asked Questions
               </h2>
               <div className="space-y-4">
@@ -432,12 +430,8 @@ export default function AboutUs() {
             </div>
             {/* Right: Quote Form (1/3 width) */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-xl border border-gray-100 p-6 sticky top-24">
-                <h3 className="font-['Barlow_Condensed'] text-2xl font-black text-[#1E5080] uppercase mb-1">
-                  Get a Free Repair Quote
-                </h3>
-                <p className="text-gray-500 text-sm mb-5">Tell us what you've got and we'll tell you how fast we can fix it.</p>
-                <InlineQuoteForm service="General Inquiry" />
+              <div style={{ position: "sticky", top: 96 }}>
+                <InlineQuoteForm service="General Inquiry" dark={false} />
               </div>
             </div>
           </div>
