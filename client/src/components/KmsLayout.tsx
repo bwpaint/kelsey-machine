@@ -375,33 +375,56 @@ export function FaqSection({ faqs, pageName }: { faqs: FAQ[]; pageName: string }
   );
 }
 
-// ─── Newsletter Bar ────────────────────────────────────────────────────────────
+// ─── Newsletter Bar — "Experience the Kelsey Machine Difference" ──────────────
 export function NewsletterBar() {
   const [form, setForm] = useState({ name: "", company: "", email: "" });
   const [submitted, setSubmitted] = useState(false);
 
   return (
-    <section style={{ background: C.blueDark, borderTop: `3px solid ${C.green}`, borderBottom: `1px solid rgba(255,255,255,0.08)`, padding: "2rem 0" }}>
+    <section style={{ background: C.darkBg, borderTop: `3px solid ${C.green}`, padding: "3.5rem 0" }}>
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex flex-col lg:flex-row items-center gap-6">
-          <div className="flex-shrink-0 text-center lg:text-left">
-            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.3rem", color: "white", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-              Stay in the Loop
+        {/* Heading row */}
+        <div className="text-center mb-6">
+          <div style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.72rem", color: C.green, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.5rem" }}>
+            Ready to Get Started?
+          </div>
+          <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", color: "white", textTransform: "uppercase", letterSpacing: "-0.01em", lineHeight: 1.1, marginBottom: "0.75rem" }}>
+            Experience the <span style={{ color: C.green }}>Kelsey Machine Difference</span>
+          </h2>
+          <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1rem", color: "rgba(255,255,255,0.65)", maxWidth: 560, margin: "0 auto 1.5rem" }}>
+            The right people, the right equipment, the right technology — keeping your operations running since 1984.
+          </p>
+          {/* Call & Email buttons */}
+          <div className="flex flex-wrap justify-center gap-4 mb-6">
+            <a href={KMS_PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1rem", letterSpacing: "0.08em", textTransform: "uppercase", padding: "0.75rem 2rem", borderRadius: 2, textDecoration: "none" }}>
+              <Phone size={16} /> Call {KMS_PHONE}
+            </a>
+            <a href={`mailto:${KMS_EMAIL}`} style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "transparent", color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1rem", letterSpacing: "0.08em", textTransform: "uppercase", padding: "0.75rem 2rem", borderRadius: 2, border: "2px solid rgba(255,255,255,0.3)", textDecoration: "none" }}>
+              <Mail size={16} /> Email Us
+            </a>
+          </div>
+        </div>
+
+        {/* Newsletter signup */}
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "2rem" }}>
+          <div className="text-center mb-4">
+            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.1rem", color: "white", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+              Join Our Newsletter
             </div>
-            <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.88rem", color: "rgba(255,255,255,0.6)", marginTop: "0.25rem" }}>
+            <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", marginTop: "0.25rem" }}>
               Industry tips, maintenance alerts, and KMS news — no spam, ever.
             </p>
           </div>
           {submitted ? (
-            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.1rem", color: C.green, letterSpacing: "0.04em" }}>
+            <div style={{ textAlign: "center", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.1rem", color: C.green, padding: "1rem" }}>
               ✓ You're subscribed! Welcome to the KMS family.
             </div>
           ) : (
-            <div className="flex flex-col sm:flex-row gap-3 flex-1 w-full lg:w-auto">
+            <div className="flex flex-col sm:flex-row gap-3 max-w-3xl mx-auto">
               {[
-                { key: "name",    placeholder: "Your Name",     type: "text" },
-                { key: "company", placeholder: "Company Name",  type: "text" },
-                { key: "email",   placeholder: "Email Address", type: "email" },
+                { key: "name",    placeholder: "Full Name",      type: "text" },
+                { key: "company", placeholder: "Company",        type: "text" },
+                { key: "email",   placeholder: "Email Address",  type: "email" },
               ].map(({ key, placeholder, type }) => (
                 <input
                   key={key}
@@ -409,14 +432,14 @@ export function NewsletterBar() {
                   placeholder={placeholder}
                   value={form[key as keyof typeof form]}
                   onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                  style={{ flex: 1, fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.92rem", color: "white", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 2, padding: "0.6rem 1rem", outline: "none", minWidth: 0 }}
+                  style={{ flex: 1, fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.92rem", color: "white", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 2, padding: "0.65rem 1rem", outline: "none", minWidth: 0 }}
                 />
               ))}
               <button
                 onClick={() => setSubmitted(true)}
-                style={{ background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.08em", textTransform: "uppercase", border: "none", borderRadius: 2, padding: "0.6rem 1.5rem", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
+                style={{ background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.08em", textTransform: "uppercase", border: "none", borderRadius: 2, padding: "0.65rem 1.5rem", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
               >
-                Subscribe
+                Submit
               </button>
             </div>
           )}
@@ -425,6 +448,7 @@ export function NewsletterBar() {
     </section>
   );
 }
+
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
 export function Footer() {
@@ -498,17 +522,26 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Emergency CTA */}
+          {/* Emergency & Warranty CTA */}
           <div>
-            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1rem", color: "white", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: `2px solid ${C.green}`, display: "inline-block" }}>Emergency Service</div>
-            <div style={{ background: "rgba(120,165,70,0.1)", border: "1px solid rgba(120,165,70,0.3)", borderRadius: 4, padding: "1.25rem" }}>
+            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1rem", color: "white", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: `2px solid ${C.green}`, display: "inline-block" }}>Emergency &amp; Warranty</div>
+            <div style={{ background: "rgba(120,165,70,0.1)", border: "1px solid rgba(120,165,70,0.3)", borderRadius: 4, padding: "1.25rem", marginBottom: "0.75rem" }}>
               <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.1rem", color: C.green, marginBottom: "0.5rem" }}>EQUIPMENT DOWN?</div>
               <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.85rem", color: "rgba(255,255,255,0.65)", lineHeight: 1.6, marginBottom: "1rem" }}>
                 We respond immediately, 24 hours a day, 7 days a week. <Link href="/emergency-service" style={{ color: C.green, textDecoration: "none" }}>Free pickup</Link> available now.
               </p>
-              <a href={KMS_PHONE_HREF} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.06em", padding: "0.65rem 1rem", borderRadius: 2, textDecoration: "none" }}>
+              <a href={KMS_PHONE_HREF} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.06em", padding: "0.65rem 1rem", borderRadius: 2, textDecoration: "none", marginBottom: "0.5rem" }}>
                 <Phone size={15} /> {KMS_PHONE}
               </a>
+            </div>
+            <div style={{ background: "rgba(30,80,128,0.2)", border: "1px solid rgba(30,80,128,0.4)", borderRadius: 4, padding: "1rem" }}>
+              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1rem", color: "white", marginBottom: "0.4rem" }}>24-MONTH WARRANTY</div>
+              <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.82rem", color: "rgba(255,255,255,0.6)", lineHeight: 1.5, marginBottom: "0.6rem" }}>
+                Industry-leading warranty on every rebuild — because we stand behind our work.
+              </p>
+              <Link href="/warranty" style={{ display: "flex", alignItems: "center", gap: 6, color: C.green, fontFamily: "'Barlow', sans-serif", fontWeight: 700, fontSize: "0.82rem", textDecoration: "none", letterSpacing: "0.04em" }}>
+                <Shield size={13} /> View Warranty Details →
+              </Link>
             </div>
           </div>
         </div>

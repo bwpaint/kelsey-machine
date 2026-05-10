@@ -17,6 +17,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
+import { NewsletterBar as KmsNewsletterBar } from "@/components/KmsLayout";
 import {
   Phone, Mail, MapPin, Clock, ChevronDown, ChevronUp,
   Star, CheckCircle, ArrowRight, Truck, Shield, Zap,
@@ -233,12 +234,12 @@ function NavBar() {
             </a>
             <div className="absolute top-full left-0 mt-1 hidden group-hover:block" style={{ background: "#0d1a2a", border: `1px solid ${C.green}33`, borderRadius: 4, minWidth: 220, boxShadow: "0 8px 24px rgba(0,0,0,0.5)", zIndex: 100 }}>
               {[
+                { label: "Services Overview", href: "/services" },
                 { label: "Centrifuge Repair", href: "/services/centrifuge-repair" },
+                { label: "Industrial Blower Repair", href: "/services/industrial-blower-repair" },
                 { label: "Gearbox Repair", href: "/services/gearbox-repair" },
-                { label: "Pump Repair & Rebuild", href: "/services/pump-repair" },
-                { label: "Blower & Compressor Repair", href: "/services/blower-repair" },
-                { label: "Hydraulic Drive Service", href: "/services/hydraulic-drive-service" },
-                { label: "Fluid End & Power End Repair", href: "/services/fluid-end-power-end-repair" },
+                { label: "Industrial Compressors", href: "/services/industrial-compressors" },
+                { label: "Fluid & Power End Repair", href: "/services/fluid-power-end-repair" },
               ].map(({ label, href }) => (
                 <a key={label} href={href} style={{ display: "block", padding: "0.6rem 1rem", fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.78rem", color: "rgba(255,255,255,0.8)", textDecoration: "none", letterSpacing: "0.04em", borderBottom: "1px solid rgba(255,255,255,0.06)", transition: "background 0.15s, color 0.15s" }}
                   onMouseEnter={e => { e.currentTarget.style.background = C.green + "22"; e.currentTarget.style.color = C.green; }}
@@ -268,9 +269,6 @@ function NavBar() {
 
         {/* CTA */}
         <div className="hidden lg:flex items-center gap-3">
-          <a href="tel:3463501464" className="flex items-center gap-2" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.05rem", color: C.greenLight, letterSpacing: "0.04em" }}>
-            <Phone size={16} /> 346-350-1464
-          </a>
           <a href="#contact" className="kms-btn-green" style={{ padding: "0.5rem 1.25rem", fontSize: "0.85rem" }}>
             Get Free Quote
           </a>
@@ -335,14 +333,14 @@ function HeroSection() {
       <div className="absolute inset-0" style={{ background: `linear-gradient(105deg, rgba(30,80,128,0.72) 0%, rgba(30,80,128,0.78) 50%, rgba(26,37,53,0.94) 100%)` }} />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 py-16 lg:py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
 
           {/* Left — headline + CTAs */}
           <div>
             <div className="kms-label mb-3" style={{ color: C.greenLight }}>
               Houston, TX · Serving All 50 States + Canada &amp; Mexico
             </div>
-            <h1 className="kms-headline text-white mb-5" style={{ fontSize: "clamp(3.4rem, 6.5vw, 5.5rem)" }}>
+            <h1 className="kms-headline text-white mb-5" style={{ fontSize: "clamp(2.6rem, 4.5vw, 3.8rem)" }}>
               YOUR PARTNER IN
               <br />
               <span style={{ color: C.green }}>ROTATING EQUIPMENT</span>
@@ -444,6 +442,32 @@ function HeroSection() {
                 </form>
               </>
             )}
+            {/* Trust & Verification Block */}
+            <div style={{ marginTop: "1.25rem", borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "1.25rem" }}>
+              {/* Google Rating */}
+              <div className="flex items-center gap-2 mb-2">
+                <div className="flex gap-0.5">
+                  {[1,2,3,4,5].map(i => (
+                    <Star key={i} size={14} fill={C.green} color={C.green} />
+                  ))}
+                </div>
+                <span style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 700, fontSize: "0.82rem", color: "white" }}>4.9 / 5.0</span>
+                <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.78rem", color: "rgba(255,255,255,0.5)" }}>Google Reviews</span>
+              </div>
+              {/* Trust badges */}
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { label: "40+ Years in Business", icon: "🏆" },
+                  { label: "TX Licensed & Insured", icon: "✅" },
+                  { label: "BBB Accredited", icon: "🔒" },
+                  { label: "AGMA Member", icon: "⚙️" },
+                ].map(({ label, icon }) => (
+                  <div key={label} style={{ display: "flex", alignItems: "center", gap: "0.3rem", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 2, padding: "0.25rem 0.6rem", fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.72rem", color: "rgba(255,255,255,0.75)", letterSpacing: "0.03em" }}>
+                    <span>{icon}</span> {label}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -786,22 +810,20 @@ function CTASection() {
 // ─── Footer ───────────────────────────────────────────────────────────────────
 function Footer() {
   const serviceLinks = [
+    { label: "Services Overview", href: "/services" },
     { label: "Centrifuge Repair", href: "/services/centrifuge-repair" },
+    { label: "Industrial Blower Repair", href: "/services/industrial-blower-repair" },
     { label: "Gearbox Repair", href: "/services/gearbox-repair" },
-    { label: "Pump Repair & Rebuild", href: "/services/pump-repair" },
-    { label: "Blower & Compressor Repair", href: "/services/blower-repair" },
-    { label: "Hydraulic Drive Service", href: "/services/hydraulic-drive-service" },
-    { label: "Fluid End & Power End Repair", href: "/services/fluid-end-power-end-repair" },
-    { label: "Emergency Repair", href: "#contact" },
+    { label: "Industrial Compressors", href: "/services/industrial-compressors" },
+    { label: "Fluid & Power End Repair", href: "/services/fluid-power-end-repair" },
   ];
   const companyLinks = [
-    { label: "About Kelsey Machine", href: "#why-kms" },
-    { label: "Why Choose KMS", href: "#why-kms" },
+    { label: "About KMS", href: "/#why-kms" },
+    { label: "24-Month Warranty", href: "/warranty" },
+    { label: "24/7 Emergency Service", href: "/emergency-service" },
     { label: "Testimonials", href: "#testimonials" },
-    { label: "Industries Served", href: "#industries" },
     { label: "Blog", href: "/blog" },
-    { label: "FAQ", href: "#faq" },
-    { label: "Contact & Quote", href: "#contact" },
+    { label: "Contact & Quote", href: "/contact" },
   ];
 
   return (
@@ -912,6 +934,7 @@ export default function Home() {
         <FAQSection />
         <CTASection />
       </main>
+      <KmsNewsletterBar />
       <Footer />
     </div>
   );
