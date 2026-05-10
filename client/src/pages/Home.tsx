@@ -451,7 +451,7 @@ function HeroSection() {
                     <Star key={i} size={14} fill={C.green} color={C.green} />
                   ))}
                 </div>
-                <span style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 700, fontSize: "0.82rem", color: "white" }}>4.9 / 5.0</span>
+                <span style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 700, fontSize: "0.82rem", color: "white" }}>4.8 / 5.0</span>
                 <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.78rem", color: "rgba(255,255,255,0.5)" }}>Google Reviews</span>
               </div>
               {/* Trust badges */}

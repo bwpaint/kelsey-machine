@@ -15,8 +15,8 @@
 - [ ] **Google My Business** — Verify KMS listing. NAP: 814 Summer Park Dr, BLDG #600, Stafford TX 77477 / 346-350-1464.
 
 ## Verification Data (To Confirm with Jimmy)
-- [ ] **Google Reviews rating** — Currently showing 4.9/5.0 as placeholder. Confirm actual rating.
-- [ ] **TX License number** — Get actual TX license/registration number from Jimmy to display in trust badges.
+- [ ] **Google Reviews rating** — Updated to 4.8/5.0 per Glenn. Confirm this matches the live Google listing before launch.
+- [ ] **TX License number** — Get actual TX license/registration number from Jimmy. Once confirmed, add it to the trust badge row under the hero form in `Home.tsx` (replace the "TX Licensed & Insured" placeholder text with the real license number, e.g., "TX Lic. #XXXXXX").
 - [ ] **BBB Accreditation** — Confirm KMS is BBB accredited. If so, add BBB badge link.
 - [ ] **AGMA membership** — Confirm KMS is an AGMA member. Update trust badges accordingly.
 
