@@ -324,7 +324,7 @@ export default function AboutUs() {
               <h3 className="font-['Barlow_Condensed'] text-2xl font-black text-[#1E5080] uppercase mb-6">
                 By the Numbers
               </h3>
-              <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-x-4">
                 {[
                   { label: "Years in Business", value: "40+", icon: "📅" },
                   { label: "States Served", value: "50 States + Canada + Mexico", icon: "🗺️" },
@@ -333,11 +333,11 @@ export default function AboutUs() {
                   { label: "Emergency Service", value: "24/7 / 365", icon: "🚨" },
                   { label: "Pickup & Delivery", value: "Free Nationwide", icon: "🚛" },
                 ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-4 py-3 border-b border-gray-100 last:border-0">
-                    <span className="text-2xl">{item.icon}</span>
-                    <div className="flex-1">
-                      <div className="text-gray-500 text-sm">{item.label}</div>
-                      <div className="font-bold text-[#1E5080]">{item.value}</div>
+                  <div key={i} className="flex items-start gap-3 py-3 border-b border-gray-100">
+                    <span className="text-xl mt-0.5">{item.icon}</span>
+                    <div>
+                      <div className="text-gray-500 text-xs">{item.label}</div>
+                      <div className="font-bold text-[#1E5080] text-sm leading-tight">{item.value}</div>
                     </div>
                   </div>
                 ))}
@@ -407,40 +407,38 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* ── Inline Quote Form ── */}
-      <section className="bg-white py-16">
-        <div className="container">
-          <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="font-['Barlow_Condensed'] text-3xl font-black text-[#1E5080] uppercase mb-2">
-                Get a Free Repair Quote
-              </h2>
-              <p className="text-gray-600">Tell us what you've got and we'll tell you how fast we can fix it.</p>
-            </div>
-            <InlineQuoteForm service="General Inquiry" />
-          </div>
-        </div>
-      </section>
-
-      {/* ── FAQ ── */}
+      {/* ── FAQ + Quote Form ── */}
       <section className="bg-gray-50 py-16">
         <div className="container">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="font-['Barlow_Condensed'] text-4xl font-black text-[#1E5080] uppercase text-center mb-10">
-              Frequently Asked Questions
-            </h2>
-            <div className="space-y-4">
-              {FAQS.map((faq, i) => (
-                <details key={i} className="bg-white rounded-xl border border-gray-100 group">
-                  <summary className="flex justify-between items-center p-6 cursor-pointer font-bold text-[#1E5080] hover:text-[#78A546] transition-colors list-none">
-                    <span>{faq.q}</span>
-                    <span className="text-[#78A546] text-xl group-open:rotate-45 transition-transform">+</span>
-                  </summary>
-                  <div className="px-6 pb-6 text-gray-600 leading-relaxed border-t border-gray-100 pt-4">
-                    {faq.a}
-                  </div>
-                </details>
-              ))}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+            {/* Left: FAQs (2/3 width) */}
+            <div className="lg:col-span-2">
+              <h2 className="font-['Barlow_Condensed'] text-4xl font-black text-[#1E5080] uppercase mb-10">
+                Frequently Asked Questions
+              </h2>
+              <div className="space-y-4">
+                {FAQS.map((faq, i) => (
+                  <details key={i} className="bg-white rounded-xl border border-gray-100 group">
+                    <summary className="flex justify-between items-center p-6 cursor-pointer font-bold text-[#1E5080] hover:text-[#78A546] transition-colors list-none">
+                      <span>{faq.q}</span>
+                      <span className="text-[#78A546] text-xl group-open:rotate-45 transition-transform">+</span>
+                    </summary>
+                    <div className="px-6 pb-6 text-gray-600 leading-relaxed border-t border-gray-100 pt-4">
+                      {faq.a}
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </div>
+            {/* Right: Quote Form (1/3 width) */}
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-xl border border-gray-100 p-6 sticky top-24">
+                <h3 className="font-['Barlow_Condensed'] text-2xl font-black text-[#1E5080] uppercase mb-1">
+                  Get a Free Repair Quote
+                </h3>
+                <p className="text-gray-500 text-sm mb-5">Tell us what you've got and we'll tell you how fast we can fix it.</p>
+                <InlineQuoteForm service="General Inquiry" />
+              </div>
             </div>
           </div>
         </div>
