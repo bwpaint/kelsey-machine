@@ -17,7 +17,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { NavBar, NewsletterBar as KmsNewsletterBar, Footer } from "@/components/KmsLayout";
+import { NavBar, NewsletterBar as KmsNewsletterBar, Footer, InlineQuoteForm } from "@/components/KmsLayout";
 import {
   Phone, Mail, MapPin, Clock, ChevronDown, ChevronUp,
   Star, CheckCircle, ArrowRight, Truck, Shield, Zap,
@@ -665,36 +665,47 @@ function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   return (
     <section id="faq" style={{ background: C.lightBg, padding: "5rem 0" }} aria-label="Frequently asked questions">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <div className="kms-label mb-3">Common Questions</div>
-          <div className="kms-green-rule mx-auto" />
-          <h2 className="kms-headline" style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", color: C.blueDark }}>FREQUENTLY ASKED QUESTIONS</h2>
-          <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1rem", color: C.textMid, marginTop: "0.75rem" }}>
-            Can't find your answer? Call us at <a href="tel:3463501464" style={{ color: C.green, fontWeight: 600 }}>346-350-1464</a> — we're available 24/7.
-          </p>
-        </div>
-        <div style={{ border: `1px solid rgba(30,80,128,0.15)`, borderRadius: "2px", overflow: "hidden" }} itemScope itemType="https://schema.org/FAQPage">
-          {FAQS.map((faq, i) => (
-            <div key={i} className="kms-faq-item" itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
-              <button
-                onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full flex items-center justify-between gap-4 text-left"
-                style={{ padding: "1.25rem 1.5rem", background: openIndex === i ? "rgba(30,80,128,0.06)" : "white", border: "none", color: C.blueDark, transition: "background 0.2s" }}
-                aria-expanded={openIndex === i}
-              >
-                <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.05rem", letterSpacing: "0.02em" }} itemProp="name">{faq.q}</span>
-                {openIndex === i
-                  ? <ChevronUp size={18} style={{ color: C.green, flexShrink: 0 }} />
-                  : <ChevronDown size={18} style={{ color: "rgba(30,80,128,0.4)", flexShrink: 0 }} />}
-              </button>
-              {openIndex === i && (
-                <div style={{ padding: "0 1.5rem 1.25rem", background: "white" }} itemScope itemType="https://schema.org/Answer">
-                  <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.95rem", color: C.textMid, lineHeight: 1.7 }} itemProp="text">{faq.a}</p>
-                </div>
-              )}
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+          {/* Left: FAQs (2/3 width) */}
+          <div className="lg:col-span-2">
+            <div className="text-center mb-10">
+              <div className="kms-label mb-3">Common Questions</div>
+              <div className="kms-green-rule mx-auto" />
+              <h2 className="kms-headline" style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", color: C.blueDark }}>FREQUENTLY ASKED QUESTIONS</h2>
+              <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1rem", color: C.textMid, marginTop: "0.75rem" }}>
+                Can't find your answer? Call us at <a href="tel:3463501464" style={{ color: C.green, fontWeight: 600 }}>346-350-1464</a> — we're available 24/7.
+              </p>
             </div>
-          ))}
+            <div style={{ border: `1px solid rgba(30,80,128,0.15)`, borderRadius: "2px", overflow: "hidden" }} itemScope itemType="https://schema.org/FAQPage">
+              {FAQS.map((faq, i) => (
+                <div key={i} className="kms-faq-item" itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
+                  <button
+                    onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                    className="w-full flex items-center justify-between gap-4 text-left"
+                    style={{ padding: "1.25rem 1.5rem", background: openIndex === i ? "rgba(30,80,128,0.06)" : "white", border: "none", color: C.blueDark, transition: "background 0.2s" }}
+                    aria-expanded={openIndex === i}
+                  >
+                    <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.05rem", letterSpacing: "0.02em" }} itemProp="name">{faq.q}</span>
+                    {openIndex === i
+                      ? <ChevronUp size={18} style={{ color: C.green, flexShrink: 0 }} />
+                      : <ChevronDown size={18} style={{ color: "rgba(30,80,128,0.4)", flexShrink: 0 }} />}
+                  </button>
+                  {openIndex === i && (
+                    <div style={{ padding: "0 1.5rem 1.25rem", background: "white" }} itemScope itemType="https://schema.org/Answer">
+                      <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.95rem", color: C.textMid, lineHeight: 1.7 }} itemProp="text">{faq.a}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Right: Quote Form (1/3 width) */}
+          <div className="lg:col-span-1">
+            <div style={{ position: "sticky", top: 100 }}>
+              <InlineQuoteForm service="" dark={false} />
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -746,7 +757,6 @@ export default function Home() {
         <IndustriesSection />
         <BrandsSection />
         <FAQSection />
-        <CTASection />
       </main>
       <KmsNewsletterBar />
       <Footer />
