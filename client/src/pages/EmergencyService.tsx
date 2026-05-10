@@ -28,7 +28,7 @@ export default function EmergencyService() {
     <>
       <NavBar />
       <PageHero
-        bgImage="/images/kms_hero_bg_v2_36f4d26f.jpg"
+        bgImage="/manus-storage/kms_hero_bg_v2_36f4d26f_610ad7bd.jpg"
         h1="24/7 Emergency Rotating Equipment Repair — We Answer Every Call"
         subheading="When your equipment goes down at 2 AM on a Sunday, you need a shop that actually picks up the phone. KMS does. Every day of the year, every hour of the day — real people, real answers, real repairs."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "24/7 Emergency Service" }]}
