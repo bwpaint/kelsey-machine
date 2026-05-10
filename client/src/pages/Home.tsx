@@ -19,7 +19,7 @@
 import { useState, useEffect, useRef } from "react";
 import { NavBar, NewsletterBar as KmsNewsletterBar, Footer, InlineQuoteForm } from "@/components/KmsLayout";
 import {
-  Phone, Mail, MapPin, Clock, ChevronDown, ChevronUp,
+  Phone, Mail, ChevronDown, ChevronUp,
   Star, CheckCircle, ArrowRight, Truck, Shield, Zap,
   Globe, Menu, X, ChevronLeft, ChevronRight,
 } from "lucide-react";
@@ -717,25 +717,6 @@ function FAQSection() {
                 <a href="/warranty" style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: "1rem", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "0.85rem", color: C.green, textDecoration: "none", letterSpacing: "0.05em", textTransform: "uppercase" }}>
                   View Full Warranty Details <ArrowRight size={14} />
                 </a>
-              </div>
-
-              {/* Quick Contact Box */}
-              <div style={{ background: C.lightBg, borderRadius: "2px", padding: "1.5rem", border: `1px solid rgba(30,80,128,0.15)` }}>
-                <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.05rem", color: C.blueDark, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: "1rem" }}>Reach Us Directly</div>
-                <div className="flex flex-col gap-3">
-                  <a href="tel:3463501464" style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.92rem", color: C.blueDark, textDecoration: "none", fontWeight: 600 }}>
-                    <Phone size={16} style={{ color: C.green, flexShrink: 0 }} /> 346-350-1464
-                  </a>
-                  <a href="mailto:service@kmstx.com" style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.92rem", color: C.blueDark, textDecoration: "none", fontWeight: 600 }}>
-                    <Mail size={16} style={{ color: C.green, flexShrink: 0 }} /> service@kmstx.com
-                  </a>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.92rem", color: C.textMid }}>
-                    <MapPin size={16} style={{ color: C.green, flexShrink: 0 }} /> Stafford, TX 77477
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.92rem", color: C.textMid }}>
-                    <Clock size={16} style={{ color: C.green, flexShrink: 0 }} /> Emergency line answered 24/7
-                  </div>
-                </div>
               </div>
 
               {/* Free Pickup Box */}
