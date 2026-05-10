@@ -45,9 +45,11 @@ export default function Warranty() {
       />
       <main style={{ background: "white" }}>
         <div className="max-w-5xl mx-auto px-4 py-12">
-          <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1.08rem", color: C.textDark, lineHeight: 1.8, marginBottom: "1.5rem" }}>
-            At Kelsey Machine Services, we back every repair with an industry-leading 24-month rebuilt warranty. This isn't a limited warranty with a list of exclusions longer than the warranty itself — it's a straightforward commitment that the work we did will hold up. If it doesn't, we make it right. No runaround, no finger-pointing, no charge.
-          </p>
+          <div style={{ background: "white", border: "2px solid #dde3ec", borderRadius: 4, padding: "2rem", marginBottom: "1.5rem" }}>
+            <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1.08rem", color: C.textDark, lineHeight: 1.8, margin: 0 }}>
+              At Kelsey Machine Services, we back every repair with an industry-leading 24-month rebuilt warranty. This isn't a limited warranty with a list of exclusions longer than the warranty itself — it's a straightforward commitment that the work we did will hold up. If it doesn't, we make it right. No runaround, no finger-pointing, no charge.
+            </p>
+          </div>
           <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1.08rem", color: C.textDark, lineHeight: 1.8, marginBottom: "2rem" }}>
             The warranty documentation is included in every repair package we ship. It covers all parts replaced and all work performed — and it's backed by 40 years of reputation. We've been in business long enough to know that a warranty is only as good as the company standing behind it.
           </p>
