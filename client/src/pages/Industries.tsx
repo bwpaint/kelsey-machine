@@ -197,8 +197,8 @@ export default function Industries() {
                   </div>
                   {/* CTA */}
                   <div className="flex flex-wrap gap-3 mt-5">
-                    <a href={KMS_PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 7, background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "0.9rem", letterSpacing: "0.06em", padding: "0.65rem 1.25rem", borderRadius: 2, textDecoration: "none" }}>
-                      <Phone size={15} /> Call Now
+                    <a href={KMS_PHONE_HREF} className="kms-wiggle" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1rem", letterSpacing: "0.06em", padding: "0.75rem 2.75rem", borderRadius: 2, textDecoration: "none" }}>
+                      <Phone size={16} /> Call Now — {KMS_PHONE}
                     </a>
                     <a href={`mailto:${KMS_EMAIL}`} style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "transparent", color: C.blueDark, border: `2px solid ${C.blueDark}`, fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "0.9rem", letterSpacing: "0.06em", padding: "0.65rem 1.25rem", borderRadius: 2, textDecoration: "none" }}>
                       <Mail size={15} /> Email Us

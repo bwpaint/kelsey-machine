@@ -360,13 +360,26 @@ export default function AboutUs() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              "Oil & Gas", "Chemical Processing", "Food & Beverage", "Wastewater Treatment",
-              "Pulp & Paper", "Mining & Minerals", "Pharmaceutical", "Power Generation",
-              "Petrochemical", "Fertilizer Production", "General Manufacturing", "Marine & Offshore",
-            ].map((industry) => (
-              <div key={industry} className="bg-white rounded-lg p-4 text-center border border-gray-100 hover:border-[#78A546] hover:shadow-sm transition-all">
-                <span className="text-gray-700 font-medium text-sm">{industry}</span>
-              </div>
+              { label: "Oil & Gas", anchor: "oil-gas" },
+              { label: "Chemical Processing", anchor: null },
+              { label: "Food & Beverage", anchor: "food-beverage" },
+              { label: "Wastewater Treatment", anchor: "wastewater" },
+              { label: "Pulp & Paper", anchor: "pulp-paper" },
+              { label: "Mining & Minerals", anchor: null },
+              { label: "Pharmaceutical", anchor: "pharmaceutical" },
+              { label: "Power Generation", anchor: "power-generation" },
+              { label: "Petrochemical", anchor: "petrochemical" },
+              { label: "Fertilizer Production", anchor: null },
+              { label: "General Manufacturing", anchor: "manufacturing" },
+              { label: "Marine & Offshore", anchor: null },
+            ].map(({ label, anchor }) => (
+              <a
+                key={label}
+                href={anchor ? `/industries#${anchor}` : "/industries"}
+                className="bg-white rounded-lg p-4 text-center border border-gray-100 hover:border-[#78A546] hover:shadow-sm transition-all no-underline block cursor-pointer"
+              >
+                <span className="text-gray-700 font-medium text-sm">{label}</span>
+              </a>
             ))}
           </div>
         </div>
