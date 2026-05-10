@@ -316,6 +316,7 @@ export function InlineQuoteForm({ service = "", dark = false }: QuoteFormProps) 
         <button
           type="button"
           onClick={() => setSubmitted(true)}
+          className="kms-wiggle"
           style={{ background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1rem", letterSpacing: "0.08em", textTransform: "uppercase", border: "none", borderRadius: 2, padding: "0.8rem 2rem", cursor: "pointer", transition: "background 0.2s", width: "100%" }}
           onMouseEnter={e => (e.currentTarget.style.background = C.greenDark)}
           onMouseLeave={e => (e.currentTarget.style.background = C.green)}
@@ -458,6 +459,7 @@ export function NewsletterBar() {
               ))}
               <button
                 onClick={() => setSubmitted(true)}
+                className="kms-wiggle"
                 style={{ background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.08em", textTransform: "uppercase", border: "none", borderRadius: 2, padding: "0.65rem 1.5rem", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
               >
                 Submit

@@ -81,7 +81,7 @@ export default function Contact() {
                       placeholder="Manufacturer, model, what's happening, how urgent..."
                       style={{ width: "100%", padding: "0.65rem 0.875rem", border: `1px solid #dde3ec`, borderRadius: 2, fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.95rem", color: C.textDark, outline: "none", resize: "vertical", boxSizing: "border-box" }} />
                   </div>
-                  <button type="submit" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.1rem", letterSpacing: "0.06em", textTransform: "uppercase", padding: "0.9rem 2.5rem", borderRadius: 2, border: "none", cursor: "pointer" }}>
+                  <button type="submit" className="kms-wiggle" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.1rem", letterSpacing: "0.06em", textTransform: "uppercase", padding: "0.9rem 2.5rem", borderRadius: 2, border: "none", cursor: "pointer" }}>
                     <Send size={18} /> Submit Quote Request
                   </button>
                 </form>
@@ -118,7 +118,7 @@ export default function Contact() {
                   Need It Fast?
                 </div>
                 <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.9rem", color: C.textMid, lineHeight: 1.6, marginBottom: "1rem" }}>
-                  Our <Link href="/emergency-service" style={{ color: C.green, fontWeight: 700, textDecoration: "none" }}>24/7 emergency service</Link> is available every day of the year. Call the emergency line and we'll get moving immediately.
+                  Our <Link href="/emergency-service" style={{ color: C.green, fontWeight: 700, textDecoration: "none" }}>24/7 emergency service</Link> is available every day of the year. Call the emergency line and we'll get moving immediately — <a href={KMS_PHONE_HREF} style={{ color: C.green, fontWeight: 700, textDecoration: "none" }}>call {KMS_PHONE}</a>.
                 </p>
                 <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "0.85rem", color: C.textMid, textTransform: "uppercase", letterSpacing: "0.05em" }}>
                   Backed by our <Link href="/warranty" style={{ color: C.green, textDecoration: "none" }}>24-month warranty</Link>
