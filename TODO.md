@@ -17,8 +17,8 @@
 ## Verification Data (To Confirm with Jimmy)
 - [ ] **Google Reviews rating** — Updated to 4.8/5.0 per Glenn. Confirm this matches the live Google listing before launch.
 - [ ] **TX License number** — Get actual TX license/registration number from Jimmy. Once confirmed, add it to the trust badge row under the hero form in `Home.tsx` (replace the "TX Licensed & Insured" placeholder text with the real license number, e.g., "TX Lic. #XXXXXX").
-- [ ] **BBB Accreditation** — Confirm KMS is BBB accredited. If so, add BBB badge link.
-- [ ] **AGMA membership** — Confirm KMS is an AGMA member. Update trust badges accordingly.
+- [ ] **BBB Accreditation** ✅ Confirmed by Glenn. Review with Jimmy: (1) find the exact BBB profile URL at bbb.org/search, (2) replace the placeholder "BBB Accredited" trust badge in `Home.tsx` with the official BBB Accredited Business seal image and link it to the KMS profile URL.
+- [ ] **AGMA membership** ✅ Confirmed by Glenn. Review with Jimmy: (1) confirm the correct AGMA member page URL, (2) replace the placeholder "AGMA Member" trust badge in `Home.tsx` with the official AGMA logo (American Gear Manufacturers Association) and link it to agma.org or the KMS member profile.
 
 ## Technical
 - [ ] **_redirects file** — For xCloud SPA routing, may need a `_redirects` or `.htaccess` so all routes serve `index.html`. Confirm with xCloud hosting requirements.
