@@ -85,8 +85,8 @@ export function NavBar() {
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-6">
-            {/* Services dropdown */}
-            <div className="relative group">
+            {/* Services dropdown — pb-3 on button extends hover area downward so mouse can reach the panel */}
+            <div className="relative group" style={{ paddingBottom: "0.75rem", marginBottom: "-0.75rem" }}>
               <button
                 style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 700, fontSize: "0.82rem", color: "rgba(255,255,255,0.88)", letterSpacing: "0.07em", textTransform: "uppercase", background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 4, transition: "color 0.2s" }}
                 onMouseEnter={e => (e.currentTarget.style.color = C.green)}
@@ -94,7 +94,7 @@ export function NavBar() {
               >
                 Services <ChevronDown size={13} />
               </button>
-              <div className="absolute top-full left-0 mt-1 hidden group-hover:block" style={{ background: "#0d1a2a", border: `1px solid ${C.green}33`, borderRadius: 4, minWidth: 230, boxShadow: "0 8px 24px rgba(0,0,0,0.5)", zIndex: 100 }}>
+              <div className="absolute top-full left-0 hidden group-hover:block" style={{ background: "#0d1a2a", border: `1px solid ${C.green}33`, borderRadius: 4, minWidth: 230, boxShadow: "0 8px 24px rgba(0,0,0,0.5)", zIndex: 100 }}>
                 {SERVICE_NAV.map(({ label, href }) => (
                   <Link key={label} href={href} style={{ display: "block", padding: "0.6rem 1rem", fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.78rem", color: location === href ? C.green : "rgba(255,255,255,0.8)", textDecoration: "none", letterSpacing: "0.04em", borderBottom: "1px solid rgba(255,255,255,0.06)", transition: "background 0.15s, color 0.15s" }}
                     onMouseEnter={e => { e.currentTarget.style.background = C.green + "22"; e.currentTarget.style.color = C.green; }}
