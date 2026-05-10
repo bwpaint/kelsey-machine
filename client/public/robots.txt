@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# PPC landing pages — noindex, also disallow crawling
+Disallow: /lp/
+
+Sitemap: https://kmstx.com/sitemap.xml
