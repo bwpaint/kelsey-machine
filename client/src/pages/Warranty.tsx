@@ -99,7 +99,6 @@ export default function Warranty() {
         </div>
       </main>
       <FaqSection faqs={FAQS} pageName="KMS 24-Month Warranty" />
-      <CtaBanner headline="Get the Repair Done Right — Backed by 24 Months of Warranty" subtext="Every KMS repair comes with a written warranty. No fine print, no runaround." />
       <NewsletterBar />
       <Footer />
     </>
