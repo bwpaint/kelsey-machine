@@ -700,10 +700,54 @@ function FAQSection() {
               ))}
             </div>
           </div>
-          {/* Right: Quote Form (1/3 width) */}
+          {/* Right: Quote Form + Warranty + Trust boxes (1/3 width) */}
           <div className="lg:col-span-1">
-            <div style={{ position: "sticky", top: 100 }}>
+            <div className="flex flex-col gap-5">
               <InlineQuoteForm service="" dark={false} />
+
+              {/* Warranty Box */}
+              <div style={{ background: C.blueDark, borderRadius: "2px", padding: "1.5rem", border: `1px solid rgba(120,165,70,0.3)` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.75rem" }}>
+                  <Shield size={22} style={{ color: C.green, flexShrink: 0 }} />
+                  <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.1rem", color: "white", textTransform: "uppercase", letterSpacing: "0.04em" }}>24-Month Warranty</span>
+                </div>
+                <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.9rem", color: "rgba(255,255,255,0.75)", lineHeight: 1.65, margin: 0 }}>
+                  Every repair we perform is backed by our industry-leading <strong style={{ color: C.green }}>24-month written warranty</strong> — twice the industry standard. If something goes wrong after we fix it, we make it right. Period.
+                </p>
+                <a href="/warranty" style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: "1rem", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "0.85rem", color: C.green, textDecoration: "none", letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                  View Full Warranty Details <ArrowRight size={14} />
+                </a>
+              </div>
+
+              {/* Quick Contact Box */}
+              <div style={{ background: C.lightBg, borderRadius: "2px", padding: "1.5rem", border: `1px solid rgba(30,80,128,0.15)` }}>
+                <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.05rem", color: C.blueDark, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: "1rem" }}>Reach Us Directly</div>
+                <div className="flex flex-col gap-3">
+                  <a href="tel:3463501464" style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.92rem", color: C.blueDark, textDecoration: "none", fontWeight: 600 }}>
+                    <Phone size={16} style={{ color: C.green, flexShrink: 0 }} /> 346-350-1464
+                  </a>
+                  <a href="mailto:service@kmstx.com" style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.92rem", color: C.blueDark, textDecoration: "none", fontWeight: 600 }}>
+                    <Mail size={16} style={{ color: C.green, flexShrink: 0 }} /> service@kmstx.com
+                  </a>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.92rem", color: C.textMid }}>
+                    <MapPin size={16} style={{ color: C.green, flexShrink: 0 }} /> Stafford, TX 77477
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.92rem", color: C.textMid }}>
+                    <Clock size={16} style={{ color: C.green, flexShrink: 0 }} /> Emergency line answered 24/7
+                  </div>
+                </div>
+              </div>
+
+              {/* Free Pickup Box */}
+              <div style={{ background: C.green, borderRadius: "2px", padding: "1.25rem 1.5rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.5rem" }}>
+                  <Truck size={20} style={{ color: "white", flexShrink: 0 }} />
+                  <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.05rem", color: "white", textTransform: "uppercase", letterSpacing: "0.04em" }}>Free Nationwide Pickup</span>
+                </div>
+                <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.88rem", color: "rgba(255,255,255,0.9)", lineHeight: 1.6, margin: 0 }}>
+                  We'll pick up your equipment anywhere in the continental U.S. — at no charge. Just call or submit the form above.
+                </p>
+              </div>
             </div>
           </div>
         </div>
