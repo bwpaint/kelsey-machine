@@ -92,7 +92,6 @@ export default function EmergencyService() {
         </div>
       </main>
       <FaqSection faqs={FAQS} pageName="24/7 Emergency Rotating Equipment Repair" />
-      <CtaBanner headline="Equipment Down Right Now?" subtext="Call our emergency line — we answer every call, every day, every hour." />
       <NewsletterBar />
       <Footer />
     </>
