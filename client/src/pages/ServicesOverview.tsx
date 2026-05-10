@@ -39,7 +39,7 @@ export default function ServicesOverview() {
     <>
       <NavBar />
       <PageHero
-        bgImage="/manus-storage/kms_hero_bg_v2_36f4d26f_16939e31.jpg"
+        bgImage="/images/kms_hero_bg_v2_36f4d26f.jpg"
         h1="Rotating Equipment Repair Services — All Types, All Brands"
         subheading="One shop. Five service lines. Forty years of getting industrial rotating equipment back online — faster than the OEM, with a better warranty, and emergency service that actually answers the phone."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Services" }]}

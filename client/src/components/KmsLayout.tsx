@@ -29,7 +29,7 @@ export const C = {
   black:      "#000000",
 };
 
-export const KMS_LOGO = "https://storage.manus.computer/public/KMS-Logo-white-400_8e9e9f5c.webp";
+export const KMS_LOGO = "/images/KMS-Logo-white-400.png";
 export const KMS_PHONE = "346-350-1464";
 export const KMS_PHONE_HREF = "tel:3463501464";
 export const KMS_EMAIL = "info@kmstx.com";

@@ -60,7 +60,7 @@ export default function BlowerRepair() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <NavBar />
       <PageHero
-        bgImage="/manus-storage/blower-roots_0527c999_8fe3a694.jpg"
+        bgImage="/images/blower-roots_0527c999.jpg"
         h1="Industrial Blower Repair & Rebuild — All Types, All Brands"
         subheading="When your blower goes down, your aeration system, conveying line, or process air supply goes with it. KMS has been rebuilding industrial blowers for over 40 years — faster than the OEM, with a better warranty."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Services", href: "/services" }, { label: "Industrial Blower Repair" }]}
