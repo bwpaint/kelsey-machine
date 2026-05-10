@@ -395,7 +395,7 @@ export function NewsletterBar() {
             The right people, the right equipment, the right technology — keeping your operations running since 1984.
           </p>
           {/* Call & Email buttons */}
-          <div className="flex flex-wrap justify-center gap-4 mb-6">
+          <div className="flex flex-wrap justify-center gap-4" style={{ marginBottom: "2rem" }}>
             <a href={KMS_PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1rem", letterSpacing: "0.08em", textTransform: "uppercase", padding: "0.75rem 2rem", borderRadius: 2, textDecoration: "none" }}>
               <Phone size={16} /> Call {KMS_PHONE}
             </a>
@@ -406,7 +406,7 @@ export function NewsletterBar() {
         </div>
 
         {/* Newsletter signup */}
-        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "2rem" }}>
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "2rem", marginTop: "0" }}>
           <div className="text-center mb-4">
             <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.1rem", color: "white", textTransform: "uppercase", letterSpacing: "0.06em" }}>
               Join Our Newsletter

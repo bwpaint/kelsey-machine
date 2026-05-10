@@ -566,9 +566,14 @@ function ServicesSection() {
                 </div>
               </div>
               <div style={{ padding: "1.25rem" }}>
-                <h3 className="kms-headline" style={{ fontSize: "1.3rem", color: C.blueDark, marginBottom: "0.5rem" }}>{svc.title}</h3>
+                <h3 className="kms-headline" style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}>
+                  <a href={svc.href} style={{ color: C.blueDark, textDecoration: "none" }}
+                    onMouseEnter={e => (e.currentTarget.style.color = C.green)}
+                    onMouseLeave={e => (e.currentTarget.style.color = C.blueDark)}
+                  >{svc.title}</a>
+                </h3>
                 <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.9rem", color: C.textMid, lineHeight: 1.65, marginBottom: "1rem" }}>{svc.description}</p>
-                <a href={svc.href} style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 700, fontSize: "0.82rem", color: C.green, letterSpacing: "0.06em", textTransform: "uppercase", textDecoration: "none", display: "flex", alignItems: "center", gap: "0.375rem" }}>
+                <a href={svc.href} className="kms-btn-green" style={{ fontSize: "0.82rem", padding: "0.5rem 1.25rem", display: "inline-flex" }}>
                   Learn More <ArrowRight size={14} />
                 </a>
               </div>
@@ -582,29 +587,88 @@ function ServicesSection() {
 
 // ─── Why KMS ──────────────────────────────────────────────────────────────────
 function WhyKMSSection() {
+  const [form, setForm] = useState({ name: "", phone: "", service: "", message: "" });
+  const [submitted, setSubmitted] = useState(false);
+  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); setSubmitted(true); };
+  const wInputStyle: React.CSSProperties = {
+    background: "rgba(255,255,255,0.08)",
+    border: "1px solid rgba(255,255,255,0.2)",
+    color: "white",
+    padding: "0.6rem 0.875rem",
+    fontFamily: "'Source Sans 3', sans-serif",
+    fontSize: "0.88rem",
+    outline: "none",
+    borderRadius: "2px",
+    width: "100%",
+    transition: "border-color 0.2s",
+  };
   const reasons = [
-    { icon: <Shield size={28} style={{ color: C.green }} />, title: "Industry-Leading 24-Month Warranty", body: "We stand behind every repair with the best guarantee in the business. Our 24-month rebuilt warranty is a contractual commitment backed by decades of quality workmanship." },
-    { icon: <Zap size={28} style={{ color: C.green }} />, title: "Faster Than the OEM", body: "Our large parts inventory and experienced team allow us to complete repairs in days, not weeks. We have rebuilt centrifuges in 10 days that the OEM said would take 8 weeks." },
-    { icon: <CheckCircle size={28} style={{ color: C.green }} />, title: "All Major Brands Serviced", body: "We service every major brand of rotating equipment — Alfa Laval, Andritz, Bird, Sharples, Flottweg, Sulzer, Dodge, Sumitomo, Falk, Bosch Rexroth, and many more." },
-    { icon: <Truck size={28} style={{ color: C.green }} />, title: "Free Pickup & Delivery Nationwide", body: "We come to you — at no charge. Our free pickup and delivery service covers all 50 states, plus Canada and Mexico. Simply call us and we handle the logistics." },
-    { icon: <Globe size={28} style={{ color: C.green }} />, title: "40+ Years of Proven Expertise", body: "Since our founding, Kelsey Machine Services has built a reputation for honesty, quality, and reliability. Our engineers are among the most sought-after experts in the industry." },
-    { icon: <Star size={28} style={{ color: C.green }} />, title: "Large Inventory of Rebuilt Equipment", body: "Need equipment fast? KMS maintains a large inventory of used and rebuilt centrifuges, gearboxes, pumps, and blowers — ready to ship. We can often provide a replacement while yours is being repaired." },
+    { icon: <Shield size={24} style={{ color: C.green }} />, title: "Industry-Leading 24-Month Warranty", body: "We stand behind every repair with the best guarantee in the business. Our 24-month rebuilt warranty is a contractual commitment backed by decades of quality workmanship." },
+    { icon: <Zap size={24} style={{ color: C.green }} />, title: "Faster Than the OEM", body: "Our large parts inventory and experienced team allow us to complete repairs in days, not weeks. We have rebuilt centrifuges in 10 days that the OEM said would take 8 weeks." },
+    { icon: <CheckCircle size={24} style={{ color: C.green }} />, title: "All Major Brands Serviced", body: "We service every major brand of rotating equipment — Alfa Laval, Andritz, Bird, Sharples, Flottweg, Sulzer, Dodge, Sumitomo, Falk, Bosch Rexroth, and many more." },
+    { icon: <Truck size={24} style={{ color: C.green }} />, title: "Free Pickup & Delivery Nationwide", body: "We come to you — at no charge. Our free pickup and delivery service covers all 50 states, plus Canada and Mexico. Simply call us and we handle the logistics." },
+    { icon: <Globe size={24} style={{ color: C.green }} />, title: "40+ Years of Proven Expertise", body: "Since our founding, Kelsey Machine Services has built a reputation for honesty, quality, and reliability. Our engineers are among the most sought-after experts in the industry." },
+    { icon: <Star size={24} style={{ color: C.green }} />, title: "Large Inventory of Rebuilt Equipment", body: "Need equipment fast? KMS maintains a large inventory of used and rebuilt centrifuges, gearboxes, pumps, and blowers — ready to ship. We can often provide a replacement while yours is being repaired." },
   ];
-
   return (
     <section id="why-kms" style={{ background: C.lightBg, padding: "5rem 0" }} aria-label="Why choose Kelsey Machine Services">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Image */}
-          <div className="relative">
-            <img src={WORKSHOP_IMG} alt="Kelsey Machine Services professional repair facility" style={{ width: "100%", height: 460, objectFit: "cover", borderRadius: "2px", boxShadow: "0 8px 40px rgba(30,80,128,0.18)" }} loading="lazy" />
-            <div style={{ position: "absolute", bottom: -16, right: -16, background: C.green, width: 120, height: 120, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "1rem", borderRadius: "2px" }}>
-              <div className="kms-headline" style={{ fontSize: "2.5rem", lineHeight: 1, color: "white" }}>40+</div>
-              <div style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.62rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "white", lineHeight: 1.3 }}>Years of Expertise</div>
+        <div className="grid lg:grid-cols-2 gap-16 items-start">
+          {/* Left: Photo at top + compact contact form below */}
+          <div>
+            <div className="relative mb-8">
+              <img src={WORKSHOP_IMG} alt="Kelsey Machine Services professional repair facility" style={{ width: "100%", height: 380, objectFit: "cover", borderRadius: "2px", boxShadow: "0 8px 40px rgba(30,80,128,0.18)", display: "block" }} loading="lazy" />
+              <div style={{ position: "absolute", bottom: -16, right: -16, background: C.green, width: 110, height: 110, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "1rem", borderRadius: "2px" }}>
+                <div className="kms-headline" style={{ fontSize: "2.2rem", lineHeight: 1, color: "white" }}>40+</div>
+                <div style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.58rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "white", lineHeight: 1.3 }}>Years of Expertise</div>
+              </div>
+            </div>
+            <div style={{ background: C.darkBg2, border: `1px solid rgba(120,165,70,0.3)`, borderRadius: "2px", padding: "1.5rem", marginTop: "1rem" }}>
+              {submitted ? (
+                <div className="text-center py-4">
+                  <CheckCircle size={36} style={{ color: C.green, margin: "0 auto 0.75rem" }} />
+                  <div className="kms-headline text-white" style={{ fontSize: "1.2rem" }}>REQUEST RECEIVED!</div>
+                  <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.88rem", color: "rgba(255,255,255,0.6)", marginTop: "0.5rem" }}>
+                    A specialist will contact you shortly. For immediate help, call{" "}
+                    <a href="tel:3463501464" style={{ color: C.green }}>346-350-1464</a>.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.1rem", color: "white", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: "0.25rem" }}>
+                    Get a Free Repair Quote
+                  </div>
+                  <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.85rem", color: "rgba(255,255,255,0.55)", marginBottom: "1rem" }}>
+                    Available 24/7 &middot; Respond within the hour
+                  </p>
+                  <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
+                    <div className="grid grid-cols-2 gap-2.5">
+                      <input type="text" placeholder="Your Name *" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={wInputStyle}
+                        onFocus={e => (e.target.style.borderColor = C.green)} onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")} />
+                      <input type="tel" placeholder="Phone Number *" required value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={wInputStyle}
+                        onFocus={e => (e.target.style.borderColor = C.green)} onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")} />
+                    </div>
+                    <select value={form.service} onChange={e => setForm({ ...form, service: e.target.value })} style={{ ...wInputStyle, background: C.darkBg, color: form.service ? "white" : "rgba(255,255,255,0.45)" }}>
+                      <option value="">Service Needed</option>
+                      <option value="centrifuge">Centrifuge Repair</option>
+                      <option value="gearbox">Gearbox Repair</option>
+                      <option value="blower">Blower / Compressor Repair</option>
+                      <option value="compressor">Industrial Compressors</option>
+                      <option value="fluid-end">Fluid &amp; Power End Repair</option>
+                      <option value="emergency">Emergency Service</option>
+                      <option value="other">Other / Not Sure</option>
+                    </select>
+                    <textarea placeholder="Describe the issue (optional)" rows={2} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} style={{ ...wInputStyle, resize: "none" }}
+                      onFocus={e => (e.target.style.borderColor = C.green)} onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")} />
+                    <button type="submit" className="kms-btn-green justify-center" style={{ fontSize: "0.92rem" }}>
+                      Send Repair Request <ArrowRight size={15} />
+                    </button>
+                  </form>
+                </>
+              )}
             </div>
           </div>
-
-          {/* Reasons */}
+          {/* Right: Heading + reasons */}
           <div>
             <div className="kms-label mb-3">The KMS Advantage</div>
             <div className="kms-green-rule" />
@@ -616,8 +680,8 @@ function WhyKMSSection() {
                 <div key={title} className="flex gap-4">
                   <div style={{ flexShrink: 0, marginTop: 2 }}>{icon}</div>
                   <div>
-                    <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.1rem", color: C.blueDark, marginBottom: "0.25rem" }}>{title}</div>
-                    <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.9rem", color: C.textMid, lineHeight: 1.65 }}>{body}</p>
+                    <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.05rem", color: C.blueDark, marginBottom: "0.25rem" }}>{title}</div>
+                    <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.88rem", color: C.textMid, lineHeight: 1.65 }}>{body}</p>
                   </div>
                 </div>
               ))}
@@ -837,19 +901,36 @@ function Footer() {
               The right people, the right equipment, and the right technology — keeping Kelsey Machine on the leading edge of rotating equipment service since 1984.
             </p>
             <div className="flex flex-col gap-2">
-              {[
-                { icon: <MapPin size={14} />, text: "814 Summer Park Dr, BLDG #600, Stafford TX 77477" },
-                { icon: <Phone size={14} />, text: "346-350-1464", href: "tel:3463501464" },
-                { icon: <Mail size={14} />, text: "service@kmstx.com", href: "mailto:service@kmstx.com" },
-                { icon: <Clock size={14} />, text: "24/7 Emergency Service Available" },
-              ].map(({ icon, text, href }) => (
-                <div key={text} className="flex items-start gap-2">
-                  <span style={{ color: C.green, marginTop: 2, flexShrink: 0 }}>{icon}</span>
-                  {href
-                    ? <a href={href} style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.83rem", color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>{text}</a>
-                    : <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.83rem", color: "rgba(255,255,255,0.6)" }}>{text}</span>}
+              {/* Address — 3 lines */}
+              <div className="flex items-start gap-2">
+                <span style={{ color: C.green, marginTop: 2, flexShrink: 0 }}><MapPin size={14} /></span>
+                <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.83rem", color: "rgba(255,255,255,0.6)", lineHeight: 1.6 }}>
+                  814 Summer Park Dr<br />
+                  Building #600<br />
+                  Stafford, TX 77477
                 </div>
-              ))}
+              </div>
+              {/* Phone */}
+              <div className="flex items-start gap-2">
+                <span style={{ color: C.green, marginTop: 2, flexShrink: 0 }}><Phone size={14} /></span>
+                <a href="tel:3463501464" style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.83rem", color: "rgba(255,255,255,0.6)", textDecoration: "none" }}
+                  onMouseEnter={e => (e.currentTarget.style.color = C.green)}
+                  onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.6)")}
+                >346-350-1464</a>
+              </div>
+              {/* Email */}
+              <div className="flex items-start gap-2">
+                <span style={{ color: C.green, marginTop: 2, flexShrink: 0 }}><Mail size={14} /></span>
+                <a href="mailto:service@kmstx.com" style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.83rem", color: "rgba(255,255,255,0.6)", textDecoration: "none" }}
+                  onMouseEnter={e => (e.currentTarget.style.color = C.green)}
+                  onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.6)")}
+                >service@kmstx.com</a>
+              </div>
+              {/* Hours */}
+              <div className="flex items-start gap-2">
+                <span style={{ color: C.green, marginTop: 2, flexShrink: 0 }}><Clock size={14} /></span>
+                <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.83rem", color: "rgba(255,255,255,0.6)" }}>24/7 Emergency Service Available</span>
+              </div>
             </div>
           </div>
 
