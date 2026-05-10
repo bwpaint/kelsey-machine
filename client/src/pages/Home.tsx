@@ -181,7 +181,7 @@ function HeroSection() {
     <section
       id="home"
       className="relative min-h-screen flex items-center"
-      style={{ paddingTop: "96px" }}
+      style={{ paddingTop: "68px" }}
       aria-label="Hero — Kelsey Machine Services rotating equipment repair"
     >
       {/* BG image — worker on left, shop floor on right */}
@@ -189,7 +189,7 @@ function HeroSection() {
       {/* Gradient overlay — semi-transparent across full width so worker is visible on left, form readable on right */}
       <div className="absolute inset-0" style={{ background: `linear-gradient(105deg, rgba(30,80,128,0.72) 0%, rgba(30,80,128,0.78) 50%, rgba(26,37,53,0.94) 100%)` }} />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 py-16 lg:py-20">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 py-11 lg:py-14">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
 
           {/* Left — headline + CTAs */}
