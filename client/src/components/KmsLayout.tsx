@@ -6,6 +6,7 @@
  */
 
 import { useState } from "react";
+import { submitLead } from "@/lib/submitLead";
 import { Phone, Mail, MapPin, Menu, X, ArrowRight, ChevronDown, Shield, Clock, Star, Truck } from "lucide-react";
 import { Link, useLocation } from "wouter";
 
@@ -255,6 +256,25 @@ interface QuoteFormProps {
 export function InlineQuoteForm({ service = "", dark = false }: QuoteFormProps) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", interest: service });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit() {
+    if (!form.name.trim() || !form.email.trim() || !form.phone.trim()) {
+      setError("Please add your name, email, and phone so we can reach you.");
+      return;
+    }
+    setSubmitting(true);
+    setError("");
+    try {
+      await submitLead({ formType: "quote", name: form.name, email: form.email, phone: form.phone, interest: form.interest });
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please call us at 346-350-1464.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   const bg = dark ? C.darkBg2 : C.lightBg;
   const border = dark ? `1px solid ${C.green}33` : `1px solid ${C.blueDark}22`;
@@ -313,15 +333,19 @@ export function InlineQuoteForm({ service = "", dark = false }: QuoteFormProps) 
             </select>
           </div>
         </div>
+        {error && (
+          <p style={{ color: "#d64545", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.82rem", margin: 0 }}>{error}</p>
+        )}
         <button
           type="button"
-          onClick={() => setSubmitted(true)}
+          disabled={submitting}
+          onClick={handleSubmit}
           className="kms-wiggle"
           style={{ background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1rem", letterSpacing: "0.08em", textTransform: "uppercase", border: "none", borderRadius: 2, padding: "0.8rem 2rem", cursor: "pointer", transition: "background 0.2s", width: "100%" }}
           onMouseEnter={e => (e.currentTarget.style.background = C.greenDark)}
           onMouseLeave={e => (e.currentTarget.style.background = C.green)}
         >
-          Request Free Quote — We Respond Within the Hour
+          {submitting ? "Sending…" : "Request Free Quote — We Respond Within the Hour"}
         </button>
         <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.78rem", color: dark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)", textAlign: "center", margin: 0 }}>
           Or call us directly: <a href={KMS_PHONE_HREF} style={{ color: C.green, fontWeight: 700 }}>{KMS_PHONE}</a> — available 24/7 for emergencies
@@ -401,6 +425,25 @@ export function FaqSection({ faqs, pageName, showForm, service }: { faqs: FAQ[];
 export function NewsletterBar() {
   const [form, setForm] = useState({ name: "", company: "", email: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleNewsletter() {
+    if (!form.email.trim()) {
+      setError("Please enter your email to subscribe.");
+      return;
+    }
+    setSubmitting(true);
+    setError("");
+    try {
+      await submitLead({ formType: "newsletter", name: form.name || "(newsletter signup)", email: form.email, company: form.company });
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not subscribe just now. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <section style={{ background: C.darkBg, borderTop: `3px solid ${C.green}`, padding: "3.5rem 0" }}>
@@ -445,6 +488,10 @@ export function NewsletterBar() {
               ✓ You're subscribed! Welcome to the KMS family.
             </div>
           ) : (
+            <>
+            {error && (
+              <p style={{ textAlign: "center", color: "#ff9a9a", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.82rem", marginBottom: "0.75rem" }}>{error}</p>
+            )}
             <div className="flex flex-col sm:flex-row gap-3 max-w-3xl mx-auto">
               {[
                 { key: "name",    placeholder: "Full Name",      type: "text" },
@@ -461,13 +508,15 @@ export function NewsletterBar() {
                 />
               ))}
               <button
-                onClick={() => setSubmitted(true)}
+                onClick={handleNewsletter}
+                disabled={submitting}
                 className="kms-wiggle"
                 style={{ background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.08em", textTransform: "uppercase", border: "none", borderRadius: 2, padding: "0.65rem 1.5rem", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
               >
-                Submit
+                {submitting ? "…" : "Submit"}
               </button>
             </div>
+            </>
           )}
         </div>
       </div>
@@ -578,9 +627,17 @@ export function Footer() {
             © {new Date().getFullYear()} Kelsey Machine Services. All rights reserved. | Stafford, TX 77477
           </p>
           <div className="flex gap-4">
-            {["Privacy Policy", "Terms of Service", "Sitemap"].map(link => (
-              <a key={link} href="#" style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.8rem", color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>{link}</a>
-            ))}
+            {[
+              { label: "Privacy Policy", href: "/privacy-policy", external: false },
+              { label: "Terms of Service", href: "/terms", external: false },
+              { label: "Sitemap", href: "/sitemap.xml", external: true },
+            ].map(({ label, href, external }) =>
+              external ? (
+                <a key={label} href={href} style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.8rem", color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>{label}</a>
+              ) : (
+                <Link key={label} href={href} style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.8rem", color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>{label}</Link>
+              ),
+            )}
           </div>
         </div>
       </div>

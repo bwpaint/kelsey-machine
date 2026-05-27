@@ -7,12 +7,33 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { NavBar, Footer, C, KMS_PHONE, KMS_PHONE_HREF } from "@/components/KmsLayout";
+import { submitLead } from "@/lib/submitLead";
 import { CheckCircle, Phone, Shield, Clock, Truck, ArrowRight, Send } from "lucide-react";
 
 // Shared mini quote form for landing pages
 function LpQuoteForm({ service }: { service: string }) {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({ name: "", email: "", phone: "", interest: service });
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.name.trim() || !form.phone.trim()) {
+      setError("Please add your name and phone so we can call you back.");
+      return;
+    }
+    setSubmitting(true);
+    setError("");
+    try {
+      await submitLead({ formType: "landing", name: form.name, email: form.email, phone: form.phone, interest: form.interest });
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please call 346-350-1464.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
   if (submitted) return (
     <div style={{ background: "rgba(120,165,70,0.12)", border: `2px solid ${C.green}`, borderRadius: 4, padding: "1.5rem", textAlign: "center" }}>
       <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.25rem", color: "white", textTransform: "uppercase" }}>Got It — We'll Call You Shortly!</div>
@@ -20,7 +41,7 @@ function LpQuoteForm({ service }: { service: string }) {
     </div>
   );
   return (
-    <form onSubmit={e => { e.preventDefault(); setSubmitted(true); }} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
       {[
         { id: "name", label: "Your Name", type: "text" },
         { id: "email", label: "Email Address", type: "email" },
@@ -40,8 +61,11 @@ function LpQuoteForm({ service }: { service: string }) {
         <option>Fluid & Power End Repair</option>
         <option>Emergency Service</option>
       </select>
-      <button type="submit" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.1rem", letterSpacing: "0.06em", textTransform: "uppercase", padding: "0.9rem", borderRadius: 2, border: "none", cursor: "pointer" }}>
-        <Send size={18} /> Get My Free Quote
+      {error && (
+        <p style={{ color: "#ff9a9a", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.82rem", margin: 0 }}>{error}</p>
+      )}
+      <button type="submit" disabled={submitting} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.1rem", letterSpacing: "0.06em", textTransform: "uppercase", padding: "0.9rem", borderRadius: 2, border: "none", cursor: submitting ? "wait" : "pointer", opacity: submitting ? 0.7 : 1 }}>
+        <Send size={18} /> {submitting ? "Sending…" : "Get My Free Quote"}
       </button>
     </form>
   );

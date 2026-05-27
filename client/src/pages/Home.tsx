@@ -25,8 +25,6 @@ import {
 } from "lucide-react";
 
 // ─── Assets ──────────────────────────────────────────────────────────────────
-const LOGO_WHITE  = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_logo_transparent_8e6e2d25.webp";
-const LOGO_COLOR  = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_logo_color_eea8bb18.png";
 const HERO_BG     = "/images/kms-hero-bg.webp";
 // Real KMS shop photos from Jimmy (uploaded to CDN via /manus-storage proxy)
 const CENTRIFUGE_IMG  = "/images/centrifuge-welding.webp";
