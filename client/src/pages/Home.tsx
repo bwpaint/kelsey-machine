@@ -18,6 +18,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { NavBar, NewsletterBar as KmsNewsletterBar, Footer, InlineQuoteForm } from "@/components/KmsLayout";
+import { submitLead } from "@/lib/submitLead";
 import {
   Phone, Mail, ChevronDown, ChevronUp,
   Star, CheckCircle, ArrowRight, Truck, Shield, Zap,
@@ -172,8 +173,33 @@ const inputStyle: React.CSSProperties = {
 function HeroSection() {
   const [form, setForm] = useState({ name: "", company: "", phone: "", service: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); setSubmitted(true); };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim() || !form.phone.trim()) {
+      setError("Please include your name and phone so we can reach you.");
+      return;
+    }
+    setSubmitting(true);
+    setError("");
+    try {
+      await submitLead({
+        formType: "quote",
+        name: form.name,
+        phone: form.phone,
+        company: form.company,
+        interest: form.service,
+        message: form.message,
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please call 346-350-1464.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <section
@@ -291,8 +317,11 @@ function HeroSection() {
                     onFocus={e => (e.target.style.borderColor = C.green)}
                     onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")}
                   />
-                  <button type="submit" className="kms-btn-green justify-center" style={{ fontSize: "1rem" }}>
-                    Send Repair Request <ArrowRight size={16} />
+                  {error && (
+                    <p style={{ color: "#ff9a9a", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.85rem", margin: 0 }}>{error}</p>
+                  )}
+                  <button type="submit" disabled={submitting} className="kms-btn-green justify-center" style={{ fontSize: "1rem", opacity: submitting ? 0.7 : 1, cursor: submitting ? "wait" : "pointer" }}>
+                    {submitting ? "Sending…" : <>Send Repair Request <ArrowRight size={16} /></>}
                   </button>
                 </form>
               </>
@@ -437,7 +466,31 @@ function ServicesSection() {
 function WhyKMSSection() {
   const [form, setForm] = useState({ name: "", phone: "", service: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
-  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); setSubmitted(true); };
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim() || !form.phone.trim()) {
+      setError("Please include your name and phone so we can reach you.");
+      return;
+    }
+    setSubmitting(true);
+    setError("");
+    try {
+      await submitLead({
+        formType: "quote",
+        name: form.name,
+        phone: form.phone,
+        interest: form.service,
+        message: form.message,
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please call 346-350-1464.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
   const wInputStyle: React.CSSProperties = {
     background: "rgba(255,255,255,0.08)",
     border: "1px solid rgba(255,255,255,0.2)",
@@ -508,8 +561,11 @@ function WhyKMSSection() {
                     </select>
                     <textarea placeholder="Describe the issue (optional)" rows={2} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} style={{ ...wInputStyle, resize: "none" }}
                       onFocus={e => (e.target.style.borderColor = C.green)} onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")} />
-                    <button type="submit" className="kms-btn-green justify-center" style={{ fontSize: "0.92rem" }}>
-                      Send Repair Request <ArrowRight size={15} />
+                    {error && (
+                      <p style={{ color: "#ff9a9a", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.82rem", margin: 0 }}>{error}</p>
+                    )}
+                    <button type="submit" disabled={submitting} className="kms-btn-green justify-center" style={{ fontSize: "0.92rem", opacity: submitting ? 0.7 : 1, cursor: submitting ? "wait" : "pointer" }}>
+                      {submitting ? "Sending…" : <>Send Repair Request <ArrowRight size={15} /></>}
                     </button>
                   </form>
                 </>
