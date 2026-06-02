@@ -8,7 +8,7 @@
  */
 
 import { Link } from "wouter";
-import { NavBar, Footer, NewsletterBar, InlineQuoteForm, WarrantyCallout, FreeNationwidePickupCallout } from "@/components/KmsLayout";
+import { NavBar, Footer, NewsletterBar, InlineQuoteForm, WarrantyCallout, FreeNationwidePickupCallout, EmergencyCallout } from "@/components/KmsLayout";
 import { useEffect } from "react";
 
 const ABOUT_HERO = "/images/kms-about-hero.webp";
@@ -434,6 +434,7 @@ export default function AboutUs() {
                 <InlineQuoteForm service="General Inquiry" dark={false} />
                 <WarrantyCallout />
                 <FreeNationwidePickupCallout />
+                <EmergencyCallout />
               </div>
             </div>
           </div>

@@ -1,12 +1,18 @@
 /**
- * Blog sidebar — search field + InlineQuoteForm + Emergency Service callout.
+ * Blog sidebar — search field + InlineQuoteForm + Warranty + Pickup + Emergency callouts.
  * Used in the right column of /blog and /blog/:slug pages.
  */
 
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { Search, Clock } from "lucide-react";
-import { C, KMS_PHONE, KMS_PHONE_HREF, InlineQuoteForm, WarrantyCallout, FreeNationwidePickupCallout } from "@/components/KmsLayout";
+import { Search } from "lucide-react";
+import {
+  C,
+  InlineQuoteForm,
+  WarrantyCallout,
+  FreeNationwidePickupCallout,
+  EmergencyCallout,
+} from "@/components/KmsLayout";
 import { searchPosts, type WpSearchResult } from "@/lib/wpApi";
 
 function BlogSearchBox() {
@@ -78,7 +84,7 @@ function BlogSearchBox() {
           onBlurCapture={(e) => (e.currentTarget.style.borderColor = "#cdd5e0")}
         />
       </div>
-      {open && (query.trim().length > 0) && (
+      {open && query.trim().length > 0 && (
         <div
           style={{
             position: "absolute",
@@ -110,7 +116,6 @@ function BlogSearchBox() {
             </div>
           )}
           {!loading && !error && results.map((r) => {
-            // The WP URL is from cms.; we route locally as /blog/:slug
             const url = new URL(r.url);
             const parts = url.pathname.split("/").filter(Boolean);
             const slug = parts[parts.length - 1] || "";
@@ -144,103 +149,12 @@ function BlogSearchBox() {
 
 export function BlogSidebar() {
   return (
-    <div style={{ position: "sticky", top: 100 }}>
+    <div style={{ position: "sticky", top: 100 }} className="flex flex-col gap-5">
       <BlogSearchBox />
-
       <InlineQuoteForm service="" dark={false} />
-
-      <div style={{ marginTop: "1.5rem" }}>
-        <WarrantyCallout />
-      </div>
-      <div style={{ marginTop: "1.5rem" }}>
-        <FreeNationwidePickupCallout />
-      </div>
-
-      {/* Emergency Service callout — reused pattern from interior page sidebars */}
-      <div
-        style={{
-          marginTop: "1.5rem",
-          background: C.darkBg,
-          borderRadius: 2,
-          padding: "1.5rem",
-          border: `1px solid rgba(120,165,70,0.3)`,
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "'Barlow', sans-serif",
-            fontWeight: 600,
-            fontSize: "0.72rem",
-            color: C.green,
-            letterSpacing: "0.15em",
-            textTransform: "uppercase",
-            marginBottom: "0.5rem",
-          }}
-        >
-          Equipment Down?
-        </div>
-        <div
-          style={{
-            fontFamily: "'Barlow Condensed', sans-serif",
-            fontWeight: 800,
-            fontSize: "1.4rem",
-            color: "white",
-            textTransform: "uppercase",
-            letterSpacing: "-0.01em",
-            lineHeight: 1.1,
-            marginBottom: "0.75rem",
-          }}
-        >
-          24/7 Emergency Service
-        </div>
-        <p
-          style={{
-            fontFamily: "'Source Sans 3', sans-serif",
-            fontSize: "0.88rem",
-            color: "rgba(255,255,255,0.7)",
-            lineHeight: 1.6,
-            marginBottom: "1.25rem",
-          }}
-        >
-          When your equipment goes down, every hour costs you. Call us anytime, day or night — we respond within the hour.
-        </p>
-        <a
-          href={KMS_PHONE_HREF}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            background: C.green,
-            color: "white",
-            fontFamily: "'Barlow Condensed', sans-serif",
-            fontWeight: 800,
-            fontSize: "0.95rem",
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
-            padding: "0.7rem 1.25rem",
-            borderRadius: 2,
-            textDecoration: "none",
-            width: "100%",
-            justifyContent: "center",
-          }}
-        >
-          <Clock size={16} /> Call {KMS_PHONE}
-        </a>
-        <Link
-          href="/emergency-service"
-          style={{
-            display: "block",
-            textAlign: "center",
-            marginTop: "0.6rem",
-            fontFamily: "'Source Sans 3', sans-serif",
-            fontSize: "0.82rem",
-            color: "rgba(255,255,255,0.55)",
-            textDecoration: "none",
-          }}
-        >
-          Learn more about emergency response →
-        </Link>
-      </div>
+      <WarrantyCallout />
+      <FreeNationwidePickupCallout />
+      <EmergencyCallout />
     </div>
   );
 }

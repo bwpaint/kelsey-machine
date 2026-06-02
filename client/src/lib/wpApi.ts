@@ -106,11 +106,41 @@ export function getFeaturedImage(post: WpPost): { src: string; alt: string } {
   };
 }
 
-/** Convert relative WP-rendered URLs to absolute (so links/images work from www.). */
+/** Rewrite URLs in WP-rendered HTML so the page renders correctly on www.
+ *
+ *   • WP serves uploaded media (images, PDFs, etc.) under /wp-content/ on the
+ *     WordPress domain. When WP renders a post it embeds those URLs with
+ *     whatever site_url is configured — for KMS that's www.kmstx.com. But www
+ *     is now the Vercel React SPA, which does NOT serve /wp-content/ files,
+ *     so every embedded image silently 404s while still reserving its declared
+ *     width/height attribute space — giving us huge empty rectangles in
+ *     the middle of posts.
+ *
+ *     Fix: rewrite www.kmstx.com → cms.kmstx.com for any path under
+ *     /wp-content/, /wp-includes/, or /wp-json/.
+ *
+ *   • Internal page links that point at the WP admin domain (cms.kmstx.com)
+ *     should route back to the React app at www., so navigation stays in the
+ *     SPA (a /services or /about link inside a post body should not jump to
+ *     the WP install).
+ *
+ *   • Root-relative href="/foo" links should become absolute www links.
+ *
+ *   • Image srcset attributes get the same media-URL treatment so high-DPR
+ *     variants load too.
+ */
 export function rewriteWpUrls(html: string): string {
-  // Replace cms.kmstx.com links in content with www.kmstx.com so internal
-  // navigation stays on the React site.
   return html
-    .replace(/https:\/\/cms\.kmstx\.com\/(?!wp-content|wp-includes|wp-json)/g, "https://www.kmstx.com/")
+    // Media URLs: www → cms (so images/files actually resolve)
+    .replace(
+      /https:\/\/www\.kmstx\.com\/(wp-content|wp-includes|wp-json)/g,
+      "https://cms.kmstx.com/$1",
+    )
+    // Internal page links: cms → www (so navigation stays on the SPA)
+    .replace(
+      /https:\/\/cms\.kmstx\.com\/(?!wp-content|wp-includes|wp-json|wp-admin|wp-login)/g,
+      "https://www.kmstx.com/",
+    )
+    // Root-relative href links → absolute www
     .replace(/href="\/(?!\/)/g, 'href="https://www.kmstx.com/');
 }

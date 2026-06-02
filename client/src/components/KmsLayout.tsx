@@ -388,6 +388,28 @@ export function FreeNationwidePickupCallout() {
   );
 }
 
+export function EmergencyCallout() {
+  return (
+    <div style={{ background: C.darkBg, borderRadius: 2, padding: "1.5rem", border: `1px solid rgba(120,165,70,0.3)` }}>
+      <div style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.72rem", color: C.green, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.5rem" }}>
+        Equipment Down?
+      </div>
+      <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.4rem", color: "white", textTransform: "uppercase", letterSpacing: "-0.01em", lineHeight: 1.1, marginBottom: "0.75rem" }}>
+        24/7 Emergency Service
+      </div>
+      <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.88rem", color: "rgba(255,255,255,0.7)", lineHeight: 1.6, marginBottom: "1.25rem" }}>
+        When your equipment goes down, every hour costs you. Call us anytime, day or night — we respond within the hour.
+      </p>
+      <a href={KMS_PHONE_HREF} style={{ display: "inline-flex", alignItems: "center", gap: 8, background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "0.06em", textTransform: "uppercase", padding: "0.7rem 1.25rem", borderRadius: 2, textDecoration: "none", width: "100%", justifyContent: "center" }}>
+        <Clock size={16} /> Call {KMS_PHONE}
+      </a>
+      <Link href="/emergency-service" style={{ display: "block", textAlign: "center", marginTop: "0.6rem", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.82rem", color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>
+        Learn more about emergency response →
+      </Link>
+    </div>
+  );
+}
+
 // ─── FAQ Section (with FAQPage schema) ────────────────────────────────────────
 interface FAQ { q: string; a: string; }
 
@@ -445,6 +467,7 @@ export function FaqSection({ faqs, pageName, showForm, service }: { faqs: FAQ[];
                 <InlineQuoteForm service={service || ""} dark={false} />
                 <WarrantyCallout />
                 <FreeNationwidePickupCallout />
+                <EmergencyCallout />
               </div>
             </div>
           </div>
