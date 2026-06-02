@@ -13,7 +13,7 @@ const INDUSTRIES = [
     id: "oil-gas",
     name: "Oil & Gas",
     icon: "🛢️",
-    image: "/images/oilfield-pumps.webp",
+    image: "/images/industry-oil-gas.webp",         
     tagline: "Keeping Upstream, Midstream & Downstream Operations Running",
     body: `The oil and gas industry runs on rotating equipment — and when that equipment stops, so does production. Kelsey Machine Services has been a trusted repair partner for upstream, midstream, and downstream operators across the Gulf Coast region for decades. We understand that an unplanned centrifuge failure on a separation skid or a gearbox breakdown on a pipeline compressor station isn't just an inconvenience — it's measured in barrels per day and dollars per hour.
 
@@ -39,7 +39,7 @@ Our repair capabilities cover the full range of petrochemical rotating equipment
     id: "food-beverage",
     name: "Food & Beverage",
     icon: "🌾",
-    image: "/images/centrifuge-repair.webp",
+    image: "/images/industry-food-beverage.webp",
     tagline: "Sanitary Standards, Industrial Durability",
     body: `Food and beverage processing places unique demands on rotating equipment repair. It's not enough for the equipment to work — it has to work in a way that meets FDA, USDA, and 3-A Sanitary Standards requirements. Kelsey Machine Services has extensive experience repairing centrifuges and other rotating equipment used in food-grade applications, and we understand the difference between an industrial repair and a sanitary one.
 
@@ -52,7 +52,7 @@ Beyond centrifuges, we repair the gearboxes and drive assemblies on mixers, conv
     id: "wastewater",
     name: "Wastewater",
     icon: "💧",
-    image: "/images/centrifuge-welding.webp",
+    image: "/images/industry-wastewater.webp",      
     tagline: "Keeping Municipal and Industrial Water Treatment Online",
     body: `Wastewater treatment plants — both municipal and industrial — depend on rotating equipment to function. Decanter centrifuges for biosolids dewatering, blowers for aeration basins, and gearboxes on clarifier drives are all critical to plant operations. When any of these fail, the consequences can range from regulatory violations to environmental incidents. Kelsey Machine Services provides fast, reliable repair services specifically for the wastewater treatment industry.
 
@@ -65,7 +65,7 @@ Aeration blowers — both positive displacement and centrifugal — are another 
     id: "power-generation",
     name: "Power Generation",
     icon: "⚡",
-    image: "/images/kms-hero-bg.webp",
+    image: "/images/industry-power-generation.webp",
     tagline: "Critical Rotating Equipment Repair for Power Plants",
     body: `Power generation facilities — whether coal, natural gas, nuclear, or renewable — rely on rotating equipment that must perform with extreme reliability. Forced draft and induced draft fans, boiler feed pump gearboxes, cooling tower gearboxes, and auxiliary equipment gearboxes all require specialized repair expertise when they fail. Kelsey Machine Services has the equipment and experience to handle power plant rotating equipment repair with the precision and documentation standards the industry demands.
 
@@ -78,7 +78,7 @@ We work on equipment from all major power generation OEMs and understand the spe
     id: "pulp-paper",
     name: "Pulp & Paper",
     icon: "📄",
-    image: "/images/gearbox-open.webp",
+    image: "/images/industry-pulp-paper.webp",      
     tagline: "Minimizing Downtime in Continuous-Process Paper Mills",
     body: `Paper mills are continuous-process facilities where a single rotating equipment failure can shut down an entire production line. The rotating equipment in pulp and paper operations is also among the most demanding in any industry — high-torque gearboxes on refiners and chippers, large centrifugal fans handling corrosive gases, and centrifuges for fiber recovery and white water clarification all operate in harsh environments with demanding duty cycles.
 
@@ -91,7 +91,7 @@ We understand the paper industry's sensitivity to downtime. Our emergency respon
     id: "pharmaceutical",
     name: "Pharmaceutical",
     icon: "⚗️",
-    image: "/images/centrifuge-repair.webp",
+    image: "/images/industry-pharmaceutical.webp",  
     tagline: "cGMP-Aware Repair for Pharmaceutical Processing Equipment",
     body: `Pharmaceutical manufacturing places the highest demands on rotating equipment repair. Centrifuges used in API production, crystallization, and filtration must meet cGMP standards, and the documentation requirements are extensive. Kelsey Machine Services understands the pharmaceutical industry's quality standards and provides repair services that support, rather than complicate, your regulatory compliance obligations.
 
@@ -104,7 +104,7 @@ Material traceability is a particular strength — we maintain documentation on 
     id: "manufacturing",
     name: "Manufacturing",
     icon: "🔩",
-    image: "/images/kms-gearbox.webp",
+    image: "/images/industry-manufacturing.webp",   
     tagline: "Keeping Production Lines Moving Across All Manufacturing Sectors",
     body: `General manufacturing encompasses an enormous range of rotating equipment — from the gearboxes on conveyor systems and material handling equipment to the centrifuges used in metalworking fluid management and the blowers on dust collection systems. Kelsey Machine Services serves manufacturers across all sectors, providing reliable repair services that minimize production downtime and extend equipment service life.
 
