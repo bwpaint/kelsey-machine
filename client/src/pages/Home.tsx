@@ -25,8 +25,6 @@ import {
 } from "lucide-react";
 
 // ─── Assets ──────────────────────────────────────────────────────────────────
-const LOGO_WHITE  = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_logo_transparent_8e6e2d25.webp";
-const LOGO_COLOR  = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_logo_color_eea8bb18.png";
 const HERO_BG     = "/images/kms-hero-bg.webp";
 // Real KMS shop photos from Jimmy (uploaded to CDN via /manus-storage proxy)
 const CENTRIFUGE_IMG  = "/images/centrifuge-welding.webp";
@@ -301,16 +299,6 @@ function HeroSection() {
             )}
             {/* Trust & Verification Block */}
             <div style={{ marginTop: "1.25rem", borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "1.25rem" }}>
-              {/* Google Rating */}
-              <div className="flex items-center gap-2 mb-2">
-                <div className="flex gap-0.5">
-                  {[1,2,3,4,5].map(i => (
-                    <Star key={i} size={14} fill={C.green} color={C.green} />
-                  ))}
-                </div>
-                <span style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 700, fontSize: "0.82rem", color: "white" }}>4.8 / 5.0</span>
-                <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.78rem", color: "rgba(255,255,255,0.5)" }}>Google Reviews</span>
-              </div>
               {/* Trust badges */}
               <div className="flex flex-wrap gap-2">
                 {[

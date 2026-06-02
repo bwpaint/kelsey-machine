@@ -7,14 +7,34 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { NavBar, Footer, NewsletterBar, PageHero, C, KMS_PHONE, KMS_PHONE_HREF } from "@/components/KmsLayout";
 import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
+import { submitLead } from "@/lib/submitLead";
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({ name: "", company: "", email: "", phone: "", service: "", message: "" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setError("");
+    try {
+      await submitLead({
+        formType: "contact",
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        company: form.company,
+        interest: form.service,
+        message: form.message,
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please call 346-350-1464.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -81,8 +101,11 @@ export default function Contact() {
                       placeholder="Manufacturer, model, what's happening, how urgent..."
                       style={{ width: "100%", padding: "0.65rem 0.875rem", border: `1px solid #dde3ec`, borderRadius: 2, fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.95rem", color: C.textDark, outline: "none", resize: "vertical", boxSizing: "border-box" }} />
                   </div>
-                  <button type="submit" className="kms-wiggle" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.1rem", letterSpacing: "0.06em", textTransform: "uppercase", padding: "0.9rem 2.5rem", borderRadius: 2, border: "none", cursor: "pointer" }}>
-                    <Send size={18} /> Submit Quote Request
+                  {error && (
+                    <p style={{ color: "#d64545", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.9rem", marginBottom: "1rem" }}>{error}</p>
+                  )}
+                  <button type="submit" disabled={submitting} className="kms-wiggle" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.1rem", letterSpacing: "0.06em", textTransform: "uppercase", padding: "0.9rem 2.5rem", borderRadius: 2, border: "none", cursor: submitting ? "wait" : "pointer", opacity: submitting ? 0.7 : 1 }}>
+                    <Send size={18} /> {submitting ? "Sending…" : "Submit Quote Request"}
                   </button>
                 </form>
               )}

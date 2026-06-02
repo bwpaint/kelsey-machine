@@ -11,7 +11,7 @@ import { Link } from "wouter";
 import { NavBar, Footer, NewsletterBar, InlineQuoteForm } from "@/components/KmsLayout";
 import { useEffect } from "react";
 
-const ABOUT_HERO = "https://d2xsxph8kpxj0f.cloudfront.net/310519663389032163/57UPsPgkU8Pk8KwiRoThgx/kms_about_hero-fuqjkLUCWaGrchXL2i3nWu.webp";
+const ABOUT_HERO = "/images/kms-about-hero.webp";
 
 const TIMELINE = [
   { year: "1983", title: "Founded in Stafford, TX", desc: "Kelsey Machine Services opens its doors in Stafford, Texas — a small shop with big ambitions and a whole lot of rotating equipment to fix." },
