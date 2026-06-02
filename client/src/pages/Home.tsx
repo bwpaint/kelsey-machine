@@ -225,7 +225,7 @@ function HeroSection() {
       {/* Gradient overlay — semi-transparent across full width so worker is visible on left, form readable on right */}
       <div className="absolute inset-0" style={{ background: `linear-gradient(105deg, rgba(30,80,128,0.72) 0%, rgba(30,80,128,0.78) 50%, rgba(26,37,53,0.80) 100%)` }} />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 py-6 lg:py-7">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 pt-2 pb-12 lg:pt-3 lg:pb-20">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
 
           {/* Left — headline + CTAs */}
@@ -274,7 +274,7 @@ function HeroSection() {
           <div style={{
             background: "rgba(26,37,53,0.80)",
             border: highlightForm ? `1px solid ${C.green}` : `1px solid rgba(120,165,70,0.35)`,
-            padding: "2rem",
+            padding: "1.5rem 2rem 2rem 2rem",
             backdropFilter: "blur(12px)",
             borderRadius: "2px",
             boxShadow: highlightForm
