@@ -17,7 +17,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { NavBar, NewsletterBar as KmsNewsletterBar, Footer, InlineQuoteForm } from "@/components/KmsLayout";
+import { NavBar, NewsletterBar as KmsNewsletterBar, Footer, InlineQuoteForm, WarrantyCallout, FreeNationwidePickupCallout } from "@/components/KmsLayout";
 import { submitLead } from "@/lib/submitLead";
 import {
   Phone, Mail, ChevronDown, ChevronUp,
@@ -799,31 +799,8 @@ function FAQSection() {
           <div className="lg:col-span-1">
             <div className="flex flex-col gap-5">
               <InlineQuoteForm service="" dark={false} />
-
-              {/* Warranty Box */}
-              <div style={{ background: C.blueDark, borderRadius: "2px", padding: "1.5rem", border: `1px solid rgba(120,165,70,0.3)` }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.75rem" }}>
-                  <Shield size={22} style={{ color: C.green, flexShrink: 0 }} />
-                  <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.1rem", color: "white", textTransform: "uppercase", letterSpacing: "0.04em" }}>24-Month Warranty</span>
-                </div>
-                <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.9rem", color: "rgba(255,255,255,0.75)", lineHeight: 1.65, margin: 0 }}>
-                  Every repair we perform is backed by our industry-leading <strong style={{ color: C.green }}>24-month written warranty</strong> — twice the industry standard. If something goes wrong after we fix it, we make it right. Period.
-                </p>
-                <a href="/warranty" style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: "1rem", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "0.85rem", color: C.green, textDecoration: "none", letterSpacing: "0.05em", textTransform: "uppercase" }}>
-                  View Full Warranty Details <ArrowRight size={14} />
-                </a>
-              </div>
-
-              {/* Free Pickup Box */}
-              <div style={{ background: C.green, borderRadius: "2px", padding: "1.25rem 1.5rem" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.5rem" }}>
-                  <Truck size={20} style={{ color: "white", flexShrink: 0 }} />
-                  <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "1.05rem", color: "white", textTransform: "uppercase", letterSpacing: "0.04em" }}>Free Nationwide Pickup</span>
-                </div>
-                <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.88rem", color: "rgba(255,255,255,0.9)", lineHeight: 1.6, margin: 0 }}>
-                  We'll pick up your equipment anywhere in the continental U.S. — at no charge. Just call or submit the form above.
-                </p>
-              </div>
+              <WarrantyCallout />
+              <FreeNationwidePickupCallout />
             </div>
           </div>
         </div>

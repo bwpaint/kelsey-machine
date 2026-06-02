@@ -8,7 +8,7 @@
  */
 
 import { Link } from "wouter";
-import { NavBar, Footer, NewsletterBar, InlineQuoteForm } from "@/components/KmsLayout";
+import { NavBar, Footer, NewsletterBar, InlineQuoteForm, WarrantyCallout, FreeNationwidePickupCallout } from "@/components/KmsLayout";
 import { useEffect } from "react";
 
 const ABOUT_HERO = "/images/kms-about-hero.webp";
@@ -428,10 +428,12 @@ export default function AboutUs() {
                 ))}
               </div>
             </div>
-            {/* Right: Quote Form (1/3 width) */}
+            {/* Right: Quote Form + callouts (1/3 width) */}
             <div className="lg:col-span-1">
-              <div style={{ position: "sticky", top: 96 }}>
+              <div style={{ position: "sticky", top: 96 }} className="flex flex-col gap-5">
                 <InlineQuoteForm service="General Inquiry" dark={false} />
+                <WarrantyCallout />
+                <FreeNationwidePickupCallout />
               </div>
             </div>
           </div>

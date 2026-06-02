@@ -19,6 +19,8 @@ import { LpCentrifuge, LpGearbox, LpBlower, LpCompressor, LpFluidEnd } from "./p
 import Industries from "./pages/Industries";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 
 function Router() {
   return (
@@ -44,6 +46,8 @@ function Router() {
 
       <Route path="/about" component={AboutUs} />
       <Route path="/industries" component={Industries} />
+      <Route path="/blog" component={Blog} />
+      <Route path="/blog/:slug" component={BlogPost} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms" component={Terms} />
       {/* 404 */}
