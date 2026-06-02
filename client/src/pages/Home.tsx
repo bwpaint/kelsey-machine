@@ -171,10 +171,21 @@ const inputStyle: React.CSSProperties = {
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 function HeroSection() {
-  const [form, setForm] = useState({ name: "", company: "", phone: "", service: "", message: "" });
+  const [form, setForm] = useState({ name: "", company: "", phone: "", email: "", service: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [highlightForm, setHighlightForm] = useState(false);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+
+  const handleHighlightForm = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setHighlightForm(true);
+    // Focus the Name field so the user can start typing immediately
+    nameInputRef.current?.focus();
+    // Pulse for ~2.5s then fade back
+    setTimeout(() => setHighlightForm(false), 2500);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -188,6 +199,7 @@ function HeroSection() {
       await submitLead({
         formType: "quote",
         name: form.name,
+        email: form.email,
         phone: form.phone,
         company: form.company,
         interest: form.service,
@@ -213,7 +225,7 @@ function HeroSection() {
       {/* Gradient overlay — semi-transparent across full width so worker is visible on left, form readable on right */}
       <div className="absolute inset-0" style={{ background: `linear-gradient(105deg, rgba(30,80,128,0.72) 0%, rgba(30,80,128,0.78) 50%, rgba(26,37,53,0.80) 100%)` }} />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 py-11 lg:py-14">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 py-6 lg:py-7">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
 
           {/* Left — headline + CTAs */}
@@ -249,7 +261,7 @@ function HeroSection() {
             </div>
 
             <div className="flex flex-wrap gap-4">
-              <a href="#contact" className="kms-btn-green" style={{ fontSize: "1rem", padding: "0.8rem 2rem" }}>
+              <a href="#contact" onClick={handleHighlightForm} className="kms-btn-green" style={{ fontSize: "1rem", padding: "0.8rem 2rem", cursor: "pointer" }}>
                 Get a Free Quote <ArrowRight size={16} />
               </a>
               <a href="tel:3463501464" className="kms-btn-outline-white" style={{ fontSize: "1rem", padding: "0.8rem 2rem" }}>
@@ -259,7 +271,18 @@ function HeroSection() {
           </div>
 
           {/* Right — lead form */}
-          <div style={{ background: "rgba(26,37,53,0.80)", border: `1px solid rgba(120,165,70,0.35)`, padding: "2rem", backdropFilter: "blur(12px)", borderRadius: "2px" }}>
+          <div style={{
+            background: "rgba(26,37,53,0.80)",
+            border: highlightForm ? `1px solid ${C.green}` : `1px solid rgba(120,165,70,0.35)`,
+            padding: "2rem",
+            backdropFilter: "blur(12px)",
+            borderRadius: "2px",
+            boxShadow: highlightForm
+              ? `0 0 0 4px ${C.green}, 0 0 28px rgba(120,165,70,0.65)`
+              : "0 0 0 0 transparent",
+            transform: highlightForm ? "scale(1.015)" : "scale(1)",
+            transition: "box-shadow 0.4s ease-in-out, border-color 0.4s ease-in-out, transform 0.3s ease-in-out",
+          }}>
             {submitted ? (
               <div className="text-center py-8">
                 <CheckCircle size={48} style={{ color: C.green, margin: "0 auto 1rem" }} />
@@ -277,23 +300,51 @@ function HeroSection() {
                   A rotating equipment specialist will respond within the hour. Available 24/7.
                 </p>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                  {[
-                    { name: "name", placeholder: "Your Name *", type: "text", required: true },
-                    { name: "company", placeholder: "Company / Plant", type: "text", required: false },
-                    { name: "phone", placeholder: "Phone Number *", type: "tel", required: true },
-                  ].map(({ name, placeholder, type, required }) => (
+                  {/* Row 1: Name | Company */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input
-                      key={name}
-                      type={type}
-                      placeholder={placeholder}
-                      required={required}
-                      value={form[name as keyof typeof form]}
-                      onChange={e => setForm({ ...form, [name]: e.target.value })}
+                      ref={nameInputRef}
+                      type="text"
+                      placeholder="Your Name *"
+                      required
+                      value={form.name}
+                      onChange={e => setForm({ ...form, name: e.target.value })}
                       style={inputStyle}
                       onFocus={e => (e.target.style.borderColor = C.green)}
                       onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")}
                     />
-                  ))}
+                    <input
+                      type="text"
+                      placeholder="Company / Plant"
+                      value={form.company}
+                      onChange={e => setForm({ ...form, company: e.target.value })}
+                      style={inputStyle}
+                      onFocus={e => (e.target.style.borderColor = C.green)}
+                      onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")}
+                    />
+                  </div>
+                  {/* Row 2: Phone | Email */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <input
+                      type="tel"
+                      placeholder="Phone Number *"
+                      required
+                      value={form.phone}
+                      onChange={e => setForm({ ...form, phone: e.target.value })}
+                      style={inputStyle}
+                      onFocus={e => (e.target.style.borderColor = C.green)}
+                      onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")}
+                    />
+                    <input
+                      type="email"
+                      placeholder="Email Address"
+                      value={form.email}
+                      onChange={e => setForm({ ...form, email: e.target.value })}
+                      style={inputStyle}
+                      onFocus={e => (e.target.style.borderColor = C.green)}
+                      onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")}
+                    />
+                  </div>
                   <select
                     value={form.service}
                     onChange={e => setForm({ ...form, service: e.target.value })}
