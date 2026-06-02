@@ -1,12 +1,16 @@
 // ─── KMS lead form handler (Vercel Serverless Function) ───────────────────────
-// Receives a lead from any form on the site and emails it to the KMS team
-// via Resend. Temporary stand-in until the headless WordPress endpoint
-// (/wp-json/wwcf/v1/submit) is live — see client/src/lib/submitLead.ts.
+// This function is the permanent auth proxy between the React frontend and
+// the WebWize Connect Forms WordPress endpoint. The X-API-Key never touches
+// the browser; the function holds it as a Vercel env var.
 //
-// Required environment variables (set in the Vercel dashboard):
-//   RESEND_API_KEY   — API key from resend.com
-//   LEAD_TO_EMAIL    — where leads are delivered (default: service@kmstx.com)
-//   LEAD_FROM_EMAIL  — verified Resend sender (default: leads@kmstx.com)
+// Two modes, selected automatically:
+//   1) WordPress mode (production) — forwards to {WP_BASE_URL}/wp-json/webwize-forms/v1/submit
+//      with X-API-Key header. Set WP_BASE_URL and WP_FORMS_API_KEY to enable.
+//   2) Resend mode (fallback) — emails the lead directly via Resend.
+//      Used until WP_BASE_URL + WP_FORMS_API_KEY are set.
+//
+// Either way, the browser-facing URL (/api/submit) and the React payload shape
+// are unchanged — see client/src/lib/submitLead.ts.
 
 interface LeadBody {
   formType?: string;
@@ -42,6 +46,12 @@ function json(data: unknown, status: number): Response {
   });
 }
 
+function clientIp(req: Request): string {
+  const fwd = req.headers.get("x-forwarded-for") || "";
+  const first = fwd.split(",")[0]?.trim();
+  return first || req.headers.get("x-real-ip") || "";
+}
+
 export default async function handler(req: Request): Promise<Response> {
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
@@ -63,16 +73,96 @@ export default async function handler(req: Request): Promise<Response> {
     return json({ error: "Please enter a valid email address." }, 400);
   }
 
+  const formType = body.formType || "quote";
+  const ip = clientIp(req);
+  const referer = req.headers.get("referer") || "";
+  const ua = req.headers.get("user-agent") || "KMS Website";
+
+  // ─── Mode 1: WebWize Connect Forms (WordPress) ──────────────────────────────
+  const wpBase = process.env.WP_BASE_URL;
+  const wpKey = process.env.WP_FORMS_API_KEY;
+
+  if (wpBase && wpKey) {
+    const endpoint =
+      wpBase.replace(/\/+$/, "") + "/wp-json/webwize-forms/v1/submit";
+
+    // Build a flat fields object matching the WPForms field names mapped in the
+    // WP admin (WebWize Connect → Forms → field_map). Keep keys consistent so
+    // a single mapping covers every form_slug.
+    const fields: Record<string, string> = {
+      name,
+      email,
+      phone,
+      company: body.company || "",
+      interest: body.interest || "",
+      service: body.interest
+        ? SERVICE_LABELS[body.interest] || body.interest
+        : "",
+      message: body.message || "",
+      source: body.source || referer,
+    };
+
+    try {
+      const resp = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-Key": wpKey,
+          // Pass-through so the WP side sees the real client context, not Vercel's.
+          Referer: referer,
+          "User-Agent": ua,
+        },
+        body: JSON.stringify({
+          form_slug: formType,
+          fields,
+          sender_email: email,
+          sender_nickname: name,
+          sender_ip: ip,
+        }),
+      });
+
+      const data = (await resp.json().catch(() => ({}))) as {
+        success?: boolean;
+        message?: string;
+        spam?: boolean;
+        entry_id?: number;
+      };
+
+      if (resp.ok && data.success) {
+        return json({ ok: true, entry_id: data.entry_id }, 200);
+      }
+
+      if (resp.status === 403 && data.spam) {
+        return json(
+          { error: "Your submission was blocked. If this is a real request, please call 346-350-1464." },
+          403,
+        );
+      }
+
+      console.error("[lead] WP forward failed", resp.status, data);
+      return json(
+        { error: data.message || "We couldn't send your request just now. Please call 346-350-1464." },
+        resp.status >= 400 && resp.status < 600 ? resp.status : 502,
+      );
+    } catch (err) {
+      console.error("[lead] WP fetch failed", err);
+      return json(
+        { error: "We couldn't send your request just now. Please call 346-350-1464." },
+        502,
+      );
+    }
+  }
+
+  // ─── Mode 2: Resend fallback (used until WP env vars are set) ───────────────
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.LEAD_TO_EMAIL || "service@kmstx.com";
   const from = process.env.LEAD_FROM_EMAIL || "leads@kmstx.com";
 
   if (!apiKey) {
-    console.error("[lead] RESEND_API_KEY is not set");
+    console.error("[lead] No transport configured (neither WP_FORMS_API_KEY nor RESEND_API_KEY is set)");
     return json({ error: "Our form is being set up. Please call 346-350-1464." }, 500);
   }
 
-  const formType = body.formType || "quote";
   const service = body.interest
     ? SERVICE_LABELS[body.interest] || body.interest
     : "Not specified";
@@ -88,7 +178,7 @@ export default async function handler(req: Request): Promise<Response> {
     ["Service Needed", service],
     ["Message", body.message || "—"],
     ["Form", formType],
-    ["Submitted from", body.source || "—"],
+    ["Submitted from", body.source || referer || "—"],
   ];
 
   const html =
