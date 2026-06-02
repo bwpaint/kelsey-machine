@@ -122,7 +122,12 @@ export default function Industries() {
       <NavBar />
 
       {/* Hero */}
-      <section style={{ background: C.blueDark, paddingTop: "7rem", paddingBottom: "3.5rem" }}>
+      <section style={{
+        background: `linear-gradient(135deg, rgba(10,25,45,0.92) 0%, rgba(30,80,128,0.78) 55%, rgba(26,37,53,0.85) 100%), url(/images/industries-hero-bg.webp) center/cover no-repeat`,
+        paddingTop: "7rem",
+        paddingBottom: "3.5rem",
+        borderBottom: `3px solid ${C.green}`,
+      }}>
         <div className="max-w-7xl mx-auto px-4">
           <div style={{ display: "inline-block", background: C.green, color: "white", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "0.7rem", letterSpacing: "0.15em", textTransform: "uppercase", padding: "0.3rem 0.75rem", borderRadius: 2, marginBottom: "1rem" }}>
             Industries We Serve
