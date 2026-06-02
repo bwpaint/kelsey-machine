@@ -339,3 +339,181 @@
     display: inline-block;
   }
 }
+
+/* ─── Blog post content typography ─────────────────────────────────────────── */
+/* Applied via .kms-blog-content wrapper on single blog post pages.            */
+
+.kms-blog-content {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #1A2535;
+}
+
+.kms-blog-content h2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.55rem, 2.8vw, 1.95rem);
+  color: #1E5080;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin: 3rem 0 1rem;
+}
+
+.kms-blog-content h3 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.3rem, 2.4vw, 1.6rem);
+  color: #1E5080;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin: 2.5rem 0 0.85rem;
+}
+
+.kms-blog-content h4 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  color: #1E5080;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  margin: 2rem 0 0.75rem;
+}
+
+.kms-blog-content h5,
+.kms-blog-content h6 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  color: #1E5080;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 1.75rem 0 0.6rem;
+}
+
+/* Very first heading should sit close to the top — kill the leading margin */
+.kms-blog-content > :first-child {
+  margin-top: 0;
+}
+
+.kms-blog-content p {
+  margin: 0 0 1.2rem;
+}
+
+.kms-blog-content ul,
+.kms-blog-content ol {
+  margin: 0.6rem 0 1.5rem;
+  padding-left: 1.6rem;
+}
+
+.kms-blog-content li {
+  margin-bottom: 0.55rem;
+}
+
+.kms-blog-content li::marker {
+  color: #78A546;
+}
+
+.kms-blog-content strong {
+  color: #1A2535;
+  font-weight: 700;
+}
+
+.kms-blog-content a {
+  color: #78A546;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 2px;
+}
+
+.kms-blog-content a:hover {
+  color: #5E8535;
+}
+
+/* Images — keep them inside the column, no fixed dimensions overriding layout */
+.kms-blog-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1.75rem auto;
+  border-radius: 2px;
+}
+
+/* Figures with captions */
+.kms-blog-content figure {
+  margin: 2rem 0;
+}
+
+.kms-blog-content figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: #3D5166;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Blockquotes */
+.kms-blog-content blockquote {
+  margin: 1.75rem 0;
+  padding: 1rem 1.5rem;
+  border-left: 4px solid #78A546;
+  background: #F4F7FA;
+  font-style: italic;
+  color: #1A2535;
+}
+
+/* Tables */
+.kms-blog-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.75rem 0;
+  font-size: 0.95rem;
+}
+
+.kms-blog-content th,
+.kms-blog-content td {
+  padding: 0.65rem 0.875rem;
+  border: 1px solid #dde3ec;
+  text-align: left;
+}
+
+.kms-blog-content th {
+  background: #1E5080;
+  color: white;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.85rem;
+}
+
+/* "Key Takeaways" / "Table of Contents" boxes — these come through as plain
+ * <div> or <nav> blocks. Style them as accented callouts so they break visually
+ * from the body text. */
+.kms-blog-content > nav,
+.kms-blog-content > div:not(:has(img)):not(:has(figure)) {
+  margin: 2rem 0;
+  padding: 1.5rem 1.75rem;
+  background: #F4F7FA;
+  border-left: 4px solid #78A546;
+  border-radius: 2px;
+}
+
+.kms-blog-content > nav h2,
+.kms-blog-content > nav h3,
+.kms-blog-content > div h2,
+.kms-blog-content > div h3 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  letter-spacing: 0.04em;
+}
+
+.kms-blog-content > nav ul,
+.kms-blog-content > nav ol,
+.kms-blog-content > div ul,
+.kms-blog-content > div ol {
+  margin-bottom: 0;
+}
