@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { Link, useRoute } from "wouter";
+import { Link } from "wouter";
 import { ArrowLeft, Calendar } from "lucide-react";
 import { NavBar, Footer, NewsletterBar, C } from "@/components/KmsLayout";
 import { BlogSidebar } from "@/components/BlogSidebar";
@@ -18,9 +18,7 @@ import {
 } from "@/lib/wpApi";
 import NotFound from "@/pages/NotFound";
 
-export default function BlogPost() {
-  const [, params] = useRoute<{ slug: string }>("/blog/:slug");
-  const slug = params?.slug || "";
+export default function BlogPost({ slug = "" }: { slug?: string } = {}) {
 
   const [post, setPost] = useState<WpPost | null>(null);
   const [loading, setLoading] = useState(true);

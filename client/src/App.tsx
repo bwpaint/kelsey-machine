@@ -21,6 +21,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import PumpService from "./pages/PumpService";
+import Competitors from "./pages/Competitors";
 
 function Router() {
   return (
@@ -47,9 +49,30 @@ function Router() {
       <Route path="/about" component={AboutUs} />
       <Route path="/industries" component={Industries} />
       <Route path="/blog" component={Blog} />
-      <Route path="/blog/:slug" component={BlogPost} />
+      <Route path="/blog/:slug">
+        {(params: { slug?: string }) => <BlogPost slug={params.slug} />}
+      </Route>
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms" component={Terms} />
+      {/* Google Ads landing page aliases (URL-stable destinations for paid traffic) */}
+      <Route path="/fluid-end-power-end-repair" component={FluidPowerEnd} />
+      <Route path="/gearbox-repair-service" component={GearboxRepair} />
+      <Route path="/services/centrifuge-repair-service" component={CentrifugeRepair} />
+      <Route path="/services/compressor-repair-service" component={IndustrialCompressors} />
+      <Route path="/blower-vacuum-pump-repair" component={BlowerRepair} />
+      <Route path="/pump-service" component={PumpService} />
+      <Route path="/competitors" component={Competitors} />
+      {/* Blog post landing page aliases (used as AdWords destinations without /blog/ prefix) */}
+      <Route path="/decanter-centrifuge-repair-a-comprehensive-maintenance-and-troubleshooting-checklist">
+        {() => <BlogPost slug="decanter-centrifuge-repair-a-comprehensive-maintenance-and-troubleshooting-checklist" />}
+      </Route>
+      <Route path="/centrifuge-dynamic-balancing-a-technical-guide-for-industrial-operations">
+        {() => <BlogPost slug="centrifuge-dynamic-balancing-a-technical-guide-for-industrial-operations" />}
+      </Route>
+      <Route path="/emergency-industrial-repair-in-houston-24-7-response-for-critical-rotating-equipment">
+        {() => <BlogPost slug="emergency-industrial-repair-in-houston-24-7-response-for-critical-rotating-equipment" />}
+      </Route>
+
       {/* 404 */}
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
