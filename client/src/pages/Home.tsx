@@ -79,7 +79,7 @@ const SERVICES = [
     description: "Expert repair for all pump types — centrifugal, vertical turbine, horizontal split case, and positive displacement. Impeller rebuilds, hard-facing, and seal replacement included. All major brands serviced.",
     keywords: "pump repair, centrifugal pump repair, industrial pump rebuild",
     image: PUMP_IMG,
-    href: "/services",
+    href: "/pump-service",
   },
   {
     id: "blower",
