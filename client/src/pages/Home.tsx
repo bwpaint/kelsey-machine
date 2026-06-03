@@ -31,6 +31,7 @@ const HERO_BG     = "/images/kms-hero-bg.webp";
 const CENTRIFUGE_IMG  = "/images/centrifuge-welding.webp";
 const GEARBOX_IMG     = "/images/kms-gearbox.webp";
 const BLOWER_IMG      = "/images/blower-roots.webp";
+const KMS_BLOWER_IMG  = "/images/kms-blower-repair.webp";
 const PUMP_IMG        = "/images/oilfield-pumps.webp";
 const FLUID_END_IMG   = "/images/fluid-end-module_97356062.jpg";
 const OILFIELD_IMG    = "/images/oilfield-hero.webp";
@@ -86,7 +87,7 @@ const SERVICES = [
     title: "Blower Repair",
     description: "Industrial blower repair, rebuild, and reconditioning — including Roots-style PD blowers, multi-stage centrifugals, and regenerative blowers. We service Roots, Tuthill, Aerzen, Hoffman, Spencer, and every other major manufacturer in the field.",
     keywords: "blower repair, industrial blower rebuild, roots blower repair",
-    image: BLOWER_IMG,
+    image: KMS_BLOWER_IMG,
     href: "/services/industrial-blower-repair",
   },
   {
