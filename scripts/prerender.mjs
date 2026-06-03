@@ -4,30 +4,50 @@
  * Runs after `vite build`. Loads the built SPA in headless Chrome, navigates
  * to each route we want as static HTML, and saves the fully-rendered DOM as
  * dist/public/<route>/index.html. Vercel then serves those files directly
- * from its CDN — visitors get fully-rendered HTML on first paint, Google
- * gets clean indexable content, no runtime API calls per visitor.
+ * from its CDN.
  *
- * Static routes are hardcoded below. Blog post slugs are pulled live from
- * cms.kmstx.com at build time.
- *
- * Graceful: if Puppeteer can't launch (CI env without Chrome, etc.), the
- * script logs a warning and exits 0 so the build still succeeds with the
- * client-rendered SPA fallback.
+ * Security:
+ * - Blog slugs from cms.kmstx.com are validated against an allowlist
+ *   (`/^[a-z0-9][a-z0-9-]{0,200}$/`) and the resolved write path must
+ *   stay inside dist/public — prevents path traversal if the CMS returns
+ *   a malicious slug.
+ * - The static server binds to 127.0.0.1 only (not exposed on the CI runner).
+ * - CMS_URL must be https — defeats env-var hijack that points at attacker.
+ * - Graceful fallback: if Puppeteer can't launch, the script exits 0 so the
+ *   SPA fallback still serves the same pages.
  */
 import { createServer } from "http";
 import { readFile, writeFile, mkdir, stat } from "fs/promises";
 import { existsSync } from "fs";
-import { dirname, extname, join } from "path";
+import { dirname, extname, join, resolve as resolvePath, sep } from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
-const DIST = join(ROOT, "dist/public");
-const CMS_URL = (process.env.VITE_CMS_URL || "https://cms.kmstx.com").replace(/\/+$/, "");
+const DIST = resolvePath(ROOT, "dist/public");
+
+// CMS URL — must be https to defeat env-var hijack (#12 in security review).
+const RAW_CMS = (process.env.VITE_CMS_URL || "https://cms.kmstx.com").replace(/\/+$/, "");
+let CMS_URL = null;
+try {
+  const u = new URL(RAW_CMS);
+  if (u.protocol !== "https:") {
+    console.warn(`⚠  VITE_CMS_URL must be https — got ${u.protocol}. Skipping blog slug fetch.`);
+  } else {
+    CMS_URL = `${u.protocol}//${u.host}`;
+  }
+} catch {
+  console.warn(`⚠  VITE_CMS_URL is not a valid URL: ${RAW_CMS}. Skipping blog slug fetch.`);
+}
+
 const PORT = 4321;
 const NAV_TIMEOUT_MS = 30000;
 const RENDER_WAIT_MS = 800;
-const CONCURRENCY = 4; // small concurrency to avoid hammering CMS
+const CONCURRENCY = 4;
+
+// Slug allowlist — WP normally hands out lowercase kebab-case slugs.
+// Anything outside this character class is rejected.
+const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,200}$/;
 
 const STATIC_ROUTES = [
   "/",
@@ -83,6 +103,7 @@ async function pathExists(p) {
 }
 
 async function fetchBlogSlugs() {
+  if (!CMS_URL) return [];
   const all = [];
   let page = 1;
   while (page < 50) {
@@ -92,16 +113,24 @@ async function fetchBlogSlugs() {
       resp = await fetch(url, { signal: AbortSignal.timeout(15000) });
     } catch (e) {
       console.warn(`  [warn] could not reach ${CMS_URL} for blog slugs:`, e.message);
-      return [];
+      return all;
     }
     if (!resp.ok) {
-      if (resp.status === 400 || resp.status === 404) break; // out of pages
+      if (resp.status === 400 || resp.status === 404) break;
       console.warn(`  [warn] CMS returned ${resp.status} on page ${page}`);
       break;
     }
     const arr = await resp.json();
     if (!Array.isArray(arr) || arr.length === 0) break;
-    for (const p of arr) if (p?.slug) all.push(p.slug);
+    for (const p of arr) {
+      const slug = p?.slug;
+      if (typeof slug !== "string") continue;
+      if (!SLUG_RE.test(slug)) {
+        console.warn(`  [warn] rejected unsafe slug from CMS: ${JSON.stringify(slug)}`);
+        continue;
+      }
+      all.push(slug);
+    }
     if (arr.length < 100) break;
     page++;
   }
@@ -122,10 +151,7 @@ function startServer() {
             isFile = await pathExists(filePath);
           }
         }
-        if (!isFile) {
-          // SPA fallback — serve index.html so React handles routing
-          filePath = join(DIST, "index.html");
-        }
+        if (!isFile) filePath = join(DIST, "index.html");
         const data = await readFile(filePath);
         res.writeHead(200, { "Content-Type": mimeFor(filePath), "Cache-Control": "no-store" });
         res.end(data);
@@ -133,22 +159,45 @@ function startServer() {
         res.writeHead(500); res.end("server error");
       }
     });
-    server.listen(PORT, () => resolve(server));
+    // Bind to loopback only — never expose the in-progress build on the CI runner.
+    server.listen(PORT, "127.0.0.1", () => resolve(server));
   });
+}
+
+/**
+ * Resolve the output directory for a route, refusing to escape DIST.
+ * Returns null if the route is unsafe.
+ */
+function safeOutDir(route) {
+  if (route === "/") return DIST;
+  const rel = route.replace(/^\//, "");
+  // Per-segment validation — every segment must match our allowlist.
+  const segments = rel.split("/");
+  for (const seg of segments) {
+    if (seg === "" || seg === "." || seg === ".." || /[^a-z0-9-]/i.test(seg)) {
+      return null;
+    }
+  }
+  const out = resolvePath(DIST, rel);
+  // Belt-and-suspenders: the resolved path must start with DIST + sep,
+  // and equal DIST itself if rel was empty.
+  if (out !== DIST && !out.startsWith(DIST + sep)) return null;
+  return out;
 }
 
 async function renderOne(browser, route) {
   const page = await browser.newPage();
   await page.setViewport({ width: 1280, height: 800 });
   try {
-    const url = `http://localhost:${PORT}${route}`;
+    const outDir = safeOutDir(route);
+    if (!outDir) {
+      return { route, ok: false, error: "route rejected by path-confinement guard" };
+    }
+    const url = `http://127.0.0.1:${PORT}${route}`;
     await page.goto(url, { waitUntil: "networkidle0", timeout: NAV_TIMEOUT_MS });
-    // Give React effects a beat to settle (post fetches, schema injection, etc.)
     await new Promise((r) => setTimeout(r, RENDER_WAIT_MS));
     const html = await page.content();
 
-    // Write to dist/public/<route>/index.html (root is special).
-    const outDir = route === "/" ? DIST : join(DIST, route.replace(/^\//, ""));
     await mkdir(outDir, { recursive: true });
     await writeFile(join(outDir, "index.html"), html, "utf8");
     return { route, ok: true, bytes: html.length };
@@ -173,7 +222,7 @@ async function main() {
     process.exit(0);
   }
 
-  console.log(`▶ Fetching blog slugs from ${CMS_URL}`);
+  console.log(`▶ Fetching blog slugs from ${CMS_URL || "(disabled — bad VITE_CMS_URL)"}`);
   const blogSlugs = await fetchBlogSlugs();
   console.log(`  found ${blogSlugs.length} blog posts`);
   const blogRoutes = blogSlugs.map((s) => `/blog/${s}`);
@@ -181,7 +230,7 @@ async function main() {
   console.log(`▶ Prerendering ${allRoutes.length} routes (concurrency ${CONCURRENCY})`);
 
   const server = await startServer();
-  console.log(`  static server: http://localhost:${PORT}`);
+  console.log(`  static server: http://127.0.0.1:${PORT}`);
 
   let browser;
   try {
