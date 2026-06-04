@@ -23,7 +23,10 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const DIST = join(ROOT, "dist/public");
-const CMS_URL = (process.env.VITE_CMS_URL || "https://cms.kmstx.com").replace(/\/+$/, "");
+const CMS_URL = (process.env.VITE_CMS_URL || "https://cms.kmstx.com").replace(
+  /\/+$/,
+  ""
+);
 const PORT = 4321;
 const NAV_TIMEOUT_MS = 30000;
 const RENDER_WAIT_MS = 800;
@@ -57,21 +60,21 @@ const STATIC_ROUTES = [
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
-  ".css":  "text/css; charset=utf-8",
-  ".js":   "application/javascript; charset=utf-8",
-  ".mjs":  "application/javascript; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".js": "application/javascript; charset=utf-8",
+  ".mjs": "application/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
-  ".png":  "image/png",
-  ".jpg":  "image/jpeg",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",
   ".webp": "image/webp",
-  ".svg":  "image/svg+xml",
-  ".ico":  "image/x-icon",
-  ".xml":  "application/xml; charset=utf-8",
-  ".txt":  "text/plain; charset=utf-8",
+  ".svg": "image/svg+xml",
+  ".ico": "image/x-icon",
+  ".xml": "application/xml; charset=utf-8",
+  ".txt": "text/plain; charset=utf-8",
   ".woff": "font/woff",
-  ".woff2":"font/woff2",
-  ".ttf":  "font/ttf",
+  ".woff2": "font/woff2",
+  ".ttf": "font/ttf",
 };
 
 function mimeFor(p) {
@@ -79,7 +82,12 @@ function mimeFor(p) {
 }
 
 async function pathExists(p) {
-  try { await stat(p); return true; } catch { return false; }
+  try {
+    await stat(p);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function fetchBlogSlugs() {
@@ -91,7 +99,10 @@ async function fetchBlogSlugs() {
     try {
       resp = await fetch(url, { signal: AbortSignal.timeout(15000) });
     } catch (e) {
-      console.warn(`  [warn] could not reach ${CMS_URL} for blog slugs:`, e.message);
+      console.warn(
+        `  [warn] could not reach ${CMS_URL} for blog slugs:`,
+        e.message
+      );
       return [];
     }
     if (!resp.ok) {
@@ -109,11 +120,14 @@ async function fetchBlogSlugs() {
 }
 
 function startServer() {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const server = createServer(async (req, res) => {
       try {
         const urlPath = (req.url || "/").split("?")[0];
-        let filePath = join(DIST, urlPath === "/" ? "index.html" : urlPath.replace(/\/$/, ""));
+        let filePath = join(
+          DIST,
+          urlPath === "/" ? "index.html" : urlPath.replace(/\/$/, "")
+        );
         let isFile = await pathExists(filePath);
         if (isFile) {
           const st = await stat(filePath);
@@ -127,10 +141,14 @@ function startServer() {
           filePath = join(DIST, "index.html");
         }
         const data = await readFile(filePath);
-        res.writeHead(200, { "Content-Type": mimeFor(filePath), "Cache-Control": "no-store" });
+        res.writeHead(200, {
+          "Content-Type": mimeFor(filePath),
+          "Cache-Control": "no-store",
+        });
         res.end(data);
       } catch {
-        res.writeHead(500); res.end("server error");
+        res.writeHead(500);
+        res.end("server error");
       }
     });
     server.listen(PORT, () => resolve(server));
@@ -142,9 +160,12 @@ async function renderOne(browser, route) {
   await page.setViewport({ width: 1280, height: 800 });
   try {
     const url = `http://localhost:${PORT}${route}`;
-    await page.goto(url, { waitUntil: "networkidle0", timeout: NAV_TIMEOUT_MS });
+    await page.goto(url, {
+      waitUntil: "networkidle0",
+      timeout: NAV_TIMEOUT_MS,
+    });
     // Give React effects a beat to settle (post fetches, schema injection, etc.)
-    await new Promise((r) => setTimeout(r, RENDER_WAIT_MS));
+    await new Promise(r => setTimeout(r, RENDER_WAIT_MS));
     const html = await page.content();
 
     // Write to dist/public/<route>/index.html (root is special).
@@ -169,16 +190,20 @@ async function main() {
   try {
     ({ default: puppeteer } = await import("puppeteer"));
   } catch {
-    console.warn("⚠  puppeteer not installed — skipping prerender (SPA fallback will still work)");
+    console.warn(
+      "⚠  puppeteer not installed — skipping prerender (SPA fallback will still work)"
+    );
     process.exit(0);
   }
 
   console.log(`▶ Fetching blog slugs from ${CMS_URL}`);
   const blogSlugs = await fetchBlogSlugs();
   console.log(`  found ${blogSlugs.length} blog posts`);
-  const blogRoutes = blogSlugs.map((s) => `/blog/${s}`);
+  const blogRoutes = blogSlugs.map(s => `/blog/${s}`);
   const allRoutes = [...STATIC_ROUTES, ...blogRoutes];
-  console.log(`▶ Prerendering ${allRoutes.length} routes (concurrency ${CONCURRENCY})`);
+  console.log(
+    `▶ Prerendering ${allRoutes.length} routes (concurrency ${CONCURRENCY})`
+  );
 
   const server = await startServer();
   console.log(`  static server: http://localhost:${PORT}`);
@@ -187,10 +212,16 @@ async function main() {
   try {
     browser = await puppeteer.launch({
       headless: "new",
-      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+      ],
     });
   } catch (e) {
-    console.warn(`⚠  could not launch Chrome (${e.message}) — skipping prerender`);
+    console.warn(
+      `⚠  could not launch Chrome (${e.message}) — skipping prerender`
+    );
     server.close();
     process.exit(0);
   }
@@ -208,7 +239,9 @@ async function main() {
       completed++;
       const tag = r.ok ? "✓" : "✗";
       const info = r.ok ? `${(r.bytes / 1024).toFixed(1)}kb` : r.error;
-      process.stdout.write(`  [${String(completed).padStart(3)}/${allRoutes.length}] ${tag} ${route}  ${info}\n`);
+      process.stdout.write(
+        `  [${String(completed).padStart(3)}/${allRoutes.length}] ${tag} ${route}  ${info}\n`
+      );
     }
   }
 
@@ -218,8 +251,8 @@ async function main() {
   await browser.close();
   server.close();
 
-  const ok = results.filter((r) => r.ok).length;
-  const failed = results.filter((r) => !r.ok);
+  const ok = results.filter(r => r.ok).length;
+  const failed = results.filter(r => !r.ok);
   console.log(`▶ Done: ${ok}/${results.length} routes prerendered`);
   if (failed.length) {
     console.log(`  ${failed.length} failures:`);
@@ -227,7 +260,7 @@ async function main() {
   }
 }
 
-main().catch((err) => {
+main().catch(err => {
   console.error("prerender script failed:", err);
   process.exit(1);
 });

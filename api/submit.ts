@@ -34,8 +34,12 @@ const SERVICE_LABELS: Record<string, string> = {
 };
 
 function esc(s: string): string {
-  return s.replace(/[&<>"']/g, (c) =>
-    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] as string,
+  return s.replace(
+    /[&<>"']/g,
+    c =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        c
+      ] as string
   );
 }
 
@@ -53,7 +57,6 @@ function clientIp(req: Request): string {
 }
 
 export async function POST(req: Request): Promise<Response> {
-
   let body: LeadBody;
   try {
     body = (await req.json()) as LeadBody;
@@ -66,7 +69,10 @@ export async function POST(req: Request): Promise<Response> {
   const phone = (body.phone || "").trim();
 
   if (!name || (!email && !phone)) {
-    return json({ error: "Please include your name and a phone number or email." }, 400);
+    return json(
+      { error: "Please include your name and a phone number or email." },
+      400
+    );
   }
   if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
     return json({ error: "Please enter a valid email address." }, 400);
@@ -133,21 +139,31 @@ export async function POST(req: Request): Promise<Response> {
 
       if (resp.status === 403 && data.spam) {
         return json(
-          { error: "Your submission was blocked. If this is a real request, please call 346-350-1464." },
-          403,
+          {
+            error:
+              "Your submission was blocked. If this is a real request, please call 346-350-1464.",
+          },
+          403
         );
       }
 
       console.error("[lead] WP forward failed", resp.status, data);
       return json(
-        { error: data.message || "We couldn't send your request just now. Please call 346-350-1464." },
-        resp.status >= 400 && resp.status < 600 ? resp.status : 502,
+        {
+          error:
+            data.message ||
+            "We couldn't send your request just now. Please call 346-350-1464.",
+        },
+        resp.status >= 400 && resp.status < 600 ? resp.status : 502
       );
     } catch (err) {
       console.error("[lead] WP fetch failed", err);
       return json(
-        { error: "We couldn't send your request just now. Please call 346-350-1464." },
-        502,
+        {
+          error:
+            "We couldn't send your request just now. Please call 346-350-1464.",
+        },
+        502
       );
     }
   }
@@ -158,8 +174,13 @@ export async function POST(req: Request): Promise<Response> {
   const from = process.env.LEAD_FROM_EMAIL || "leads@kmstx.com";
 
   if (!apiKey) {
-    console.error("[lead] No transport configured (neither WP_FORMS_API_KEY nor RESEND_API_KEY is set)");
-    return json({ error: "Our form is being set up. Please call 346-350-1464." }, 500);
+    console.error(
+      "[lead] No transport configured (neither WP_FORMS_API_KEY nor RESEND_API_KEY is set)"
+    );
+    return json(
+      { error: "Our form is being set up. Please call 346-350-1464." },
+      500
+    );
   }
 
   const service = body.interest
@@ -187,8 +208,8 @@ export async function POST(req: Request): Promise<Response> {
       .map(
         ([k, v]) =>
           `<tr><td style="padding:4px 14px 4px 0;font-weight:700;vertical-align:top;color:#1A2535">${esc(
-            k,
-          )}</td><td style="padding:4px 0;color:#3D5166">${esc(v).replace(/\n/g, "<br>")}</td></tr>`,
+            k
+          )}</td><td style="padding:4px 0;color:#3D5166">${esc(v).replace(/\n/g, "<br>")}</td></tr>`
       )
       .join("") +
     `</table>`;
@@ -215,15 +236,21 @@ export async function POST(req: Request): Promise<Response> {
       const detail = await resp.text();
       console.error("[lead] Resend error", resp.status, detail);
       return json(
-        { error: "We couldn't send your request just now. Please call 346-350-1464." },
-        502,
+        {
+          error:
+            "We couldn't send your request just now. Please call 346-350-1464.",
+        },
+        502
       );
     }
   } catch (err) {
     console.error("[lead] Resend request failed", err);
     return json(
-      { error: "We couldn't send your request just now. Please call 346-350-1464." },
-      502,
+      {
+        error:
+          "We couldn't send your request just now. Please call 346-350-1464.",
+      },
+      502
     );
   }
 

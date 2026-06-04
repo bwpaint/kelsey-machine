@@ -4,7 +4,8 @@
 // loading/error states cleanly.
 
 const CMS_BASE = (
-  (import.meta.env.VITE_CMS_URL as string | undefined) || "https://cms.kmstx.com"
+  (import.meta.env.VITE_CMS_URL as string | undefined) ||
+  "https://cms.kmstx.com"
 ).replace(/\/+$/, "");
 
 const WP_BASE = `${CMS_BASE}/wp-json/wp/v2`;
@@ -26,7 +27,9 @@ export interface WpPost {
       alt_text: string;
       media_details?: { width: number; height: number };
     }>;
-    "wp:term"?: Array<Array<{ id: number; name: string; slug: string; taxonomy: string }>>;
+    "wp:term"?: Array<
+      Array<{ id: number; name: string; slug: string; taxonomy: string }>
+    >;
     author?: Array<{ id: number; name: string }>;
   };
 }
@@ -66,7 +69,10 @@ export async function fetchPostBySlug(slug: string): Promise<WpPost | null> {
 }
 
 /** Search posts via WP REST search endpoint. Returns lightweight results. */
-export async function searchPosts(query: string, limit = 8): Promise<WpSearchResult[]> {
+export async function searchPosts(
+  query: string,
+  limit = 8
+): Promise<WpSearchResult[]> {
   const q = query.trim();
   if (!q) return [];
   const url = `${WP_BASE}/search?search=${encodeURIComponent(q)}&type=post&subtype=post&per_page=${limit}`;
@@ -94,7 +100,11 @@ export function stripHtml(html: string): string {
 export function formatPostDate(iso: string): string {
   const d = new Date(iso);
   if (isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+  return d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 
 /** Pull the featured image source URL out of an embedded post, or fall back to empty. */
@@ -130,17 +140,19 @@ export function getFeaturedImage(post: WpPost): { src: string; alt: string } {
  *     variants load too.
  */
 export function rewriteWpUrls(html: string): string {
-  return html
-    // Media URLs: www → cms (so images/files actually resolve)
-    .replace(
-      /https:\/\/www\.kmstx\.com\/(wp-content|wp-includes|wp-json)/g,
-      "https://cms.kmstx.com/$1",
-    )
-    // Internal page links: cms → www (so navigation stays on the SPA)
-    .replace(
-      /https:\/\/cms\.kmstx\.com\/(?!wp-content|wp-includes|wp-json|wp-admin|wp-login)/g,
-      "https://www.kmstx.com/",
-    )
-    // Root-relative href links → absolute www
-    .replace(/href="\/(?!\/)/g, 'href="https://www.kmstx.com/');
+  return (
+    html
+      // Media URLs: www → cms (so images/files actually resolve)
+      .replace(
+        /https:\/\/www\.kmstx\.com\/(wp-content|wp-includes|wp-json)/g,
+        "https://cms.kmstx.com/$1"
+      )
+      // Internal page links: cms → www (so navigation stays on the SPA)
+      .replace(
+        /https:\/\/cms\.kmstx\.com\/(?!wp-content|wp-includes|wp-json|wp-admin|wp-login)/g,
+        "https://www.kmstx.com/"
+      )
+      // Root-relative href links → absolute www
+      .replace(/href="\/(?!\/)/g, 'href="https://www.kmstx.com/')
+  );
 }

@@ -17,43 +17,62 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { NavBar, NewsletterBar as KmsNewsletterBar, Footer, InlineQuoteForm, WarrantyCallout, FreeNationwidePickupCallout } from "@/components/KmsLayout";
+import {
+  NavBar,
+  NewsletterBar as KmsNewsletterBar,
+  Footer,
+  InlineQuoteForm,
+  WarrantyCallout,
+  FreeNationwidePickupCallout,
+} from "@/components/KmsLayout";
 import { submitLead } from "@/lib/submitLead";
 import {
-  Phone, Mail, ChevronDown, ChevronUp,
-  Star, CheckCircle, ArrowRight, Truck, Shield, Zap,
-  Globe, Menu, X, ChevronLeft, ChevronRight,
+  Phone,
+  Mail,
+  ChevronDown,
+  ChevronUp,
+  Star,
+  CheckCircle,
+  ArrowRight,
+  Truck,
+  Shield,
+  Zap,
+  Globe,
+  Menu,
+  X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 // ─── Assets ──────────────────────────────────────────────────────────────────
-const HERO_BG     = "/images/kms-hero-bg.webp";
+const HERO_BG = "/images/kms-hero-bg.webp";
 // Real KMS shop photos from Jimmy (uploaded to CDN via /manus-storage proxy)
-const CENTRIFUGE_IMG  = "/images/centrifuge-welding.webp";
-const GEARBOX_IMG     = "/images/kms-gearbox.webp";
-const BLOWER_IMG      = "/images/blower-roots.webp";
-const KMS_BLOWER_IMG  = "/images/kms-blower-repair.webp";
-const PUMP_IMG        = "/images/oilfield-pumps.webp";
-const FLUID_END_IMG   = "/images/fluid-end-module_97356062.jpg";
-const OILFIELD_IMG    = "/images/oilfield-hero.webp";
-const WORKSHOP_IMG    = "/images/gearbox-open.webp";
+const CENTRIFUGE_IMG = "/images/centrifuge-welding.webp";
+const GEARBOX_IMG = "/images/kms-gearbox.webp";
+const BLOWER_IMG = "/images/blower-roots.webp";
+const KMS_BLOWER_IMG = "/images/kms-blower-repair.webp";
+const PUMP_IMG = "/images/oilfield-pumps.webp";
+const FLUID_END_IMG = "/images/fluid-end-module_97356062.jpg";
+const OILFIELD_IMG = "/images/oilfield-hero.webp";
+const WORKSHOP_IMG = "/images/gearbox-open.webp";
 
 // ─── Brand Tokens ─────────────────────────────────────────────────────────────
 const C = {
-  blueDark:   "#1E5080",
-  blueMid:    "#235A91",
-  blueSky:    "#3796D2",
-  blueLight:  "#4BAAE0",
-  green:      "#78A546",
-  greenDark:  "#5E8535",
+  blueDark: "#1E5080",
+  blueMid: "#235A91",
+  blueSky: "#3796D2",
+  blueLight: "#4BAAE0",
+  green: "#78A546",
+  greenDark: "#5E8535",
   greenLight: "#8FBF58",
-  darkBg:     "#1A2535",
-  darkBg2:    "#1E2F44",
-  lightBg:    "#F4F7FA",
-  white:      "#FFFFFF",
-  textDark:   "#1A2535",
-  textMid:    "#3D5166",
-  textLight:  "rgba(255,255,255,0.85)",
-  textMuted:  "rgba(255,255,255,0.6)",
+  darkBg: "#1A2535",
+  darkBg2: "#1E2F44",
+  lightBg: "#F4F7FA",
+  white: "#FFFFFF",
+  textDark: "#1A2535",
+  textMid: "#3D5166",
+  textLight: "rgba(255,255,255,0.85)",
+  textMuted: "rgba(255,255,255,0.6)",
 };
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
@@ -61,23 +80,28 @@ const SERVICES = [
   {
     id: "centrifuge",
     title: "Centrifuge Repair",
-    description: "Comprehensive repair, rebuild, and reconditioning for all types of industrial centrifuges — decanter, basket, disc stack, and more. We service all major brands including Alfa Laval, Andritz, Bird, Sharples, and Flottweg.",
-    keywords: "centrifuge repair, decanter centrifuge repair, industrial centrifuge rebuild",
+    description:
+      "Comprehensive repair, rebuild, and reconditioning for all types of industrial centrifuges — decanter, basket, disc stack, and more. We service all major brands including Alfa Laval, Andritz, Bird, Sharples, and Flottweg.",
+    keywords:
+      "centrifuge repair, decanter centrifuge repair, industrial centrifuge rebuild",
     image: CENTRIFUGE_IMG,
     href: "/services/centrifuge-repair",
   },
   {
     id: "gearbox",
     title: "Gearbox Repair",
-    description: "Full-service gearbox repair and overhaul for speed reducers, speed increasers, planetary gearboxes, and cooling tower drives. We handle all phases from inspection to final balancing. Brands: Falk, Lufkin, Amarillo, Rexnord, Sumitomo, Flender, SEW, David Brown, Voith, and more.",
-    keywords: "gearbox repair, industrial gearbox overhaul, speed reducer repair",
+    description:
+      "Full-service gearbox repair and overhaul for speed reducers, speed increasers, planetary gearboxes, and cooling tower drives. We handle all phases from inspection to final balancing. Brands: Falk, Lufkin, Amarillo, Rexnord, Sumitomo, Flender, SEW, David Brown, Voith, and more.",
+    keywords:
+      "gearbox repair, industrial gearbox overhaul, speed reducer repair",
     image: GEARBOX_IMG,
     href: "/services/gearbox-repair",
   },
   {
     id: "pump",
     title: "Pump Repair & Rebuild",
-    description: "Expert repair for all pump types — centrifugal, vertical turbine, horizontal split case, and positive displacement. Impeller rebuilds, hard-facing, and seal replacement included. All major brands serviced.",
+    description:
+      "Expert repair for all pump types — centrifugal, vertical turbine, horizontal split case, and positive displacement. Impeller rebuilds, hard-facing, and seal replacement included. All major brands serviced.",
     keywords: "pump repair, centrifugal pump repair, industrial pump rebuild",
     image: PUMP_IMG,
     href: "/pump-service",
@@ -85,7 +109,8 @@ const SERVICES = [
   {
     id: "blower",
     title: "Blower Repair",
-    description: "Industrial blower repair, rebuild, and reconditioning — including Roots-style PD blowers, multi-stage centrifugals, and regenerative blowers. We service Roots, Tuthill, Aerzen, Hoffman, Spencer, and every other major manufacturer in the field.",
+    description:
+      "Industrial blower repair, rebuild, and reconditioning — including Roots-style PD blowers, multi-stage centrifugals, and regenerative blowers. We service Roots, Tuthill, Aerzen, Hoffman, Spencer, and every other major manufacturer in the field.",
     keywords: "blower repair, industrial blower rebuild, roots blower repair",
     image: KMS_BLOWER_IMG,
     href: "/services/industrial-blower-repair",
@@ -93,16 +118,20 @@ const SERVICES = [
   {
     id: "compressor",
     title: "Compressor Repair",
-    description: "Full-service industrial compressor repair and overhaul — centrifugal, reciprocating, rotary screw, and oil-flooded designs. Bearing replacement, impeller rebuild, dynamic balancing, and complete teardown-and-rebuild to OEM spec. Kaeser, Atlas Copco, Ingersoll Rand, Sullair, and more.",
-    keywords: "compressor repair, industrial compressor rebuild, centrifugal compressor service",
+    description:
+      "Full-service industrial compressor repair and overhaul — centrifugal, reciprocating, rotary screw, and oil-flooded designs. Bearing replacement, impeller rebuild, dynamic balancing, and complete teardown-and-rebuild to OEM spec. Kaeser, Atlas Copco, Ingersoll Rand, Sullair, and more.",
+    keywords:
+      "compressor repair, industrial compressor rebuild, centrifugal compressor service",
     image: BLOWER_IMG,
     href: "/services/industrial-compressors",
   },
   {
     id: "fluid-power-end",
     title: "Fluid End & Power End Repair",
-    description: "Specialized repair and refurbishment for oilfield mud pump fluid ends and power ends. We restore fluid end modules — one-piece, two-piece, L-shaped, and valve-over-valve — using proprietary welding and machining. Brands: Lewco, Kerr, NOV, Gardner Denver, Weatherford, Emsco, and more.",
-    keywords: "fluid end repair, power end repair, mud pump repair, frac pump repair",
+    description:
+      "Specialized repair and refurbishment for oilfield mud pump fluid ends and power ends. We restore fluid end modules — one-piece, two-piece, L-shaped, and valve-over-valve — using proprietary welding and machining. Brands: Lewco, Kerr, NOV, Gardner Denver, Weatherford, Emsco, and more.",
+    keywords:
+      "fluid end repair, power end repair, mud pump repair, frac pump repair",
     image: FLUID_END_IMG,
     href: "/services/fluid-power-end-repair",
   },
@@ -116,26 +145,104 @@ const STATS = [
 ];
 
 const TESTIMONIALS = [
-  { quote: "Our extruder gearbox crashed. We replaced it with a 'so called' rebuilt spare. We shipped the crashed gearbox to Kelsey Machine. They repaired it and charged us much less than the last company we sent our gearbox to, and their workmanship was great.", name: "Michael Cieszinski", title: "Plant Manager", service: "Gearbox Repair" },
-  { quote: "We had our Decanter Centrifuge down and out of service. Our regular centrifuge repair company said it would be at least 8 weeks before they could get to it. KMS was able to rebuild our Centrifuge within 10 days and do it for less than their competition.", name: "James Basset", title: "Plant Manager", service: "Centrifuge Repair" },
-  { quote: "Since 2011 Kelsey Machine Services has been repairing our Rotary Airlocks and Amarillo Gearboxes. Before that time, we would only go back to the OEM for service. But Kelsey has been beating the OEM's price and offering great service.", name: "Jon Sottile", title: "Engineering Manager", service: "Gearbox Repair" },
-  { quote: "Kelsey Machine Services is a reputable company. I've had some terrible experiences in the past with shady repair companies. But Kelsey Machine has always been honest and stands behind their warranty. They always do what they say.", name: "Oscar Garcia", title: "Buyer", service: "General Repair" },
-  { quote: "We sent our Centrifuge to the OEM for service. After evaluating, they indicated the unit was beyond repair and recommended we replace it. Before purchasing a new one, we contacted Kelsey Machine. They were confident they could save the unit. After 20 months the machine is still running without any issues.", name: "Marilyn Offerman", title: "Purchasing Manager", service: "Centrifuge Repair" },
-  { quote: "We had a Bosch Rexroth Hydraulic pump go down and we did not have a backup. We needed it back running ASAP. We contacted Kelsey Machine in Tomball TX who were able to pick up our pump and repair it within 72 hours. Kelsey Machine is the only company we will send our Hydraulic pumps to for service.", name: "Byron Gilbert", title: "Reliability Engineer", service: "Hydraulic Repair" },
-  { quote: "Kelsey Machine has been a vendor with my company since 2004. Their workmanship and ability to offer fast turnaround time is outstanding. I highly recommend KMS for gearbox repair service.", name: "Kenneth Sung", title: "Operations Manager", service: "Gearbox Repair" },
-  { quote: "After years of frustration trying to find a good source for Blower repair, we finally found Kelsey Machine. They evaluate the problem and supply us with a free repair quote. They have been rebuilding our blowers for 2 years. I recommend KMS to all of our other plant sites.", name: "Michael Prater", title: "Reliability Manager", service: "Blower Repair" },
-  { quote: "I will only trust KMS to service my Centrifugal Pumps. They have been servicing our pumps for over a decade. I have not found another company to beat their work. I'm a very satisfied customer.", name: "David Jackson", title: "Maintenance Supervisor", service: "Pump Repair" },
+  {
+    quote:
+      "Our extruder gearbox crashed. We replaced it with a 'so called' rebuilt spare. We shipped the crashed gearbox to Kelsey Machine. They repaired it and charged us much less than the last company we sent our gearbox to, and their workmanship was great.",
+    name: "Michael Cieszinski",
+    title: "Plant Manager",
+    service: "Gearbox Repair",
+  },
+  {
+    quote:
+      "We had our Decanter Centrifuge down and out of service. Our regular centrifuge repair company said it would be at least 8 weeks before they could get to it. KMS was able to rebuild our Centrifuge within 10 days and do it for less than their competition.",
+    name: "James Basset",
+    title: "Plant Manager",
+    service: "Centrifuge Repair",
+  },
+  {
+    quote:
+      "Since 2011 Kelsey Machine Services has been repairing our Rotary Airlocks and Amarillo Gearboxes. Before that time, we would only go back to the OEM for service. But Kelsey has been beating the OEM's price and offering great service.",
+    name: "Jon Sottile",
+    title: "Engineering Manager",
+    service: "Gearbox Repair",
+  },
+  {
+    quote:
+      "Kelsey Machine Services is a reputable company. I've had some terrible experiences in the past with shady repair companies. But Kelsey Machine has always been honest and stands behind their warranty. They always do what they say.",
+    name: "Oscar Garcia",
+    title: "Buyer",
+    service: "General Repair",
+  },
+  {
+    quote:
+      "We sent our Centrifuge to the OEM for service. After evaluating, they indicated the unit was beyond repair and recommended we replace it. Before purchasing a new one, we contacted Kelsey Machine. They were confident they could save the unit. After 20 months the machine is still running without any issues.",
+    name: "Marilyn Offerman",
+    title: "Purchasing Manager",
+    service: "Centrifuge Repair",
+  },
+  {
+    quote:
+      "We had a Bosch Rexroth Hydraulic pump go down and we did not have a backup. We needed it back running ASAP. We contacted Kelsey Machine in Tomball TX who were able to pick up our pump and repair it within 72 hours. Kelsey Machine is the only company we will send our Hydraulic pumps to for service.",
+    name: "Byron Gilbert",
+    title: "Reliability Engineer",
+    service: "Hydraulic Repair",
+  },
+  {
+    quote:
+      "Kelsey Machine has been a vendor with my company since 2004. Their workmanship and ability to offer fast turnaround time is outstanding. I highly recommend KMS for gearbox repair service.",
+    name: "Kenneth Sung",
+    title: "Operations Manager",
+    service: "Gearbox Repair",
+  },
+  {
+    quote:
+      "After years of frustration trying to find a good source for Blower repair, we finally found Kelsey Machine. They evaluate the problem and supply us with a free repair quote. They have been rebuilding our blowers for 2 years. I recommend KMS to all of our other plant sites.",
+    name: "Michael Prater",
+    title: "Reliability Manager",
+    service: "Blower Repair",
+  },
+  {
+    quote:
+      "I will only trust KMS to service my Centrifugal Pumps. They have been servicing our pumps for over a decade. I have not found another company to beat their work. I'm a very satisfied customer.",
+    name: "David Jackson",
+    title: "Maintenance Supervisor",
+    service: "Pump Repair",
+  },
 ];
 
 const FAQS = [
-  { q: "What types of rotating equipment does Kelsey Machine repair?", a: "Kelsey Machine Services repairs a comprehensive range of rotating equipment, including industrial centrifuges (decanter, basket, disc stack), gearboxes (speed reducers, speed increasers, planetary), pumps (centrifugal, vertical turbine, horizontal split case), blowers and compressors (positive displacement, screw, regenerative), and hydraulic drives and pumps. We service all major brands." },
-  { q: "What warranty does Kelsey Machine offer on repairs?", a: "We offer an industry-leading 24-month rebuilt warranty on all repaired and rebuilt equipment. This is the best guarantee in the rotating equipment repair industry and reflects our confidence in the quality of our workmanship." },
-  { q: "Does Kelsey Machine offer 24/7 emergency repair service?", a: "Yes. We provide 24/7 emergency repair services, including free pickup and delivery nationwide. When your equipment goes down, call us at 346-350-1464 and we will respond immediately to minimize your downtime." },
-  { q: "How quickly can Kelsey Machine repair my equipment?", a: "Our large inventory of parts and experienced team allow us to offer rapid turnaround times — often significantly faster than the OEM. We have completed centrifuge rebuilds in as little as 10 days and hydraulic pump repairs within 72 hours." },
-  { q: "Does Kelsey Machine offer free pickup and delivery?", a: "Yes. We offer free pickup and delivery for all repair jobs, nationwide across all 50 states, plus Canada and Mexico. Simply call us and we will arrange pickup at your facility." },
-  { q: "What brands of rotating equipment does Kelsey Machine service?", a: "We service all major brands, including Alfa Laval, Andritz, Bird, Sharples, Flottweg, Sulzer, Dodge, Sumitomo, Falk, Brevini, Chemineer, Davis-Standard, Rossi, Bosch Rexroth, and many more. If you don't see your brand listed, call us — we likely service it." },
-  { q: "Can Kelsey Machine repair equipment the OEM says is beyond repair?", a: "In many cases, yes. We have successfully rebuilt centrifuges and other equipment that OEMs declared beyond repair, saving our customers the cost of purchasing new equipment. Our engineers will provide an honest assessment before recommending a course of action." },
-  { q: "What industries does Kelsey Machine serve?", a: "We serve a wide range of industries, including oil and gas, petrochemical, refining, food and beverage, wastewater treatment, power generation, pulp and paper, pharmaceutical, and general manufacturing." },
+  {
+    q: "What types of rotating equipment does Kelsey Machine repair?",
+    a: "Kelsey Machine Services repairs a comprehensive range of rotating equipment, including industrial centrifuges (decanter, basket, disc stack), gearboxes (speed reducers, speed increasers, planetary), pumps (centrifugal, vertical turbine, horizontal split case), blowers and compressors (positive displacement, screw, regenerative), and hydraulic drives and pumps. We service all major brands.",
+  },
+  {
+    q: "What warranty does Kelsey Machine offer on repairs?",
+    a: "We offer an industry-leading 24-month rebuilt warranty on all repaired and rebuilt equipment. This is the best guarantee in the rotating equipment repair industry and reflects our confidence in the quality of our workmanship.",
+  },
+  {
+    q: "Does Kelsey Machine offer 24/7 emergency repair service?",
+    a: "Yes. We provide 24/7 emergency repair services, including free pickup and delivery nationwide. When your equipment goes down, call us at 346-350-1464 and we will respond immediately to minimize your downtime.",
+  },
+  {
+    q: "How quickly can Kelsey Machine repair my equipment?",
+    a: "Our large inventory of parts and experienced team allow us to offer rapid turnaround times — often significantly faster than the OEM. We have completed centrifuge rebuilds in as little as 10 days and hydraulic pump repairs within 72 hours.",
+  },
+  {
+    q: "Does Kelsey Machine offer free pickup and delivery?",
+    a: "Yes. We offer free pickup and delivery for all repair jobs, nationwide across all 50 states, plus Canada and Mexico. Simply call us and we will arrange pickup at your facility.",
+  },
+  {
+    q: "What brands of rotating equipment does Kelsey Machine service?",
+    a: "We service all major brands, including Alfa Laval, Andritz, Bird, Sharples, Flottweg, Sulzer, Dodge, Sumitomo, Falk, Brevini, Chemineer, Davis-Standard, Rossi, Bosch Rexroth, and many more. If you don't see your brand listed, call us — we likely service it.",
+  },
+  {
+    q: "Can Kelsey Machine repair equipment the OEM says is beyond repair?",
+    a: "In many cases, yes. We have successfully rebuilt centrifuges and other equipment that OEMs declared beyond repair, saving our customers the cost of purchasing new equipment. Our engineers will provide an honest assessment before recommending a course of action.",
+  },
+  {
+    q: "What industries does Kelsey Machine serve?",
+    a: "We serve a wide range of industries, including oil and gas, petrochemical, refining, food and beverage, wastewater treatment, power generation, pulp and paper, pharmaceutical, and general manufacturing.",
+  },
 ];
 
 const INDUSTRIES = [
@@ -143,17 +250,35 @@ const INDUSTRIES = [
   { name: "Petrochemical", icon: "🏭", href: "/industries#petrochemical" },
   { name: "Food & Beverage", icon: "🌾", href: "/industries#food-beverage" },
   { name: "Wastewater", icon: "💧", href: "/industries#wastewater" },
-  { name: "Power Generation", icon: "⚡", href: "/industries#power-generation" },
+  {
+    name: "Power Generation",
+    icon: "⚡",
+    href: "/industries#power-generation",
+  },
   { name: "Pulp & Paper", icon: "📄", href: "/industries#pulp-paper" },
   { name: "Pharmaceutical", icon: "⚗️", href: "/industries#pharmaceutical" },
   { name: "Manufacturing", icon: "🔩", href: "/industries#manufacturing" },
 ];
 
 const BRANDS = [
-  "Alfa Laval", "Andritz", "Bird", "Sharples", "Flottweg",
-  "Sulzer", "Dodge", "Sumitomo", "Falk", "Brevini",
-  "Chemineer", "Davis-Standard", "Rossi", "Humboldt",
-  "Bosch Rexroth", "Parker", "Eaton", "Amarillo",
+  "Alfa Laval",
+  "Andritz",
+  "Bird",
+  "Sharples",
+  "Flottweg",
+  "Sulzer",
+  "Dodge",
+  "Sumitomo",
+  "Falk",
+  "Brevini",
+  "Chemineer",
+  "Davis-Standard",
+  "Rossi",
+  "Humboldt",
+  "Bosch Rexroth",
+  "Parker",
+  "Eaton",
+  "Amarillo",
 ];
 
 // ─── Shared input style ───────────────────────────────────────────────────────
@@ -172,7 +297,14 @@ const inputStyle: React.CSSProperties = {
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 function HeroSection() {
-  const [form, setForm] = useState({ name: "", company: "", phone: "", email: "", service: "", message: "" });
+  const [form, setForm] = useState({
+    name: "",
+    company: "",
+    phone: "",
+    email: "",
+    service: "",
+    message: "",
+  });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -208,7 +340,11 @@ function HeroSection() {
       });
       setSubmitted(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong. Please call 346-350-1464.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please call 346-350-1464."
+      );
     } finally {
       setSubmitting(false);
     }
@@ -222,29 +358,57 @@ function HeroSection() {
       aria-label="Hero — Kelsey Machine Services rotating equipment repair"
     >
       {/* BG image — worker on left, shop floor on right */}
-      <div className="absolute inset-0 bg-cover" style={{ backgroundImage: `url(${HERO_BG})`, backgroundPosition: "left center" }} />
+      <div
+        className="absolute inset-0 bg-cover"
+        style={{
+          backgroundImage: `url(${HERO_BG})`,
+          backgroundPosition: "left center",
+        }}
+      />
       {/* Gradient overlay — semi-transparent across full width so worker is visible on left, form readable on right */}
-      <div className="absolute inset-0" style={{ background: `linear-gradient(105deg, rgba(30,80,128,0.72) 0%, rgba(30,80,128,0.78) 50%, rgba(26,37,53,0.80) 100%)` }} />
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(105deg, rgba(30,80,128,0.72) 0%, rgba(30,80,128,0.78) 50%, rgba(26,37,53,0.80) 100%)`,
+        }}
+      />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 pt-2 pb-12 lg:pt-3 lg:pb-20">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
-
           {/* Left — headline + CTAs */}
           <div>
             <div className="kms-label mb-3" style={{ color: C.greenLight }}>
               Houston, TX · Serving All 50 States + Canada &amp; Mexico
             </div>
-            <h1 className="kms-headline text-white mb-5" style={{ fontSize: "clamp(2.6rem, 4.5vw, 3.8rem)" }}>
+            <h1
+              className="kms-headline text-white mb-5"
+              style={{ fontSize: "clamp(2.6rem, 4.5vw, 3.8rem)" }}
+            >
               YOUR PARTNER IN
               <br />
               <span style={{ color: C.green }}>ROTATING EQUIPMENT</span>
               <br />
               UPTIME
             </h1>
-            <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1.1rem", color: C.textLight, lineHeight: 1.7, maxWidth: 520, marginBottom: "1.5rem" }}>
-              Kelsey Machine Services delivers expert repair, rebuild, and maintenance for centrifuges, gearboxes, pumps, blowers, and hydraulic drives — backed by an industry-leading{" "}
-              <strong style={{ color: C.greenLight }}>24-month warranty</strong> and available{" "}
-              <strong style={{ color: C.greenLight }}>24/7 for emergencies</strong>.
+            <p
+              style={{
+                fontFamily: "'Source Sans 3', sans-serif",
+                fontSize: "1.1rem",
+                color: C.textLight,
+                lineHeight: 1.7,
+                maxWidth: 520,
+                marginBottom: "1.5rem",
+              }}
+            >
+              Kelsey Machine Services delivers expert repair, rebuild, and
+              maintenance for centrifuges, gearboxes, pumps, blowers, and
+              hydraulic drives — backed by an industry-leading{" "}
+              <strong style={{ color: C.greenLight }}>24-month warranty</strong>{" "}
+              and available{" "}
+              <strong style={{ color: C.greenLight }}>
+                24/7 for emergencies
+              </strong>
+              .
             </p>
 
             {/* Trust badges */}
@@ -255,50 +419,114 @@ function HeroSection() {
                 { icon: <Zap size={13} />, text: "24/7 Emergency Service" },
                 { icon: <Globe size={13} />, text: "All 50 States" },
               ].map(({ icon, text }) => (
-                <div key={text} className="flex items-center gap-2 px-3 py-1.5" style={{ background: "rgba(120,165,70,0.15)", border: "1px solid rgba(120,165,70,0.4)", color: C.greenLight, fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.78rem", letterSpacing: "0.05em", borderRadius: "2px" }}>
+                <div
+                  key={text}
+                  className="flex items-center gap-2 px-3 py-1.5"
+                  style={{
+                    background: "rgba(120,165,70,0.15)",
+                    border: "1px solid rgba(120,165,70,0.4)",
+                    color: C.greenLight,
+                    fontFamily: "'Barlow', sans-serif",
+                    fontWeight: 600,
+                    fontSize: "0.78rem",
+                    letterSpacing: "0.05em",
+                    borderRadius: "2px",
+                  }}
+                >
                   {icon} {text}
                 </div>
               ))}
             </div>
 
             <div className="flex flex-wrap gap-4">
-              <a href="#contact" onClick={handleHighlightForm} className="kms-btn-green" style={{ fontSize: "1rem", padding: "0.8rem 2rem", cursor: "pointer" }}>
+              <a
+                href="#contact"
+                onClick={handleHighlightForm}
+                className="kms-btn-green"
+                style={{
+                  fontSize: "1rem",
+                  padding: "0.8rem 2rem",
+                  cursor: "pointer",
+                }}
+              >
                 Get a Free Quote <ArrowRight size={16} />
               </a>
-              <a href="tel:3463501464" className="kms-btn-outline-white" style={{ fontSize: "1rem", padding: "0.8rem 2rem" }}>
+              <a
+                href="tel:3463501464"
+                className="kms-btn-outline-white"
+                style={{ fontSize: "1rem", padding: "0.8rem 2rem" }}
+              >
                 <Phone size={16} /> Call Now
               </a>
             </div>
           </div>
 
           {/* Right — lead form */}
-          <div style={{
-            background: "rgba(26,37,53,0.80)",
-            border: highlightForm ? `1px solid ${C.green}` : `1px solid rgba(120,165,70,0.35)`,
-            padding: "1.5rem 2rem 2rem 2rem",
-            backdropFilter: "blur(12px)",
-            borderRadius: "2px",
-            boxShadow: highlightForm
-              ? `0 0 0 4px ${C.green}, 0 0 28px rgba(120,165,70,0.65)`
-              : "0 0 0 0 transparent",
-            transform: highlightForm ? "scale(1.015)" : "scale(1)",
-            transition: "box-shadow 0.4s ease-in-out, border-color 0.4s ease-in-out, transform 0.3s ease-in-out",
-          }}>
+          <div
+            style={{
+              background: "rgba(26,37,53,0.80)",
+              border: highlightForm
+                ? `1px solid ${C.green}`
+                : `1px solid rgba(120,165,70,0.35)`,
+              padding: "1.5rem 2rem 2rem 2rem",
+              backdropFilter: "blur(12px)",
+              borderRadius: "2px",
+              boxShadow: highlightForm
+                ? `0 0 0 4px ${C.green}, 0 0 28px rgba(120,165,70,0.65)`
+                : "0 0 0 0 transparent",
+              transform: highlightForm ? "scale(1.015)" : "scale(1)",
+              transition:
+                "box-shadow 0.4s ease-in-out, border-color 0.4s ease-in-out, transform 0.3s ease-in-out",
+            }}
+          >
             {submitted ? (
               <div className="text-center py-8">
-                <CheckCircle size={48} style={{ color: C.green, margin: "0 auto 1rem" }} />
-                <h3 className="kms-headline text-white mb-2" style={{ fontSize: "1.5rem" }}>REQUEST RECEIVED!</h3>
-                <p style={{ fontFamily: "'Source Sans 3', sans-serif", color: C.textMuted, lineHeight: 1.6 }}>
-                  A Kelsey Machine specialist will contact you as quickly as possible. For immediate assistance, call{" "}
-                  <a href="tel:3463501464" style={{ color: C.green }}>346-350-1464</a>.
+                <CheckCircle
+                  size={48}
+                  style={{ color: C.green, margin: "0 auto 1rem" }}
+                />
+                <h3
+                  className="kms-headline text-white mb-2"
+                  style={{ fontSize: "1.5rem" }}
+                >
+                  REQUEST RECEIVED!
+                </h3>
+                <p
+                  style={{
+                    fontFamily: "'Source Sans 3', sans-serif",
+                    color: C.textMuted,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  A Kelsey Machine specialist will contact you as quickly as
+                  possible. For immediate assistance, call{" "}
+                  <a href="tel:3463501464" style={{ color: C.green }}>
+                    346-350-1464
+                  </a>
+                  .
                 </p>
               </div>
             ) : (
               <>
-                <div className="kms-label mb-1" style={{ color: C.green }}>Get Equipment Help Now</div>
-                <h2 className="kms-headline text-white mb-1" style={{ fontSize: "1.6rem" }}>REQUEST A FREE QUOTE</h2>
-                <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.9rem", color: C.textMuted, marginBottom: "1.25rem" }}>
-                  A rotating equipment specialist will respond within the hour. Available 24/7.
+                <div className="kms-label mb-1" style={{ color: C.green }}>
+                  Get Equipment Help Now
+                </div>
+                <h2
+                  className="kms-headline text-white mb-1"
+                  style={{ fontSize: "1.6rem" }}
+                >
+                  REQUEST A FREE QUOTE
+                </h2>
+                <p
+                  style={{
+                    fontFamily: "'Source Sans 3', sans-serif",
+                    fontSize: "0.9rem",
+                    color: C.textMuted,
+                    marginBottom: "1.25rem",
+                  }}
+                >
+                  A rotating equipment specialist will respond within the hour.
+                  Available 24/7.
                 </p>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                   {/* Row 1: Name | Company */}
@@ -312,16 +540,22 @@ function HeroSection() {
                       onChange={e => setForm({ ...form, name: e.target.value })}
                       style={inputStyle}
                       onFocus={e => (e.target.style.borderColor = C.green)}
-                      onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")}
+                      onBlur={e =>
+                        (e.target.style.borderColor = "rgba(255,255,255,0.2)")
+                      }
                     />
                     <input
                       type="text"
                       placeholder="Company / Plant"
                       value={form.company}
-                      onChange={e => setForm({ ...form, company: e.target.value })}
+                      onChange={e =>
+                        setForm({ ...form, company: e.target.value })
+                      }
                       style={inputStyle}
                       onFocus={e => (e.target.style.borderColor = C.green)}
-                      onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")}
+                      onBlur={e =>
+                        (e.target.style.borderColor = "rgba(255,255,255,0.2)")
+                      }
                     />
                   </div>
                   {/* Row 2: Phone | Email */}
@@ -331,25 +565,39 @@ function HeroSection() {
                       placeholder="Phone Number *"
                       required
                       value={form.phone}
-                      onChange={e => setForm({ ...form, phone: e.target.value })}
+                      onChange={e =>
+                        setForm({ ...form, phone: e.target.value })
+                      }
                       style={inputStyle}
                       onFocus={e => (e.target.style.borderColor = C.green)}
-                      onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")}
+                      onBlur={e =>
+                        (e.target.style.borderColor = "rgba(255,255,255,0.2)")
+                      }
                     />
                     <input
                       type="email"
                       placeholder="Email Address"
                       value={form.email}
-                      onChange={e => setForm({ ...form, email: e.target.value })}
+                      onChange={e =>
+                        setForm({ ...form, email: e.target.value })
+                      }
                       style={inputStyle}
                       onFocus={e => (e.target.style.borderColor = C.green)}
-                      onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")}
+                      onBlur={e =>
+                        (e.target.style.borderColor = "rgba(255,255,255,0.2)")
+                      }
                     />
                   </div>
                   <select
                     value={form.service}
-                    onChange={e => setForm({ ...form, service: e.target.value })}
-                    style={{ ...inputStyle, background: C.darkBg2, color: form.service ? "white" : "rgba(255,255,255,0.45)" }}
+                    onChange={e =>
+                      setForm({ ...form, service: e.target.value })
+                    }
+                    style={{
+                      ...inputStyle,
+                      background: C.darkBg2,
+                      color: form.service ? "white" : "rgba(255,255,255,0.45)",
+                    }}
                   >
                     <option value="">Service Needed</option>
                     <option value="centrifuge">Centrifuge Repair</option>
@@ -364,22 +612,56 @@ function HeroSection() {
                     placeholder="Describe the issue (optional)"
                     rows={2}
                     value={form.message}
-                    onChange={e => setForm({ ...form, message: e.target.value })}
+                    onChange={e =>
+                      setForm({ ...form, message: e.target.value })
+                    }
                     style={{ ...inputStyle, resize: "none" }}
                     onFocus={e => (e.target.style.borderColor = C.green)}
-                    onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")}
+                    onBlur={e =>
+                      (e.target.style.borderColor = "rgba(255,255,255,0.2)")
+                    }
                   />
                   {error && (
-                    <p style={{ color: "#ff9a9a", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.85rem", margin: 0 }}>{error}</p>
+                    <p
+                      style={{
+                        color: "#ff9a9a",
+                        fontFamily: "'Source Sans 3', sans-serif",
+                        fontSize: "0.85rem",
+                        margin: 0,
+                      }}
+                    >
+                      {error}
+                    </p>
                   )}
-                  <button type="submit" disabled={submitting} className="kms-btn-green justify-center" style={{ fontSize: "1rem", opacity: submitting ? 0.7 : 1, cursor: submitting ? "wait" : "pointer" }}>
-                    {submitting ? "Sending…" : <>Send Repair Request <ArrowRight size={16} /></>}
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="kms-btn-green justify-center"
+                    style={{
+                      fontSize: "1rem",
+                      opacity: submitting ? 0.7 : 1,
+                      cursor: submitting ? "wait" : "pointer",
+                    }}
+                  >
+                    {submitting ? (
+                      "Sending…"
+                    ) : (
+                      <>
+                        Send Repair Request <ArrowRight size={16} />
+                      </>
+                    )}
                   </button>
                 </form>
               </>
             )}
             {/* Trust & Verification Block */}
-            <div style={{ marginTop: "1.25rem", borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "1.25rem" }}>
+            <div
+              style={{
+                marginTop: "1.25rem",
+                borderTop: "1px solid rgba(255,255,255,0.1)",
+                paddingTop: "1.25rem",
+              }}
+            >
               {/* Trust badges */}
               <div className="flex flex-wrap gap-2">
                 {[
@@ -388,7 +670,23 @@ function HeroSection() {
                   { label: "BBB Accredited", icon: "🔒" },
                   { label: "AGMA Member", icon: "⚙️" },
                 ].map(({ label, icon }) => (
-                  <div key={label} style={{ display: "flex", alignItems: "center", gap: "0.3rem", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 2, padding: "0.25rem 0.6rem", fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.72rem", color: "rgba(255,255,255,0.75)", letterSpacing: "0.03em" }}>
+                  <div
+                    key={label}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.3rem",
+                      background: "rgba(255,255,255,0.07)",
+                      border: "1px solid rgba(255,255,255,0.12)",
+                      borderRadius: 2,
+                      padding: "0.25rem 0.6rem",
+                      fontFamily: "'Barlow', sans-serif",
+                      fontWeight: 600,
+                      fontSize: "0.72rem",
+                      color: "rgba(255,255,255,0.75)",
+                      letterSpacing: "0.03em",
+                    }}
+                  >
                     <span>{icon}</span> {label}
                   </div>
                 ))}
@@ -399,8 +697,15 @@ function HeroSection() {
       </div>
 
       {/* Diagonal cut to light section */}
-      <div className="absolute bottom-0 left-0 right-0" style={{ height: 60, overflow: "hidden" }}>
-        <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style={{ width: "100%", height: "100%" }}>
+      <div
+        className="absolute bottom-0 left-0 right-0"
+        style={{ height: 60, overflow: "hidden" }}
+      >
+        <svg
+          viewBox="0 0 1440 60"
+          preserveAspectRatio="none"
+          style={{ width: "100%", height: "100%" }}
+        >
           <polygon points="0,60 1440,0 1440,60" fill={C.lightBg} />
         </svg>
       </div>
@@ -411,24 +716,72 @@ function HeroSection() {
 // ─── Trust Bar ────────────────────────────────────────────────────────────────
 function TrustBar() {
   const items = [
-    { icon: <Truck size={28} style={{ color: C.green }} />, title: "Free Nationwide Pickup", desc: "We come to you — at no charge, anywhere in the continental US, Canada, and Mexico." },
-    { icon: <Shield size={28} style={{ color: C.green }} />, title: "24-Month Warranty", desc: "The best rebuilt warranty in the rotating equipment repair industry, period." },
-    { icon: <Zap size={28} style={{ color: C.green }} />, title: "24/7 Emergency Service", desc: "When your equipment goes down, we respond immediately — day or night." },
-    { icon: <Globe size={28} style={{ color: C.green }} />, title: "Nationwide Coverage", desc: "Serving all 50 states plus Canada and Mexico from our Houston, TX facility." },
+    {
+      icon: <Truck size={28} style={{ color: C.green }} />,
+      title: "Free Nationwide Pickup",
+      desc: "We come to you — at no charge, anywhere in the continental US, Canada, and Mexico.",
+    },
+    {
+      icon: <Shield size={28} style={{ color: C.green }} />,
+      title: "24-Month Warranty",
+      desc: "The best rebuilt warranty in the rotating equipment repair industry, period.",
+    },
+    {
+      icon: <Zap size={28} style={{ color: C.green }} />,
+      title: "24/7 Emergency Service",
+      desc: "When your equipment goes down, we respond immediately — day or night.",
+    },
+    {
+      icon: <Globe size={28} style={{ color: C.green }} />,
+      title: "Nationwide Coverage",
+      desc: "Serving all 50 states plus Canada and Mexico from our Houston, TX facility.",
+    },
   ];
   return (
-    <section style={{ background: C.lightBg, paddingTop: "3.5rem", paddingBottom: "3.5rem" }} aria-label="Key differentiators">
+    <section
+      style={{
+        background: C.lightBg,
+        paddingTop: "3.5rem",
+        paddingBottom: "3.5rem",
+      }}
+      aria-label="Key differentiators"
+    >
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {items.map(({ icon, title, desc }) => (
             <div key={title} className="flex flex-col gap-2">
-              <div style={{ width: 52, height: 52, background: "rgba(120,165,70,0.12)", border: "1px solid rgba(120,165,70,0.3)", borderRadius: "2px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div
+                style={{
+                  width: 52,
+                  height: 52,
+                  background: "rgba(120,165,70,0.12)",
+                  border: "1px solid rgba(120,165,70,0.3)",
+                  borderRadius: "2px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
                 {icon}
               </div>
-              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.26rem", color: C.blueDark }}>
+              <div
+                style={{
+                  fontFamily: "'Barlow Condensed', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "1.26rem",
+                  color: C.blueDark,
+                }}
+              >
                 {title}
               </div>
-              <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1.06rem", color: C.textMid, lineHeight: 1.55 }}>
+              <p
+                style={{
+                  fontFamily: "'Source Sans 3', sans-serif",
+                  fontSize: "1.06rem",
+                  color: C.textMid,
+                  lineHeight: 1.55,
+                }}
+              >
                 {desc}
               </p>
             </div>
@@ -444,19 +797,59 @@ function StatsSection() {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold: 0.3 });
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) setVisible(true);
+      },
+      { threshold: 0.3 }
+    );
     if (ref.current) obs.observe(ref.current);
     return () => obs.disconnect();
   }, []);
 
   return (
-    <section ref={ref} style={{ background: `linear-gradient(135deg, ${C.blueDark} 0%, ${C.blueMid} 60%, ${C.blueSky} 100%)`, padding: "4rem 0" }} aria-label="Company statistics">
+    <section
+      ref={ref}
+      style={{
+        background: `linear-gradient(135deg, ${C.blueDark} 0%, ${C.blueMid} 60%, ${C.blueSky} 100%)`,
+        padding: "4rem 0",
+      }}
+      aria-label="Company statistics"
+    >
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
           {STATS.map(({ value, label }, i) => (
-            <div key={label} style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: `opacity 0.5s ease ${i * 0.1}s, transform 0.5s ease ${i * 0.1}s` }}>
-              <div className="kms-headline" style={{ fontSize: "clamp(2.5rem, 5vw, 3.8rem)", color: C.green, lineHeight: 1 }}>{value}</div>
-              <div style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 500, fontSize: "0.82rem", color: "rgba(255,255,255,0.75)", letterSpacing: "0.1em", textTransform: "uppercase", marginTop: "0.5rem" }}>{label}</div>
+            <div
+              key={label}
+              style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(20px)",
+                transition: `opacity 0.5s ease ${i * 0.1}s, transform 0.5s ease ${i * 0.1}s`,
+              }}
+            >
+              <div
+                className="kms-headline"
+                style={{
+                  fontSize: "clamp(2.5rem, 5vw, 3.8rem)",
+                  color: C.green,
+                  lineHeight: 1,
+                }}
+              >
+                {value}
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Barlow', sans-serif",
+                  fontWeight: 500,
+                  fontSize: "0.82rem",
+                  color: "rgba(255,255,255,0.75)",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  marginTop: "0.5rem",
+                }}
+              >
+                {label}
+              </div>
             </div>
           ))}
         </div>
@@ -468,41 +861,139 @@ function StatsSection() {
 // ─── Services ─────────────────────────────────────────────────────────────────
 function ServicesSection() {
   return (
-    <section id="services" style={{ background: C.white, padding: "5rem 0" }} aria-label="Our services">
+    <section
+      id="services"
+      style={{ background: C.white, padding: "5rem 0" }}
+      aria-label="Our services"
+    >
       <div className="max-w-7xl mx-auto px-4">
         <div className="mb-12">
           <div className="kms-label mb-2">What We Fix</div>
           <div className="kms-green-rule" />
-          <h2 className="kms-headline" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", color: C.blueDark }}>
-            COMPREHENSIVE ROTATING EQUIPMENT<br />REPAIR SERVICES
+          <h2
+            className="kms-headline"
+            style={{ fontSize: "clamp(2rem, 4vw, 3rem)", color: C.blueDark }}
+          >
+            COMPREHENSIVE ROTATING EQUIPMENT
+            <br />
+            REPAIR SERVICES
           </h2>
-          <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1.05rem", color: C.textMid, maxWidth: 640, marginTop: "0.75rem", lineHeight: 1.7 }}>
-            From emergency centrifuge rebuilds to scheduled gearbox overhauls, Kelsey Machine Services handles every aspect of rotating equipment repair with precision and speed. We service all major brands and back every repair with our industry-leading warranty.
+          <p
+            style={{
+              fontFamily: "'Source Sans 3', sans-serif",
+              fontSize: "1.05rem",
+              color: C.textMid,
+              maxWidth: 640,
+              marginTop: "0.75rem",
+              lineHeight: 1.7,
+            }}
+          >
+            From emergency centrifuge rebuilds to scheduled gearbox overhauls,
+            Kelsey Machine Services handles every aspect of rotating equipment
+            repair with precision and speed. We service all major brands and
+            back every repair with our industry-leading warranty.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {SERVICES.map(svc => (
-            <article key={svc.id} className="kms-service-card" style={{ background: C.lightBg, boxShadow: "0 2px 12px rgba(30,80,128,0.08)", borderRadius: "2px", overflow: "hidden" }}>
-              <a href={svc.href} style={{ display: "block", height: 200, overflow: "hidden", position: "relative", textDecoration: "none" }}>
-                <img src={svc.image} alt={`${svc.title} — Kelsey Machine Services`} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.35s ease" }}
-                  onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.04)")}
-                  onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
-                  loading="lazy" />
-                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(30,80,128,0.65) 0%, transparent 55%)" }} />
-                <div style={{ position: "absolute", bottom: 10, left: 12, fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.68rem", color: C.greenLight, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            <article
+              key={svc.id}
+              className="kms-service-card"
+              style={{
+                background: C.lightBg,
+                boxShadow: "0 2px 12px rgba(30,80,128,0.08)",
+                borderRadius: "2px",
+                overflow: "hidden",
+              }}
+            >
+              <a
+                href={svc.href}
+                style={{
+                  display: "block",
+                  height: 200,
+                  overflow: "hidden",
+                  position: "relative",
+                  textDecoration: "none",
+                }}
+              >
+                <img
+                  src={svc.image}
+                  alt={`${svc.title} — Kelsey Machine Services`}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    transition: "transform 0.35s ease",
+                  }}
+                  onMouseEnter={e =>
+                    (e.currentTarget.style.transform = "scale(1.04)")
+                  }
+                  onMouseLeave={e =>
+                    (e.currentTarget.style.transform = "scale(1)")
+                  }
+                  loading="lazy"
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                      "linear-gradient(to top, rgba(30,80,128,0.65) 0%, transparent 55%)",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 10,
+                    left: 12,
+                    fontFamily: "'Barlow', sans-serif",
+                    fontWeight: 600,
+                    fontSize: "0.68rem",
+                    color: C.greenLight,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                  }}
+                >
                   {svc.keywords.split(",")[0].trim()}
                 </div>
               </a>
               <div style={{ padding: "1.25rem" }}>
-                <h3 className="kms-headline" style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}>
-                  <a href={svc.href} style={{ color: C.blueDark, textDecoration: "none" }}
+                <h3
+                  className="kms-headline"
+                  style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}
+                >
+                  <a
+                    href={svc.href}
+                    style={{ color: C.blueDark, textDecoration: "none" }}
                     onMouseEnter={e => (e.currentTarget.style.color = C.green)}
-                    onMouseLeave={e => (e.currentTarget.style.color = C.blueDark)}
-                  >{svc.title}</a>
+                    onMouseLeave={e =>
+                      (e.currentTarget.style.color = C.blueDark)
+                    }
+                  >
+                    {svc.title}
+                  </a>
                 </h3>
-                <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.9rem", color: C.textMid, lineHeight: 1.65, marginBottom: "1rem" }}>{svc.description}</p>
-                <a href={svc.href} className="kms-btn-green" style={{ fontSize: "0.82rem", padding: "0.5rem 1.25rem", display: "inline-flex" }}>
+                <p
+                  style={{
+                    fontFamily: "'Source Sans 3', sans-serif",
+                    fontSize: "0.9rem",
+                    color: C.textMid,
+                    lineHeight: 1.65,
+                    marginBottom: "1rem",
+                  }}
+                >
+                  {svc.description}
+                </p>
+                <a
+                  href={svc.href}
+                  className="kms-btn-green"
+                  style={{
+                    fontSize: "0.82rem",
+                    padding: "0.5rem 1.25rem",
+                    display: "inline-flex",
+                  }}
+                >
                   Learn More <ArrowRight size={14} />
                 </a>
               </div>
@@ -516,7 +1007,12 @@ function ServicesSection() {
 
 // ─── Why KMS ──────────────────────────────────────────────────────────────────
 function WhyKMSSection() {
-  const [form, setForm] = useState({ name: "", phone: "", service: "", message: "" });
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    service: "",
+    message: "",
+  });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -538,7 +1034,11 @@ function WhyKMSSection() {
       });
       setSubmitted(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong. Please call 346-350-1464.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please call 346-350-1464."
+      );
     } finally {
       setSubmitting(false);
     }
@@ -556,68 +1056,261 @@ function WhyKMSSection() {
     transition: "border-color 0.2s",
   };
   const reasons = [
-    { icon: <Shield size={24} style={{ color: C.green }} />, title: "Industry-Leading 24-Month Warranty", body: "We stand behind every repair with the best guarantee in the business. Our 24-month rebuilt warranty is a contractual commitment backed by decades of quality workmanship." },
-    { icon: <Zap size={24} style={{ color: C.green }} />, title: "Faster Than the OEM", body: "Our large parts inventory and experienced team allow us to complete repairs in days, not weeks. We have rebuilt centrifuges in 10 days that the OEM said would take 8 weeks." },
-    { icon: <CheckCircle size={24} style={{ color: C.green }} />, title: "All Major Brands Serviced", body: "We service every major brand of rotating equipment — Alfa Laval, Andritz, Bird, Sharples, Flottweg, Sulzer, Dodge, Sumitomo, Falk, Bosch Rexroth, and many more." },
-    { icon: <Truck size={24} style={{ color: C.green }} />, title: "Free Pickup & Delivery Nationwide", body: "We come to you — at no charge. Our free pickup and delivery service covers all 50 states, plus Canada and Mexico. Simply call us and we handle the logistics." },
-    { icon: <Globe size={24} style={{ color: C.green }} />, title: "40+ Years of Proven Expertise", body: "Since our founding, Kelsey Machine Services has built a reputation for honesty, quality, and reliability. Our engineers are among the most sought-after experts in the industry." },
-    { icon: <Star size={24} style={{ color: C.green }} />, title: "Large Inventory of Rebuilt Equipment", body: "Need equipment fast? KMS maintains a large inventory of used and rebuilt centrifuges, gearboxes, pumps, and blowers — ready to ship. We can often provide a replacement while yours is being repaired." },
+    {
+      icon: <Shield size={24} style={{ color: C.green }} />,
+      title: "Industry-Leading 24-Month Warranty",
+      body: "We stand behind every repair with the best guarantee in the business. Our 24-month rebuilt warranty is a contractual commitment backed by decades of quality workmanship.",
+    },
+    {
+      icon: <Zap size={24} style={{ color: C.green }} />,
+      title: "Faster Than the OEM",
+      body: "Our large parts inventory and experienced team allow us to complete repairs in days, not weeks. We have rebuilt centrifuges in 10 days that the OEM said would take 8 weeks.",
+    },
+    {
+      icon: <CheckCircle size={24} style={{ color: C.green }} />,
+      title: "All Major Brands Serviced",
+      body: "We service every major brand of rotating equipment — Alfa Laval, Andritz, Bird, Sharples, Flottweg, Sulzer, Dodge, Sumitomo, Falk, Bosch Rexroth, and many more.",
+    },
+    {
+      icon: <Truck size={24} style={{ color: C.green }} />,
+      title: "Free Pickup & Delivery Nationwide",
+      body: "We come to you — at no charge. Our free pickup and delivery service covers all 50 states, plus Canada and Mexico. Simply call us and we handle the logistics.",
+    },
+    {
+      icon: <Globe size={24} style={{ color: C.green }} />,
+      title: "40+ Years of Proven Expertise",
+      body: "Since our founding, Kelsey Machine Services has built a reputation for honesty, quality, and reliability. Our engineers are among the most sought-after experts in the industry.",
+    },
+    {
+      icon: <Star size={24} style={{ color: C.green }} />,
+      title: "Large Inventory of Rebuilt Equipment",
+      body: "Need equipment fast? KMS maintains a large inventory of used and rebuilt centrifuges, gearboxes, pumps, and blowers — ready to ship. We can often provide a replacement while yours is being repaired.",
+    },
   ];
   return (
-    <section id="why-kms" style={{ background: C.lightBg, padding: "5rem 0" }} aria-label="Why choose Kelsey Machine Services">
+    <section
+      id="why-kms"
+      style={{ background: C.lightBg, padding: "5rem 0" }}
+      aria-label="Why choose Kelsey Machine Services"
+    >
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           {/* Left: Photo at top + compact contact form below */}
           <div>
             <div className="relative mb-8">
-              <img src={WORKSHOP_IMG} alt="Kelsey Machine Services professional repair facility" style={{ width: "100%", height: 380, objectFit: "cover", borderRadius: "2px", boxShadow: "0 8px 40px rgba(30,80,128,0.18)", display: "block" }} loading="lazy" />
-              <div style={{ position: "absolute", bottom: -16, right: -16, background: C.green, width: 110, height: 110, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "1rem", borderRadius: "2px" }}>
-                <div className="kms-headline" style={{ fontSize: "2.2rem", lineHeight: 1, color: "white" }}>40+</div>
-                <div style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.58rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "white", lineHeight: 1.3 }}>Years of Expertise</div>
+              <img
+                src={WORKSHOP_IMG}
+                alt="Kelsey Machine Services professional repair facility"
+                style={{
+                  width: "100%",
+                  height: 380,
+                  objectFit: "cover",
+                  borderRadius: "2px",
+                  boxShadow: "0 8px 40px rgba(30,80,128,0.18)",
+                  display: "block",
+                }}
+                loading="lazy"
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: -16,
+                  right: -16,
+                  background: C.green,
+                  width: 110,
+                  height: 110,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  padding: "1rem",
+                  borderRadius: "2px",
+                }}
+              >
+                <div
+                  className="kms-headline"
+                  style={{ fontSize: "2.2rem", lineHeight: 1, color: "white" }}
+                >
+                  40+
+                </div>
+                <div
+                  style={{
+                    fontFamily: "'Barlow', sans-serif",
+                    fontWeight: 600,
+                    fontSize: "0.58rem",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    color: "white",
+                    lineHeight: 1.3,
+                  }}
+                >
+                  Years of Expertise
+                </div>
               </div>
             </div>
-            <div style={{ background: C.darkBg2, border: `1px solid rgba(120,165,70,0.3)`, borderRadius: "2px", padding: "1.5rem", marginTop: "1rem" }}>
+            <div
+              style={{
+                background: C.darkBg2,
+                border: `1px solid rgba(120,165,70,0.3)`,
+                borderRadius: "2px",
+                padding: "1.5rem",
+                marginTop: "1rem",
+              }}
+            >
               {submitted ? (
                 <div className="text-center py-4">
-                  <CheckCircle size={36} style={{ color: C.green, margin: "0 auto 0.75rem" }} />
-                  <div className="kms-headline text-white" style={{ fontSize: "1.2rem" }}>REQUEST RECEIVED!</div>
-                  <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.88rem", color: "rgba(255,255,255,0.6)", marginTop: "0.5rem" }}>
-                    A specialist will contact you shortly. For immediate help, call{" "}
-                    <a href="tel:3463501464" style={{ color: C.green }}>346-350-1464</a>.
+                  <CheckCircle
+                    size={36}
+                    style={{ color: C.green, margin: "0 auto 0.75rem" }}
+                  />
+                  <div
+                    className="kms-headline text-white"
+                    style={{ fontSize: "1.2rem" }}
+                  >
+                    REQUEST RECEIVED!
+                  </div>
+                  <p
+                    style={{
+                      fontFamily: "'Source Sans 3', sans-serif",
+                      fontSize: "0.88rem",
+                      color: "rgba(255,255,255,0.6)",
+                      marginTop: "0.5rem",
+                    }}
+                  >
+                    A specialist will contact you shortly. For immediate help,
+                    call{" "}
+                    <a href="tel:3463501464" style={{ color: C.green }}>
+                      346-350-1464
+                    </a>
+                    .
                   </p>
                 </div>
               ) : (
                 <>
-                  <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.1rem", color: "white", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: "0.25rem" }}>
+                  <div
+                    style={{
+                      fontFamily: "'Barlow Condensed', sans-serif",
+                      fontWeight: 700,
+                      fontSize: "1.1rem",
+                      color: "white",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.04em",
+                      marginBottom: "0.25rem",
+                    }}
+                  >
                     Get a Free Repair Quote
                   </div>
-                  <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.85rem", color: "rgba(255,255,255,0.55)", marginBottom: "1rem" }}>
+                  <p
+                    style={{
+                      fontFamily: "'Source Sans 3', sans-serif",
+                      fontSize: "0.85rem",
+                      color: "rgba(255,255,255,0.55)",
+                      marginBottom: "1rem",
+                    }}
+                  >
                     Available 24/7 &middot; Respond within the hour
                   </p>
-                  <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
+                  <form
+                    onSubmit={handleSubmit}
+                    className="flex flex-col gap-2.5"
+                  >
                     <div className="grid grid-cols-2 gap-2.5">
-                      <input type="text" placeholder="Your Name *" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={wInputStyle}
-                        onFocus={e => (e.target.style.borderColor = C.green)} onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")} />
-                      <input type="tel" placeholder="Phone Number *" required value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={wInputStyle}
-                        onFocus={e => (e.target.style.borderColor = C.green)} onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")} />
+                      <input
+                        type="text"
+                        placeholder="Your Name *"
+                        required
+                        value={form.name}
+                        onChange={e =>
+                          setForm({ ...form, name: e.target.value })
+                        }
+                        style={wInputStyle}
+                        onFocus={e => (e.target.style.borderColor = C.green)}
+                        onBlur={e =>
+                          (e.target.style.borderColor = "rgba(255,255,255,0.2)")
+                        }
+                      />
+                      <input
+                        type="tel"
+                        placeholder="Phone Number *"
+                        required
+                        value={form.phone}
+                        onChange={e =>
+                          setForm({ ...form, phone: e.target.value })
+                        }
+                        style={wInputStyle}
+                        onFocus={e => (e.target.style.borderColor = C.green)}
+                        onBlur={e =>
+                          (e.target.style.borderColor = "rgba(255,255,255,0.2)")
+                        }
+                      />
                     </div>
-                    <select value={form.service} onChange={e => setForm({ ...form, service: e.target.value })} style={{ ...wInputStyle, background: C.darkBg, color: form.service ? "white" : "rgba(255,255,255,0.45)" }}>
+                    <select
+                      value={form.service}
+                      onChange={e =>
+                        setForm({ ...form, service: e.target.value })
+                      }
+                      style={{
+                        ...wInputStyle,
+                        background: C.darkBg,
+                        color: form.service
+                          ? "white"
+                          : "rgba(255,255,255,0.45)",
+                      }}
+                    >
                       <option value="">Service Needed</option>
                       <option value="centrifuge">Centrifuge Repair</option>
                       <option value="gearbox">Gearbox Repair</option>
                       <option value="blower">Blower / Compressor Repair</option>
                       <option value="compressor">Industrial Compressors</option>
-                      <option value="fluid-end">Fluid &amp; Power End Repair</option>
+                      <option value="fluid-end">
+                        Fluid &amp; Power End Repair
+                      </option>
                       <option value="emergency">Emergency Service</option>
                       <option value="other">Other / Not Sure</option>
                     </select>
-                    <textarea placeholder="Describe the issue (optional)" rows={2} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} style={{ ...wInputStyle, resize: "none" }}
-                      onFocus={e => (e.target.style.borderColor = C.green)} onBlur={e => (e.target.style.borderColor = "rgba(255,255,255,0.2)")} />
+                    <textarea
+                      placeholder="Describe the issue (optional)"
+                      rows={2}
+                      value={form.message}
+                      onChange={e =>
+                        setForm({ ...form, message: e.target.value })
+                      }
+                      style={{ ...wInputStyle, resize: "none" }}
+                      onFocus={e => (e.target.style.borderColor = C.green)}
+                      onBlur={e =>
+                        (e.target.style.borderColor = "rgba(255,255,255,0.2)")
+                      }
+                    />
                     {error && (
-                      <p style={{ color: "#ff9a9a", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.82rem", margin: 0 }}>{error}</p>
+                      <p
+                        style={{
+                          color: "#ff9a9a",
+                          fontFamily: "'Source Sans 3', sans-serif",
+                          fontSize: "0.82rem",
+                          margin: 0,
+                        }}
+                      >
+                        {error}
+                      </p>
                     )}
-                    <button type="submit" disabled={submitting} className="kms-btn-green justify-center" style={{ fontSize: "0.92rem", opacity: submitting ? 0.7 : 1, cursor: submitting ? "wait" : "pointer" }}>
-                      {submitting ? "Sending…" : <>Send Repair Request <ArrowRight size={15} /></>}
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="kms-btn-green justify-center"
+                      style={{
+                        fontSize: "0.92rem",
+                        opacity: submitting ? 0.7 : 1,
+                        cursor: submitting ? "wait" : "pointer",
+                      }}
+                    >
+                      {submitting ? (
+                        "Sending…"
+                      ) : (
+                        <>
+                          Send Repair Request <ArrowRight size={15} />
+                        </>
+                      )}
                     </button>
                   </form>
                 </>
@@ -628,16 +1321,43 @@ function WhyKMSSection() {
           <div>
             <div className="kms-label mb-3">The KMS Advantage</div>
             <div className="kms-green-rule" />
-            <h2 className="kms-headline mb-6" style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", color: C.blueDark }}>
-              WHY INDUSTRY LEADERS<br />CHOOSE KELSEY MACHINE
+            <h2
+              className="kms-headline mb-6"
+              style={{
+                fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
+                color: C.blueDark,
+              }}
+            >
+              WHY INDUSTRY LEADERS
+              <br />
+              CHOOSE KELSEY MACHINE
             </h2>
             <div className="grid gap-5">
               {reasons.map(({ icon, title, body }) => (
                 <div key={title} className="flex gap-4">
                   <div style={{ flexShrink: 0, marginTop: 2 }}>{icon}</div>
                   <div>
-                    <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.05rem", color: C.blueDark, marginBottom: "0.25rem" }}>{title}</div>
-                    <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.88rem", color: C.textMid, lineHeight: 1.65 }}>{body}</p>
+                    <div
+                      style={{
+                        fontFamily: "'Barlow Condensed', sans-serif",
+                        fontWeight: 700,
+                        fontSize: "1.05rem",
+                        color: C.blueDark,
+                        marginBottom: "0.25rem",
+                      }}
+                    >
+                      {title}
+                    </div>
+                    <p
+                      style={{
+                        fontFamily: "'Source Sans 3', sans-serif",
+                        fontSize: "0.88rem",
+                        color: C.textMid,
+                        lineHeight: 1.65,
+                      }}
+                    >
+                      {body}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -654,43 +1374,155 @@ function TestimonialsSection() {
   const [current, setCurrent] = useState(0);
   const perPage = 3;
   const pages = Math.ceil(TESTIMONIALS.length / perPage);
-  const visible = TESTIMONIALS.slice(current * perPage, current * perPage + perPage);
+  const visible = TESTIMONIALS.slice(
+    current * perPage,
+    current * perPage + perPage
+  );
 
   return (
-    <section id="testimonials" style={{ background: C.white, padding: "5rem 0" }} aria-label="Customer testimonials">
+    <section
+      id="testimonials"
+      style={{ background: C.white, padding: "5rem 0" }}
+      aria-label="Customer testimonials"
+    >
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
           <div>
             <div className="kms-label mb-2">Client Success Stories</div>
             <div className="kms-green-rule" />
-            <h2 className="kms-headline" style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", color: C.blueDark }}>WHAT OUR CLIENTS SAY</h2>
+            <h2
+              className="kms-headline"
+              style={{
+                fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
+                color: C.blueDark,
+              }}
+            >
+              WHAT OUR CLIENTS SAY
+            </h2>
           </div>
           <div className="flex gap-2">
-            {[{ fn: () => setCurrent(c => (c - 1 + pages) % pages), icon: <ChevronLeft size={20} />, label: "Previous" },
-              { fn: () => setCurrent(c => (c + 1) % pages), icon: <ChevronRight size={20} />, label: "Next" }].map(({ fn, icon, label }) => (
-              <button key={label} onClick={fn} aria-label={`${label} testimonials`}
-                style={{ width: 40, height: 40, background: C.blueDark, color: "white", border: "none", borderRadius: "2px", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}
+            {[
+              {
+                fn: () => setCurrent(c => (c - 1 + pages) % pages),
+                icon: <ChevronLeft size={20} />,
+                label: "Previous",
+              },
+              {
+                fn: () => setCurrent(c => (c + 1) % pages),
+                icon: <ChevronRight size={20} />,
+                label: "Next",
+              },
+            ].map(({ fn, icon, label }) => (
+              <button
+                key={label}
+                onClick={fn}
+                aria-label={`${label} testimonials`}
+                style={{
+                  width: 40,
+                  height: 40,
+                  background: C.blueDark,
+                  color: "white",
+                  border: "none",
+                  borderRadius: "2px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "background 0.2s",
+                }}
                 onMouseEnter={e => (e.currentTarget.style.background = C.green)}
-                onMouseLeave={e => (e.currentTarget.style.background = C.blueDark)}
-              >{icon}</button>
+                onMouseLeave={e =>
+                  (e.currentTarget.style.background = C.blueDark)
+                }
+              >
+                {icon}
+              </button>
             ))}
           </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
           {visible.map((t, i) => (
-            <blockquote key={i} className="kms-testimonial-card" style={{ background: C.lightBg, padding: "1.5rem", borderRadius: "2px", boxShadow: "0 2px 12px rgba(30,80,128,0.07)" }} itemScope itemType="https://schema.org/Review">
+            <blockquote
+              key={i}
+              className="kms-testimonial-card"
+              style={{
+                background: C.lightBg,
+                padding: "1.5rem",
+                borderRadius: "2px",
+                boxShadow: "0 2px 12px rgba(30,80,128,0.07)",
+              }}
+              itemScope
+              itemType="https://schema.org/Review"
+            >
               <div className="flex gap-0.5 mb-3">
-                {[...Array(5)].map((_, si) => <Star key={si} size={14} fill={C.green} style={{ color: C.green }} />)}
+                {[...Array(5)].map((_, si) => (
+                  <Star
+                    key={si}
+                    size={14}
+                    fill={C.green}
+                    style={{ color: C.green }}
+                  />
+                ))}
               </div>
-              <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.92rem", color: "#2d3748", lineHeight: 1.7, marginBottom: "1.25rem", fontStyle: "italic" }} itemProp="reviewBody">"{t.quote}"</p>
+              <p
+                style={{
+                  fontFamily: "'Source Sans 3', sans-serif",
+                  fontSize: "0.92rem",
+                  color: "#2d3748",
+                  lineHeight: 1.7,
+                  marginBottom: "1.25rem",
+                  fontStyle: "italic",
+                }}
+                itemProp="reviewBody"
+              >
+                "{t.quote}"
+              </p>
               <div className="flex items-center gap-3">
-                <div style={{ width: 40, height: 40, background: C.blueDark, color: C.green, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1rem" }}>{t.name.charAt(0)}</span>
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    background: C.blueDark,
+                    color: C.green,
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: "'Barlow Condensed', sans-serif",
+                      fontWeight: 700,
+                      fontSize: "1rem",
+                    }}
+                  >
+                    {t.name.charAt(0)}
+                  </span>
                 </div>
                 <div>
-                  <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1rem", color: C.blueDark }} itemProp="author">{t.name}</div>
-                  <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.78rem", color: C.green, fontWeight: 600 }}>{t.title} · {t.service}</div>
+                  <div
+                    style={{
+                      fontFamily: "'Barlow Condensed', sans-serif",
+                      fontWeight: 700,
+                      fontSize: "1rem",
+                      color: C.blueDark,
+                    }}
+                    itemProp="author"
+                  >
+                    {t.name}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Source Sans 3', sans-serif",
+                      fontSize: "0.78rem",
+                      color: C.green,
+                      fontWeight: 600,
+                    }}
+                  >
+                    {t.title} · {t.service}
+                  </div>
                 </div>
               </div>
             </blockquote>
@@ -699,8 +1531,19 @@ function TestimonialsSection() {
 
         <div className="flex justify-center gap-2 mt-8">
           {[...Array(pages)].map((_, i) => (
-            <button key={i} onClick={() => setCurrent(i)} aria-label={`Page ${i + 1}`}
-              style={{ width: i === current ? 24 : 8, height: 8, borderRadius: 4, background: i === current ? C.green : "#cbd5e0", border: "none", transition: "all 0.3s ease" }} />
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              aria-label={`Page ${i + 1}`}
+              style={{
+                width: i === current ? 24 : 8,
+                height: 8,
+                borderRadius: 4,
+                background: i === current ? C.green : "#cbd5e0",
+                border: "none",
+                transition: "all 0.3s ease",
+              }}
+            />
           ))}
         </div>
       </div>
@@ -711,21 +1554,67 @@ function TestimonialsSection() {
 // ─── Industries ───────────────────────────────────────────────────────────────
 function IndustriesSection() {
   return (
-    <section id="industries" style={{ background: `linear-gradient(135deg, ${C.blueDark} 0%, ${C.blueMid} 100%)`, padding: "4rem 0" }} aria-label="Industries served">
+    <section
+      id="industries"
+      style={{
+        background: `linear-gradient(135deg, ${C.blueDark} 0%, ${C.blueMid} 100%)`,
+        padding: "4rem 0",
+      }}
+      aria-label="Industries served"
+    >
       <div className="max-w-7xl mx-auto px-4 text-center">
-        <div className="kms-label-blue mb-3" style={{ color: C.greenLight }}>Sectors We Serve</div>
-        <h2 className="kms-headline text-white mb-10" style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)" }}>
-          PROUDLY SERVING A WIDE RANGE<br />OF INDUSTRIES
+        <div className="kms-label-blue mb-3" style={{ color: C.greenLight }}>
+          Sectors We Serve
+        </div>
+        <h2
+          className="kms-headline text-white mb-10"
+          style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)" }}
+        >
+          PROUDLY SERVING A WIDE RANGE
+          <br />
+          OF INDUSTRIES
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
           {INDUSTRIES.map(({ name, icon, href }) => (
-            <a key={name} href={href} className="flex flex-col items-center gap-2 py-4 px-2"
-              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "2px", transition: "all 0.2s", textDecoration: "none" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(120,165,70,0.15)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(120,165,70,0.4)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.1)"; }}
+            <a
+              key={name}
+              href={href}
+              className="flex flex-col items-center gap-2 py-4 px-2"
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: "2px",
+                transition: "all 0.2s",
+                textDecoration: "none",
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.background =
+                  "rgba(120,165,70,0.15)";
+                (e.currentTarget as HTMLElement).style.borderColor =
+                  "rgba(120,165,70,0.4)";
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.background =
+                  "rgba(255,255,255,0.06)";
+                (e.currentTarget as HTMLElement).style.borderColor =
+                  "rgba(255,255,255,0.1)";
+              }}
             >
               <span style={{ fontSize: "1.75rem" }}>{icon}</span>
-              <span style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.7rem", color: "rgba(255,255,255,0.8)", letterSpacing: "0.06em", textTransform: "uppercase", textAlign: "center", lineHeight: 1.3 }}>{name}</span>
+              <span
+                style={{
+                  fontFamily: "'Barlow', sans-serif",
+                  fontWeight: 600,
+                  fontSize: "0.7rem",
+                  color: "rgba(255,255,255,0.8)",
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  textAlign: "center",
+                  lineHeight: 1.3,
+                }}
+              >
+                {name}
+              </span>
             </a>
           ))}
         </div>
@@ -737,18 +1626,53 @@ function IndustriesSection() {
 // ─── Brands ───────────────────────────────────────────────────────────────────
 function BrandsSection() {
   return (
-    <section style={{ background: C.darkBg, padding: "3rem 0" }} aria-label="Brands we service">
+    <section
+      style={{ background: C.darkBg, padding: "3rem 0" }}
+      aria-label="Brands we service"
+    >
       <div className="max-w-7xl mx-auto px-4">
-        <p className="text-center mb-6" style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 600, fontSize: "0.72rem", color: "rgba(255,255,255,0.45)", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+        <p
+          className="text-center mb-6"
+          style={{
+            fontFamily: "'Barlow', sans-serif",
+            fontWeight: 600,
+            fontSize: "0.72rem",
+            color: "rgba(255,255,255,0.45)",
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+          }}
+        >
           Brands We Service &amp; Repair
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           {BRANDS.map(brand => (
-            <span key={brand}
-              style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 600, fontSize: "0.9rem", color: "rgba(255,255,255,0.6)", letterSpacing: "0.05em", padding: "0.35rem 0.875rem", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "2px", transition: "all 0.2s" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = C.green; (e.currentTarget as HTMLElement).style.borderColor = "rgba(120,165,70,0.45)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.6)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.12)"; }}
-            >{brand}</span>
+            <span
+              key={brand}
+              style={{
+                fontFamily: "'Barlow Condensed', sans-serif",
+                fontWeight: 600,
+                fontSize: "0.9rem",
+                color: "rgba(255,255,255,0.6)",
+                letterSpacing: "0.05em",
+                padding: "0.35rem 0.875rem",
+                border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: "2px",
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.color = C.green;
+                (e.currentTarget as HTMLElement).style.borderColor =
+                  "rgba(120,165,70,0.45)";
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.color =
+                  "rgba(255,255,255,0.6)";
+                (e.currentTarget as HTMLElement).style.borderColor =
+                  "rgba(255,255,255,0.12)";
+              }}
+            >
+              {brand}
+            </span>
           ))}
         </div>
       </div>
@@ -760,7 +1684,11 @@ function BrandsSection() {
 function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   return (
-    <section id="faq" style={{ background: C.lightBg, padding: "5rem 0" }} aria-label="Frequently asked questions">
+    <section
+      id="faq"
+      style={{ background: C.lightBg, padding: "5rem 0" }}
+      aria-label="Frequently asked questions"
+    >
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
           {/* Left: FAQs (2/3 width) */}
@@ -768,28 +1696,106 @@ function FAQSection() {
             <div className="text-center mb-10">
               <div className="kms-label mb-3">Common Questions</div>
               <div className="kms-green-rule mx-auto" />
-              <h2 className="kms-headline" style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", color: C.blueDark }}>FREQUENTLY ASKED QUESTIONS</h2>
-              <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1rem", color: C.textMid, marginTop: "0.75rem" }}>
-                Can't find your answer? Call us at <a href="tel:3463501464" style={{ color: C.green, fontWeight: 600 }}>346-350-1464</a> — we're available 24/7.
+              <h2
+                className="kms-headline"
+                style={{
+                  fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
+                  color: C.blueDark,
+                }}
+              >
+                FREQUENTLY ASKED QUESTIONS
+              </h2>
+              <p
+                style={{
+                  fontFamily: "'Source Sans 3', sans-serif",
+                  fontSize: "1rem",
+                  color: C.textMid,
+                  marginTop: "0.75rem",
+                }}
+              >
+                Can't find your answer? Call us at{" "}
+                <a
+                  href="tel:3463501464"
+                  style={{ color: C.green, fontWeight: 600 }}
+                >
+                  346-350-1464
+                </a>{" "}
+                — we're available 24/7.
               </p>
             </div>
-            <div style={{ border: `1px solid rgba(30,80,128,0.15)`, borderRadius: "2px", overflow: "hidden" }} itemScope itemType="https://schema.org/FAQPage">
+            <div
+              style={{
+                border: `1px solid rgba(30,80,128,0.15)`,
+                borderRadius: "2px",
+                overflow: "hidden",
+              }}
+              itemScope
+              itemType="https://schema.org/FAQPage"
+            >
               {FAQS.map((faq, i) => (
-                <div key={i} className="kms-faq-item" itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
+                <div
+                  key={i}
+                  className="kms-faq-item"
+                  itemScope
+                  itemType="https://schema.org/Question"
+                  itemProp="mainEntity"
+                >
                   <button
                     onClick={() => setOpenIndex(openIndex === i ? null : i)}
                     className="w-full flex items-center justify-between gap-4 text-left"
-                    style={{ padding: "1.25rem 1.5rem", background: openIndex === i ? "rgba(30,80,128,0.06)" : "white", border: "none", color: C.blueDark, transition: "background 0.2s" }}
+                    style={{
+                      padding: "1.25rem 1.5rem",
+                      background:
+                        openIndex === i ? "rgba(30,80,128,0.06)" : "white",
+                      border: "none",
+                      color: C.blueDark,
+                      transition: "background 0.2s",
+                    }}
                     aria-expanded={openIndex === i}
                   >
-                    <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.05rem", letterSpacing: "0.02em" }} itemProp="name">{faq.q}</span>
-                    {openIndex === i
-                      ? <ChevronUp size={18} style={{ color: C.green, flexShrink: 0 }} />
-                      : <ChevronDown size={18} style={{ color: "rgba(30,80,128,0.4)", flexShrink: 0 }} />}
+                    <span
+                      style={{
+                        fontFamily: "'Barlow Condensed', sans-serif",
+                        fontWeight: 700,
+                        fontSize: "1.05rem",
+                        letterSpacing: "0.02em",
+                      }}
+                      itemProp="name"
+                    >
+                      {faq.q}
+                    </span>
+                    {openIndex === i ? (
+                      <ChevronUp
+                        size={18}
+                        style={{ color: C.green, flexShrink: 0 }}
+                      />
+                    ) : (
+                      <ChevronDown
+                        size={18}
+                        style={{ color: "rgba(30,80,128,0.4)", flexShrink: 0 }}
+                      />
+                    )}
                   </button>
                   {openIndex === i && (
-                    <div style={{ padding: "0 1.5rem 1.25rem", background: "white" }} itemScope itemType="https://schema.org/Answer">
-                      <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.95rem", color: C.textMid, lineHeight: 1.7 }} itemProp="text">{faq.a}</p>
+                    <div
+                      style={{
+                        padding: "0 1.5rem 1.25rem",
+                        background: "white",
+                      }}
+                      itemScope
+                      itemType="https://schema.org/Answer"
+                    >
+                      <p
+                        style={{
+                          fontFamily: "'Source Sans 3', sans-serif",
+                          fontSize: "0.95rem",
+                          color: C.textMid,
+                          lineHeight: 1.7,
+                        }}
+                        itemProp="text"
+                      >
+                        {faq.a}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -813,27 +1819,74 @@ function FAQSection() {
 // ─── CTA ──────────────────────────────────────────────────────────────────────
 function CTASection() {
   return (
-    <section id="contact" className="relative" style={{ padding: "5.5rem 0" }} aria-label="Contact and quote request">
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${PUMP_IMG})` }} />
-      <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, rgba(30,80,128,0.94) 0%, rgba(35,90,145,0.9) 100%)` }} />
+    <section
+      id="contact"
+      className="relative"
+      style={{ padding: "5.5rem 0" }}
+      aria-label="Contact and quote request"
+    >
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${PUMP_IMG})` }}
+      />
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(135deg, rgba(30,80,128,0.94) 0%, rgba(35,90,145,0.9) 100%)`,
+        }}
+      />
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-        <div className="kms-label mb-3" style={{ color: C.greenLight }}>Ready to Get Started?</div>
-        <h2 className="kms-headline text-white mb-4" style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}>
-          EXPERIENCE THE<br /><span style={{ color: C.green }}>KELSEY MACHINE DIFFERENCE</span>
+        <div className="kms-label mb-3" style={{ color: C.greenLight }}>
+          Ready to Get Started?
+        </div>
+        <h2
+          className="kms-headline text-white mb-4"
+          style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}
+        >
+          EXPERIENCE THE
+          <br />
+          <span style={{ color: C.green }}>KELSEY MACHINE DIFFERENCE</span>
         </h2>
-        <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "1.1rem", color: "rgba(255,255,255,0.82)", maxWidth: 560, margin: "0 auto 2rem", lineHeight: 1.7 }}>
-          The right people, the right equipment, and the right technology — that's what keeps Kelsey Machine on the leading edge of rotating equipment service. Contact us today for a free, no-obligation quote.
+        <p
+          style={{
+            fontFamily: "'Source Sans 3', sans-serif",
+            fontSize: "1.1rem",
+            color: "rgba(255,255,255,0.82)",
+            maxWidth: 560,
+            margin: "0 auto 2rem",
+            lineHeight: 1.7,
+          }}
+        >
+          The right people, the right equipment, and the right technology —
+          that's what keeps Kelsey Machine on the leading edge of rotating
+          equipment service. Contact us today for a free, no-obligation quote.
         </p>
         <div className="flex flex-wrap gap-4 justify-center">
-          <a href="tel:3463501464" className="kms-btn-green" style={{ fontSize: "1.05rem", padding: "0.875rem 2.5rem" }}>
+          <a
+            href="tel:3463501464"
+            className="kms-btn-green"
+            style={{ fontSize: "1.05rem", padding: "0.875rem 2.5rem" }}
+          >
             <Phone size={18} /> Call 346-350-1464
           </a>
-          <a href="mailto:service@kmstx.com" className="kms-btn-outline-white" style={{ fontSize: "1.05rem", padding: "0.875rem 2.5rem" }}>
+          <a
+            href="mailto:service@kmstx.com"
+            className="kms-btn-outline-white"
+            style={{ fontSize: "1.05rem", padding: "0.875rem 2.5rem" }}
+          >
             <Mail size={18} /> Email Us
           </a>
         </div>
-        <p style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.83rem", color: "rgba(255,255,255,0.45)", marginTop: "1.5rem" }}>
-          Available 24/7 for emergency service · Free pickup &amp; delivery · 24-month warranty on all repairs
+        <p
+          style={{
+            fontFamily: "'Source Sans 3', sans-serif",
+            fontSize: "0.83rem",
+            color: "rgba(255,255,255,0.45)",
+            marginTop: "1.5rem",
+          }}
+        >
+          Available 24/7 for emergency service · Free pickup &amp; delivery ·
+          24-month warranty on all repairs
         </p>
       </div>
     </section>
