@@ -1,168 +1,60 @@
 /**
- * Build-time prerender for KMS site.
+ * Build-time SEO prerender for KMS site — NO BROWSER required.
  *
- * Runs after `vite build`. Loads the built SPA in headless Chrome, navigates
- * to each route we want as static HTML, and saves the fully-rendered DOM as
- * dist/public/<route>/index.html. Vercel then serves those files directly
- * from its CDN.
+ * Why no browser: Vercel's build container is missing system libraries
+ * (libnss3, libgbm, libatk, etc.) that Chromium needs. Puppeteer +
+ * @sparticuz/chromium + every other "headless Chrome on Vercel build"
+ * trick fails on those missing libs. So we abandon browser-based rendering
+ * and use pure string templating against Vite's SPA-shell index.html.
  *
- * Security:
- * - Blog slugs from cms.kmstx.com are validated against an allowlist
- *   (`/^[a-z0-9][a-z0-9-]{0,200}$/`) and the resolved write path must
- *   stay inside dist/public — prevents path traversal if the CMS returns
- *   a malicious slug.
- * - The static server binds to 127.0.0.1 only (not exposed on the CI runner).
- * - CMS_URL must be https — defeats env-var hijack that points at attacker.
- * - Graceful fallback: if Puppeteer can't launch, the script exits 0 so the
- *   SPA fallback still serves the same pages.
+ * What gets baked into the static HTML per-route:
+ *   - <title>
+ *   - <meta name="description">
+ *   - <meta name="robots">
+ *   - <link rel="canonical">
+ *   - <meta property="og:title|og:description|og:image|og:type">
+ *   - <meta name="twitter:card">
+ *   - <script type="application/ld+json"> (RM schema_json, if set)
+ *
+ * What stays the same as the SPA shell:
+ *   - <div id="root"></div> (React hydrates on load)
+ *   - The bundled JS + CSS links
+ *   - GTM, fonts, favicons
+ *
+ * This is enough for Google rich-result eligibility (title, meta desc, OG,
+ * schema) and AI Overview citation. The body content is rendered by React
+ * after JS loads; Googlebot executes JS so it sees that too. The win vs a
+ * pure SPA: tags are correct on FIRST BYTE before any JS runs.
+ *
+ * Outputs (per route):
+ *   dist/public/<route>/index.html  (e.g. dist/public/services/centrifuge-repair/index.html)
+ *
+ * Also writes:
+ *   dist/public/_data/route-meta.json — consumed by client useRouteMeta hook
+ *   dist/public/404.html              — copy of SPA shell for unknown routes
  */
-import { createServer } from "http";
-import { readFile, writeFile, mkdir, stat } from "fs/promises";
+import { readFile, writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
-import { dirname, extname, join, resolve as resolvePath, sep } from "path";
+import { dirname, join, resolve as resolvePath, sep } from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const DIST = resolvePath(ROOT, "dist/public");
 
-// CMS URL — must be https to defeat env-var hijack (#12 in security review).
+// CMS URL — must be https.
 const RAW_CMS = (process.env.VITE_CMS_URL || "https://cms.kmstx.com").replace(/\/+$/, "");
 let CMS_URL = null;
 try {
   const u = new URL(RAW_CMS);
-  if (u.protocol !== "https:") {
-    console.warn(`⚠  VITE_CMS_URL must be https — got ${u.protocol}. Skipping blog slug fetch.`);
-  } else {
-    CMS_URL = `${u.protocol}//${u.host}`;
-  }
+  if (u.protocol === "https:") CMS_URL = `${u.protocol}//${u.host}`;
+  else console.warn(`⚠  VITE_CMS_URL must be https — got ${u.protocol}`);
 } catch {
-  console.warn(`⚠  VITE_CMS_URL is not a valid URL: ${RAW_CMS}. Skipping blog slug fetch.`);
+  console.warn(`⚠  VITE_CMS_URL invalid: ${RAW_CMS}`);
 }
 
-const PORT = 4321;
-const NAV_TIMEOUT_MS = 30000;
-const RENDER_WAIT_MS = 800;
-const CONCURRENCY = 4;
-
-// Slug allowlist — WP normally hands out lowercase kebab-case slugs.
-// Anything outside this character class is rejected.
-const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,200}$/;
-
-// ─── WebWize Connect RM (Route Meta) integration ────────────────────────────
-// Single source of truth for per-route SEO. At build time we fetch all live
-// routes from the RM module and inject <title>, <meta>, OG, canonical, robots
-// and schema JSON-LD directly into the prerendered HTML head — so Google sees
-// the right tags on first byte, before any JS runs.
 const WWRM_API_KEY = process.env.WWRM_API_KEY || "";
-
-async function fetchAllRouteMeta() {
-  if (!CMS_URL) return new Map();
-  if (!WWRM_API_KEY) {
-    console.warn("⚠  WWRM_API_KEY not set — skipping RM SEO injection (titles will fall back to defaults).");
-    return new Map();
-  }
-  try {
-    const url = `${CMS_URL}/wp-json/webwize-rm/v1/seo/all?status=live`;
-    const resp = await fetch(url, {
-      headers: { "X-API-Key": WWRM_API_KEY },
-      signal: AbortSignal.timeout(15000),
-    });
-    if (!resp.ok) {
-      console.warn(`⚠  RM /seo/all returned ${resp.status} — skipping injection`);
-      return new Map();
-    }
-    const json = await resp.json();
-    const pages = json?.pages || [];
-    const map = new Map();
-    for (const p of pages) {
-      // Normalize path: strip trailing slash (except root), lower-case
-      let path = p.path || "/";
-      if (path !== "/" && path.endsWith("/")) path = path.slice(0, -1);
-      map.set(path, p);
-    }
-    console.log(`  fetched ${map.size} RM route-meta entries`);
-    return map;
-  } catch (e) {
-    console.warn(`⚠  could not fetch RM /seo/all:`, e.message);
-    return new Map();
-  }
-}
-
-// Inject SEO tags into the page's <head> via Puppeteer. Runs AFTER the SPA
-// has rendered so it doesn't fight React for control of the DOM. The client-
-// side useRouteMeta hook (see client/src/lib/routeMeta.ts) is a no-op when
-// the tags are already present (it just verifies and updates on Wouter nav).
-async function injectSeoHead(page, meta) {
-  if (!meta) return;
-  await page.evaluate((m) => {
-    const setMeta = (name, content) => {
-      if (!content) return;
-      let el = document.querySelector(`meta[name="${name}"]`);
-      if (!el) { el = document.createElement("meta"); el.setAttribute("name", name); document.head.appendChild(el); }
-      el.setAttribute("content", content);
-    };
-    const setOg = (prop, content) => {
-      if (!content) return;
-      let el = document.querySelector(`meta[property="og:${prop}"]`);
-      if (!el) { el = document.createElement("meta"); el.setAttribute("property", `og:${prop}`); document.head.appendChild(el); }
-      el.setAttribute("content", content);
-    };
-    const setLink = (rel, href) => {
-      if (!href) return;
-      let el = document.querySelector(`link[rel="${rel}"]`);
-      if (!el) { el = document.createElement("link"); el.setAttribute("rel", rel); document.head.appendChild(el); }
-      el.setAttribute("href", href);
-    };
-
-    if (m.seo_title) document.title = m.seo_title;
-    setMeta("description", m.meta_desc);
-    setMeta("robots", m.robots || "index, follow");
-    setLink("canonical", m.canonical);
-    setOg("title", m.og_title || m.seo_title);
-    setOg("description", m.og_desc || m.meta_desc);
-    setOg("image", m.og_image);
-    setOg("type", "website");
-
-    if (m.twitter_card) setMeta("twitter:card", m.twitter_card);
-
-    // Mark injected schema with data-rm so client doesn't duplicate
-    if (m.schema_json && m.schema_json.trim()) {
-      const existing = document.querySelector("script[data-rm-schema]");
-      if (existing) existing.remove();
-      const script = document.createElement("script");
-      script.type = "application/ld+json";
-      script.setAttribute("data-rm-schema", "true");
-      script.textContent = m.schema_json;
-      document.head.appendChild(script);
-    }
-  }, meta);
-}
-
-// Write a sanitized copy of route-meta to the static build so the SPA can
-// load it client-side for SPA navigation updates. The exported file is
-// public-by-nature — it contains only what would be rendered in <head>
-// anyway, no API key, no draft data.
-async function writeRouteMetaJson(metaMap) {
-  const out = {};
-  for (const [path, m] of metaMap.entries()) {
-    out[path] = {
-      seo_title:    m.seo_title || "",
-      meta_desc:    m.meta_desc || "",
-      og_title:     m.og_title || "",
-      og_desc:      m.og_desc || "",
-      og_image:     m.og_image || "",
-      canonical:    m.canonical || "",
-      robots:       m.robots || "index, follow",
-      twitter_card: m.twitter_card || "summary_large_image",
-      schema_json:  m.schema_json || "",
-    };
-  }
-  const dataDir = join(DIST, "_data");
-  await mkdir(dataDir, { recursive: true });
-  await writeFile(join(dataDir, "route-meta.json"), JSON.stringify(out, null, 0), "utf8");
-}
-
+const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,200}$/;
 
 const STATIC_ROUTES = [
   "/",
@@ -182,7 +74,6 @@ const STATIC_ROUTES = [
   "/privacy-policy",
   "/terms",
   "/blog",
-  // Google Ads landing page aliases
   "/fluid-end-power-end-repair",
   "/gearbox-repair-service",
   "/services/centrifuge-repair-service",
@@ -190,236 +81,228 @@ const STATIC_ROUTES = [
   "/blower-vacuum-pump-repair",
 ];
 
-const MIME = {
-  ".html": "text/html; charset=utf-8",
-  ".css":  "text/css; charset=utf-8",
-  ".js":   "application/javascript; charset=utf-8",
-  ".mjs":  "application/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".png":  "image/png",
-  ".jpg":  "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".webp": "image/webp",
-  ".svg":  "image/svg+xml",
-  ".ico":  "image/x-icon",
-  ".xml":  "application/xml; charset=utf-8",
-  ".txt":  "text/plain; charset=utf-8",
-  ".woff": "font/woff",
-  ".woff2":"font/woff2",
-  ".ttf":  "font/ttf",
-};
+// ─── Helpers ────────────────────────────────────────────────────────────────
 
-function mimeFor(p) {
-  return MIME[extname(p).toLowerCase()] || "application/octet-stream";
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
-async function pathExists(p) {
-  try { await stat(p); return true; } catch { return false; }
+function safeOutDir(route) {
+  if (route === "/") return DIST;
+  const rel = route.replace(/^\//, "");
+  for (const seg of rel.split("/")) {
+    if (seg === "" || seg === "." || seg === ".." || /[^a-z0-9-]/i.test(seg)) return null;
+  }
+  const out = resolvePath(DIST, rel);
+  if (out !== DIST && !out.startsWith(DIST + sep)) return null;
+  return out;
 }
+
+// ─── Fetchers ───────────────────────────────────────────────────────────────
 
 async function fetchBlogSlugs() {
   if (!CMS_URL) return [];
   const all = [];
-  let page = 1;
-  while (page < 50) {
+  for (let page = 1; page < 50; page++) {
     const url = `${CMS_URL}/wp-json/wp/v2/posts?per_page=100&page=${page}&_fields=slug`;
     let resp;
     try {
       resp = await fetch(url, { signal: AbortSignal.timeout(15000) });
     } catch (e) {
-      console.warn(`  [warn] could not reach ${CMS_URL} for blog slugs:`, e.message);
+      console.warn(`  [warn] CMS unreachable for slugs:`, e.message);
       return all;
     }
     if (!resp.ok) {
       if (resp.status === 400 || resp.status === 404) break;
-      console.warn(`  [warn] CMS returned ${resp.status} on page ${page}`);
+      console.warn(`  [warn] CMS slug page ${page} returned ${resp.status}`);
       break;
     }
     const arr = await resp.json();
     if (!Array.isArray(arr) || arr.length === 0) break;
     for (const p of arr) {
       const slug = p?.slug;
-      if (typeof slug !== "string") continue;
-      if (!SLUG_RE.test(slug)) {
-        console.warn(`  [warn] rejected unsafe slug from CMS: ${JSON.stringify(slug)}`);
-        continue;
-      }
-      all.push(slug);
+      if (typeof slug === "string" && SLUG_RE.test(slug)) all.push(slug);
     }
     if (arr.length < 100) break;
-    page++;
   }
   return all;
 }
 
-function startServer() {
-  return new Promise((resolve) => {
-    const server = createServer(async (req, res) => {
-      try {
-        const urlPath = (req.url || "/").split("?")[0];
-        let filePath = join(DIST, urlPath === "/" ? "index.html" : urlPath.replace(/\/$/, ""));
-        let isFile = await pathExists(filePath);
-        if (isFile) {
-          const st = await stat(filePath);
-          if (st.isDirectory()) {
-            filePath = join(filePath, "index.html");
-            isFile = await pathExists(filePath);
-          }
-        }
-        if (!isFile) filePath = join(DIST, "index.html");
-        const data = await readFile(filePath);
-        res.writeHead(200, { "Content-Type": mimeFor(filePath), "Cache-Control": "no-store" });
-        res.end(data);
-      } catch {
-        res.writeHead(500); res.end("server error");
-      }
-    });
-    // Bind to loopback only — never expose the in-progress build on the CI runner.
-    server.listen(PORT, "127.0.0.1", () => resolve(server));
-  });
+async function fetchAllRouteMeta() {
+  if (!CMS_URL) return new Map();
+  if (!WWRM_API_KEY) {
+    console.warn("⚠  WWRM_API_KEY not set — SEO tags will fall back to SPA shell defaults.");
+    return new Map();
+  }
+  try {
+    const url = `${CMS_URL}/wp-json/webwize-rm/v1/seo/all?status=live`;
+    const resp = await fetch(url, { headers: { "X-API-Key": WWRM_API_KEY }, signal: AbortSignal.timeout(15000) });
+    if (!resp.ok) {
+      console.warn(`⚠  RM /seo/all returned ${resp.status}`);
+      return new Map();
+    }
+    const json = await resp.json();
+    const map = new Map();
+    for (const p of (json?.pages || [])) {
+      let path = p.path || "/";
+      if (path !== "/" && path.endsWith("/")) path = path.slice(0, -1);
+      map.set(path, p);
+    }
+    console.log(`  fetched ${map.size} RM route-meta entries`);
+    return map;
+  } catch (e) {
+    console.warn(`⚠  RM fetch failed: ${e.message}`);
+    return new Map();
+  }
 }
+
+async function writeRouteMetaJson(metaMap) {
+  const out = {};
+  for (const [path, m] of metaMap.entries()) {
+    out[path] = {
+      seo_title: m.seo_title || "",
+      meta_desc: m.meta_desc || "",
+      og_title: m.og_title || "",
+      og_desc: m.og_desc || "",
+      og_image: m.og_image || "",
+      canonical: m.canonical || "",
+      robots: m.robots || "index, follow",
+      twitter_card: m.twitter_card || "summary_large_image",
+      schema_json: m.schema_json || "",
+    };
+  }
+  const dataDir = join(DIST, "_data");
+  await mkdir(dataDir, { recursive: true });
+  await writeFile(join(dataDir, "route-meta.json"), JSON.stringify(out, null, 0), "utf8");
+}
+
+// ─── Per-route HTML synthesis ──────────────────────────────────────────────
 
 /**
- * Resolve the output directory for a route, refusing to escape DIST.
- * Returns null if the route is unsafe.
+ * Take the SPA shell HTML and substitute the SEO tags from RM meta.
+ * If an existing tag is present, replace its content; otherwise inject
+ * a new tag before </head>.
  */
-function safeOutDir(route) {
-  if (route === "/") return DIST;
-  const rel = route.replace(/^\//, "");
-  // Per-segment validation — every segment must match our allowlist.
-  const segments = rel.split("/");
-  for (const seg of segments) {
-    if (seg === "" || seg === "." || seg === ".." || /[^a-z0-9-]/i.test(seg)) {
-      return null;
+function applyMetaToShell(shell, meta) {
+  if (!meta) return shell;
+  let html = shell;
+
+  // <title>
+  if (meta.seo_title) {
+    if (/<title>[^<]*<\/title>/i.test(html)) {
+      html = html.replace(/<title>[^<]*<\/title>/i, `<title>${escapeHtml(meta.seo_title)}</title>`);
+    } else {
+      html = html.replace(/<\/head>/i, `    <title>${escapeHtml(meta.seo_title)}</title>\n  </head>`);
     }
   }
-  const out = resolvePath(DIST, rel);
-  // Belt-and-suspenders: the resolved path must start with DIST + sep,
-  // and equal DIST itself if rel was empty.
-  if (out !== DIST && !out.startsWith(DIST + sep)) return null;
-  return out;
-}
 
-async function renderOne(browser, route, routeMetaMap) {
-  const page = await browser.newPage();
-  await page.setViewport({ width: 1280, height: 800 });
-  try {
-    const outDir = safeOutDir(route);
-    if (!outDir) {
-      return { route, ok: false, error: "route rejected by path-confinement guard" };
-    }
-    const url = `http://127.0.0.1:${PORT}${route}`;
-    await page.goto(url, { waitUntil: "networkidle0", timeout: NAV_TIMEOUT_MS });
-    await new Promise((r) => setTimeout(r, RENDER_WAIT_MS));
-    // Inject RM-driven SEO tags into <head> before snapshotting.
-    const routeKey = route === "/" ? "/" : route.replace(/\/$/, "");
-    await injectSeoHead(page, routeMetaMap?.get(routeKey));
-    const html = await page.content();
-
-    await mkdir(outDir, { recursive: true });
-    await writeFile(join(outDir, "index.html"), html, "utf8");
-    return { route, ok: true, bytes: html.length };
-  } catch (err) {
-    return { route, ok: false, error: err?.message || String(err) };
-  } finally {
-    await page.close().catch(() => {});
+  // meta name="description"
+  if (meta.meta_desc) {
+    const rx = /<meta\s+name=["']description["'][^>]*>/i;
+    const tag = `<meta name="description" content="${escapeHtml(meta.meta_desc)}" />`;
+    html = rx.test(html) ? html.replace(rx, tag) : html.replace(/<\/head>/i, `    ${tag}\n  </head>`);
   }
+
+  // meta name="robots"
+  const robots = meta.robots || "index, follow";
+  if (robots) {
+    const rx = /<meta\s+name=["']robots["'][^>]*>/i;
+    const tag = `<meta name="robots" content="${escapeHtml(robots)}" />`;
+    html = rx.test(html) ? html.replace(rx, tag) : html.replace(/<\/head>/i, `    ${tag}\n  </head>`);
+  }
+
+  // link rel="canonical"
+  if (meta.canonical) {
+    const rx = /<link\s+rel=["']canonical["'][^>]*>/i;
+    const tag = `<link rel="canonical" href="${escapeHtml(meta.canonical)}" />`;
+    html = rx.test(html) ? html.replace(rx, tag) : html.replace(/<\/head>/i, `    ${tag}\n  </head>`);
+  }
+
+  // og:* (title, description, image, type)
+  const ogPairs = [
+    ["og:title", meta.og_title || meta.seo_title],
+    ["og:description", meta.og_desc || meta.meta_desc],
+    ["og:image", meta.og_image],
+    ["og:type", "website"],
+  ];
+  for (const [prop, content] of ogPairs) {
+    if (!content) continue;
+    const rx = new RegExp(`<meta\\s+property=["']${prop}["'][^>]*>`, "i");
+    const tag = `<meta property="${prop}" content="${escapeHtml(content)}" />`;
+    html = rx.test(html) ? html.replace(rx, tag) : html.replace(/<\/head>/i, `    ${tag}\n  </head>`);
+  }
+
+  // twitter:card
+  if (meta.twitter_card) {
+    const rx = /<meta\s+name=["']twitter:card["'][^>]*>/i;
+    const tag = `<meta name="twitter:card" content="${escapeHtml(meta.twitter_card)}" />`;
+    html = rx.test(html) ? html.replace(rx, tag) : html.replace(/<\/head>/i, `    ${tag}\n  </head>`);
+  }
+
+  // schema JSON-LD (marked with data-rm-schema so client hook doesn't duplicate)
+  if (meta.schema_json && meta.schema_json.trim()) {
+    const script = `<script type="application/ld+json" data-rm-schema="true">${meta.schema_json}</script>`;
+    html = html.replace(/<\/head>/i, `    ${script}\n  </head>`);
+  }
+
+  return html;
 }
+
+// ─── Main ───────────────────────────────────────────────────────────────────
 
 async function main() {
   if (!existsSync(DIST)) {
-    console.error(`✗ dist/public not found at ${DIST} — did vite build run?`);
+    console.error(`✗ dist/public not found at ${DIST}`);
     process.exit(1);
   }
 
-  // puppeteer-core + @sparticuz/chromium: the standard pattern for running
-  // headless Chromium inside Vercel/Lambda build environments where the OS
-  // image is missing libnss3.so and other system libraries Chrome needs.
-  // Sparticuz ships a self-contained Chromium binary with all deps bundled.
-  let puppeteer;
-  let chromium;
-  try {
-    ({ default: puppeteer } = await import("puppeteer-core"));
-    ({ default: chromium } = await import("@sparticuz/chromium"));
-  } catch (e) {
-    console.warn(`⚠  puppeteer-core / @sparticuz/chromium not installed (${e.message}) — skipping prerender`);
-    process.exit(0);
-  }
-
-  console.log(`▶ Fetching blog slugs from ${CMS_URL || "(disabled — bad VITE_CMS_URL)"}`);
-  const [blogSlugs, routeMetaMap] = await Promise.all([
-    fetchBlogSlugs(),
-    fetchAllRouteMeta(),
-  ]);
+  console.log(`▶ Fetching from ${CMS_URL || "(disabled)"}`);
+  const [blogSlugs, routeMetaMap] = await Promise.all([fetchBlogSlugs(), fetchAllRouteMeta()]);
   console.log(`  found ${blogSlugs.length} blog posts`);
-  const blogRoutes = blogSlugs.map((s) => `/blog/${s}`);
-  const allRoutes = [...STATIC_ROUTES, ...blogRoutes];
-  // Bake route-meta into the static build so the client can hydrate it on SPA nav
+
   await writeRouteMetaJson(routeMetaMap);
 
-  // Save the original SPA shell as 404.html BEFORE we prerender /index.html (which
-  // overwrites it with the home page). With cleanUrls:true and no catch-all rewrite,
-  // Vercel serves prerendered per-route HTML when it exists and falls back to
-  // 404.html otherwise — which boots the React app and lets Wouter route to NotFound.
-  try {
-    const shell = await readFile(join(DIST, "index.html"), "utf8");
-    await writeFile(join(DIST, "404.html"), shell, "utf8");
-    console.log(`  saved SPA shell to 404.html`);
-  } catch (e) {
-    console.warn(`⚠  could not write 404.html: ${e.message}`);
-  }
+  // Read the Vite-built SPA shell once
+  const shellPath = join(DIST, "index.html");
+  const shell = await readFile(shellPath, "utf8");
 
-  console.log(`▶ Prerendering ${allRoutes.length} routes (concurrency ${CONCURRENCY})`);
+  // Save the unmodified shell as 404.html for SPA fallback on unknown routes
+  await writeFile(join(DIST, "404.html"), shell, "utf8");
+  console.log(`  saved SPA shell to 404.html`);
 
-  const server = await startServer();
-  console.log(`  static server: http://127.0.0.1:${PORT}`);
+  const blogRoutes = blogSlugs.map((s) => `/blog/${s}`);
+  const allRoutes = [...STATIC_ROUTES, ...blogRoutes];
+  console.log(`▶ Writing ${allRoutes.length} prerendered HTML files (no browser needed)`);
 
-  let browser;
-  try {
-    browser = await puppeteer.launch({
-      args: [...chromium.args, "--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
-    });
-  } catch (e) {
-    console.warn(`⚠  could not launch Chrome (${e.message}) — skipping prerender`);
-    server.close();
-    process.exit(0);
-  }
+  let ok = 0, failed = 0;
+  for (const route of allRoutes) {
+    const outDir = safeOutDir(route);
+    if (!outDir) {
+      console.log(`    ✗ ${route} — path-confinement rejected`);
+      failed++;
+      continue;
+    }
+    const routeKey = route === "/" ? "/" : route.replace(/\/$/, "");
+    const meta = routeMetaMap.get(routeKey);
+    const html = applyMetaToShell(shell, meta);
 
-  const results = [];
-  let completed = 0;
-  const queue = [...allRoutes];
-
-  async function worker() {
-    while (queue.length) {
-      const route = queue.shift();
-      if (!route) break;
-      const r = await renderOne(browser, route, routeMetaMap);
-      results.push(r);
-      completed++;
-      const tag = r.ok ? "✓" : "✗";
-      const info = r.ok ? `${(r.bytes / 1024).toFixed(1)}kb` : r.error;
-      process.stdout.write(`  [${String(completed).padStart(3)}/${allRoutes.length}] ${tag} ${route}  ${info}\n`);
+    await mkdir(outDir, { recursive: true });
+    await writeFile(join(outDir, "index.html"), html, "utf8");
+    ok++;
+    if (ok <= 5 || ok % 20 === 0 || ok === allRoutes.length) {
+      const tag = meta ? `(meta: "${meta.seo_title || "(default)"}")` : "(no meta — shell only)";
+      console.log(`    ✓ [${ok}/${allRoutes.length}] ${route} ${tag}`);
     }
   }
 
-  const workers = Array.from({ length: CONCURRENCY }, worker);
-  await Promise.all(workers);
-
-  await browser.close();
-  server.close();
-
-  const ok = results.filter((r) => r.ok).length;
-  const failed = results.filter((r) => !r.ok);
-  console.log(`▶ Done: ${ok}/${results.length} routes prerendered`);
-  if (failed.length) {
-    console.log(`  ${failed.length} failures:`);
-    for (const f of failed) console.log(`    ✗ ${f.route}: ${f.error}`);
-  }
+  console.log(`▶ Done: ${ok}/${allRoutes.length} routes prerendered, ${failed} failed`);
 }
 
 main().catch((err) => {
-  console.error("prerender script failed:", err);
+  console.error("prerender failed:", err);
   process.exit(1);
 });
