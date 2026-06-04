@@ -356,6 +356,19 @@ async function main() {
   const allRoutes = [...STATIC_ROUTES, ...blogRoutes];
   // Bake route-meta into the static build so the client can hydrate it on SPA nav
   await writeRouteMetaJson(routeMetaMap);
+
+  // Save the original SPA shell as 404.html BEFORE we prerender /index.html (which
+  // overwrites it with the home page). With cleanUrls:true and no catch-all rewrite,
+  // Vercel serves prerendered per-route HTML when it exists and falls back to
+  // 404.html otherwise — which boots the React app and lets Wouter route to NotFound.
+  try {
+    const shell = await readFile(join(DIST, "index.html"), "utf8");
+    await writeFile(join(DIST, "404.html"), shell, "utf8");
+    console.log(`  saved SPA shell to 404.html`);
+  } catch (e) {
+    console.warn(`⚠  could not write 404.html: ${e.message}`);
+  }
+
   console.log(`▶ Prerendering ${allRoutes.length} routes (concurrency ${CONCURRENCY})`);
 
   const server = await startServer();
