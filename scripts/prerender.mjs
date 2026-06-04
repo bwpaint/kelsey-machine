@@ -49,6 +49,121 @@ const CONCURRENCY = 4;
 // Anything outside this character class is rejected.
 const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,200}$/;
 
+// ─── WebWize Connect RM (Route Meta) integration ────────────────────────────
+// Single source of truth for per-route SEO. At build time we fetch all live
+// routes from the RM module and inject <title>, <meta>, OG, canonical, robots
+// and schema JSON-LD directly into the prerendered HTML head — so Google sees
+// the right tags on first byte, before any JS runs.
+const WWRM_API_KEY = process.env.WWRM_API_KEY || "";
+
+async function fetchAllRouteMeta() {
+  if (!CMS_URL) return new Map();
+  if (!WWRM_API_KEY) {
+    console.warn("⚠  WWRM_API_KEY not set — skipping RM SEO injection (titles will fall back to defaults).");
+    return new Map();
+  }
+  try {
+    const url = `${CMS_URL}/wp-json/webwize-rm/v1/seo/all?status=live`;
+    const resp = await fetch(url, {
+      headers: { "X-API-Key": WWRM_API_KEY },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!resp.ok) {
+      console.warn(`⚠  RM /seo/all returned ${resp.status} — skipping injection`);
+      return new Map();
+    }
+    const json = await resp.json();
+    const pages = json?.pages || [];
+    const map = new Map();
+    for (const p of pages) {
+      // Normalize path: strip trailing slash (except root), lower-case
+      let path = p.path || "/";
+      if (path !== "/" && path.endsWith("/")) path = path.slice(0, -1);
+      map.set(path, p);
+    }
+    console.log(`  fetched ${map.size} RM route-meta entries`);
+    return map;
+  } catch (e) {
+    console.warn(`⚠  could not fetch RM /seo/all:`, e.message);
+    return new Map();
+  }
+}
+
+// Inject SEO tags into the page's <head> via Puppeteer. Runs AFTER the SPA
+// has rendered so it doesn't fight React for control of the DOM. The client-
+// side useRouteMeta hook (see client/src/lib/routeMeta.ts) is a no-op when
+// the tags are already present (it just verifies and updates on Wouter nav).
+async function injectSeoHead(page, meta) {
+  if (!meta) return;
+  await page.evaluate((m) => {
+    const setMeta = (name, content) => {
+      if (!content) return;
+      let el = document.querySelector(`meta[name="${name}"]`);
+      if (!el) { el = document.createElement("meta"); el.setAttribute("name", name); document.head.appendChild(el); }
+      el.setAttribute("content", content);
+    };
+    const setOg = (prop, content) => {
+      if (!content) return;
+      let el = document.querySelector(`meta[property="og:${prop}"]`);
+      if (!el) { el = document.createElement("meta"); el.setAttribute("property", `og:${prop}`); document.head.appendChild(el); }
+      el.setAttribute("content", content);
+    };
+    const setLink = (rel, href) => {
+      if (!href) return;
+      let el = document.querySelector(`link[rel="${rel}"]`);
+      if (!el) { el = document.createElement("link"); el.setAttribute("rel", rel); document.head.appendChild(el); }
+      el.setAttribute("href", href);
+    };
+
+    if (m.seo_title) document.title = m.seo_title;
+    setMeta("description", m.meta_desc);
+    setMeta("robots", m.robots || "index, follow");
+    setLink("canonical", m.canonical);
+    setOg("title", m.og_title || m.seo_title);
+    setOg("description", m.og_desc || m.meta_desc);
+    setOg("image", m.og_image);
+    setOg("type", "website");
+
+    if (m.twitter_card) setMeta("twitter:card", m.twitter_card);
+
+    // Mark injected schema with data-rm so client doesn't duplicate
+    if (m.schema_json && m.schema_json.trim()) {
+      const existing = document.querySelector("script[data-rm-schema]");
+      if (existing) existing.remove();
+      const script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.setAttribute("data-rm-schema", "true");
+      script.textContent = m.schema_json;
+      document.head.appendChild(script);
+    }
+  }, meta);
+}
+
+// Write a sanitized copy of route-meta to the static build so the SPA can
+// load it client-side for SPA navigation updates. The exported file is
+// public-by-nature — it contains only what would be rendered in <head>
+// anyway, no API key, no draft data.
+async function writeRouteMetaJson(metaMap) {
+  const out = {};
+  for (const [path, m] of metaMap.entries()) {
+    out[path] = {
+      seo_title:    m.seo_title || "",
+      meta_desc:    m.meta_desc || "",
+      og_title:     m.og_title || "",
+      og_desc:      m.og_desc || "",
+      og_image:     m.og_image || "",
+      canonical:    m.canonical || "",
+      robots:       m.robots || "index, follow",
+      twitter_card: m.twitter_card || "summary_large_image",
+      schema_json:  m.schema_json || "",
+    };
+  }
+  const dataDir = join(DIST, "_data");
+  await mkdir(dataDir, { recursive: true });
+  await writeFile(join(dataDir, "route-meta.json"), JSON.stringify(out, null, 0), "utf8");
+}
+
+
 const STATIC_ROUTES = [
   "/",
   "/services",
@@ -185,7 +300,7 @@ function safeOutDir(route) {
   return out;
 }
 
-async function renderOne(browser, route) {
+async function renderOne(browser, route, routeMetaMap) {
   const page = await browser.newPage();
   await page.setViewport({ width: 1280, height: 800 });
   try {
@@ -196,6 +311,9 @@ async function renderOne(browser, route) {
     const url = `http://127.0.0.1:${PORT}${route}`;
     await page.goto(url, { waitUntil: "networkidle0", timeout: NAV_TIMEOUT_MS });
     await new Promise((r) => setTimeout(r, RENDER_WAIT_MS));
+    // Inject RM-driven SEO tags into <head> before snapshotting.
+    const routeKey = route === "/" ? "/" : route.replace(/\/$/, "");
+    await injectSeoHead(page, routeMetaMap?.get(routeKey));
     const html = await page.content();
 
     await mkdir(outDir, { recursive: true });
@@ -223,10 +341,15 @@ async function main() {
   }
 
   console.log(`▶ Fetching blog slugs from ${CMS_URL || "(disabled — bad VITE_CMS_URL)"}`);
-  const blogSlugs = await fetchBlogSlugs();
+  const [blogSlugs, routeMetaMap] = await Promise.all([
+    fetchBlogSlugs(),
+    fetchAllRouteMeta(),
+  ]);
   console.log(`  found ${blogSlugs.length} blog posts`);
   const blogRoutes = blogSlugs.map((s) => `/blog/${s}`);
   const allRoutes = [...STATIC_ROUTES, ...blogRoutes];
+  // Bake route-meta into the static build so the client can hydrate it on SPA nav
+  await writeRouteMetaJson(routeMetaMap);
   console.log(`▶ Prerendering ${allRoutes.length} routes (concurrency ${CONCURRENCY})`);
 
   const server = await startServer();
@@ -252,7 +375,7 @@ async function main() {
     while (queue.length) {
       const route = queue.shift();
       if (!route) break;
-      const r = await renderOne(browser, route);
+      const r = await renderOne(browser, route, routeMetaMap);
       results.push(r);
       completed++;
       const tag = r.ok ? "✓" : "✗";

@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
+import { useRouteMeta } from "@/hooks/useRouteMeta";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
@@ -25,6 +26,10 @@ import PumpService from "./pages/PumpService";
 import Competitors from "./pages/Competitors";
 
 function Router() {
+  // Wire WebWize Connect RM (Route Meta) data into the live <head>.
+  // On prerendered first paint this is a no-op (tags are already baked in);
+  // on Wouter SPA navigation this keeps document.title + meta tags accurate.
+  useRouteMeta();
   return (
     <Switch>
       {/* Core pages */}
