@@ -19,7 +19,6 @@ import {
 import NotFound from "@/pages/NotFound";
 
 export default function BlogPost({ slug = "" }: { slug?: string } = {}) {
-
   const [post, setPost] = useState<WpPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -36,7 +35,7 @@ export default function BlogPost({ slug = "" }: { slug?: string } = {}) {
     setError("");
     setNotFound(false);
     fetchPostBySlug(slug)
-      .then((data) => {
+      .then(data => {
         if (cancelled) return;
         if (!data) {
           setNotFound(true);
@@ -49,12 +48,16 @@ export default function BlogPost({ slug = "" }: { slug?: string } = {}) {
           window.scrollTo({ top: 0, behavior: "smooth" });
         }
       })
-      .catch((err) => {
+      .catch(err => {
         if (cancelled) return;
-        setError(err instanceof Error ? err.message : "Could not load this post.");
+        setError(
+          err instanceof Error ? err.message : "Could not load this post."
+        );
       })
       .finally(() => !cancelled && setLoading(false));
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
   if (notFound) return <NotFound />;
@@ -90,13 +93,29 @@ export default function BlogPost({ slug = "" }: { slug?: string } = {}) {
               </Link>
 
               {loading && (
-                <div style={{ padding: "3rem 0", textAlign: "center", fontFamily: "'Source Sans 3', sans-serif", color: C.textMid }}>
+                <div
+                  style={{
+                    padding: "3rem 0",
+                    textAlign: "center",
+                    fontFamily: "'Source Sans 3', sans-serif",
+                    color: C.textMid,
+                  }}
+                >
                   Loading…
                 </div>
               )}
 
               {error && (
-                <div style={{ padding: "1.25rem 1.5rem", background: "#fff4f4", border: `1px solid #f3c2c2`, borderRadius: 4, color: "#a04040", fontFamily: "'Source Sans 3', sans-serif" }}>
+                <div
+                  style={{
+                    padding: "1.25rem 1.5rem",
+                    background: "#fff4f4",
+                    border: `1px solid #f3c2c2`,
+                    borderRadius: 4,
+                    color: "#a04040",
+                    fontFamily: "'Source Sans 3', sans-serif",
+                  }}
+                >
                   {error}
                 </div>
               )}
@@ -104,8 +123,15 @@ export default function BlogPost({ slug = "" }: { slug?: string } = {}) {
               {!loading && !error && post && (
                 <>
                   {categories.length > 0 && (
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: "0.875rem" }}>
-                      {categories.slice(0, 3).map((c) => (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: 8,
+                        marginBottom: "0.875rem",
+                      }}
+                    >
+                      {categories.slice(0, 3).map(c => (
                         <span
                           key={c.id}
                           style={{
@@ -142,7 +168,17 @@ export default function BlogPost({ slug = "" }: { slug?: string } = {}) {
                     dangerouslySetInnerHTML={{ __html: post.title.rendered }}
                   />
 
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "'Barlow', sans-serif", fontSize: "0.85rem", color: C.textMid, marginBottom: "1.5rem" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      fontFamily: "'Barlow', sans-serif",
+                      fontSize: "0.85rem",
+                      color: C.textMid,
+                      marginBottom: "1.5rem",
+                    }}
+                  >
                     <Calendar size={14} />
                     {formatPostDate(post.date)}
                   </div>
@@ -171,7 +207,9 @@ export default function BlogPost({ slug = "" }: { slug?: string } = {}) {
                       lineHeight: 1.75,
                       color: C.textDark,
                     }}
-                    dangerouslySetInnerHTML={{ __html: rewriteWpUrls(post.content.rendered) }}
+                    dangerouslySetInnerHTML={{
+                      __html: rewriteWpUrls(post.content.rendered),
+                    }}
                   />
                 </>
               )}

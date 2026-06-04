@@ -5,6 +5,7 @@ the design or architecture**. Type-check (`pnpm check`) and production build
 (`pnpm build`) both pass clean.
 
 ## What changed this pass
+
 - **Manus cleanup:** removed the two Manus Vite plugins + Manus hostnames from
   `vite.config.ts`, deleted `ManusDialog.tsx` and `public/__manus__/`, stripped
   the broken Umami analytics script from `index.html`, pruned stale Manus
@@ -23,6 +24,7 @@ the design or architecture**. Type-check (`pnpm check`) and production build
   commented GTM snippet with placeholder `GTM-XXXXXXX`.
 
 ## TO GO LIVE — needs YOU (Brooks)
+
 1. **Vercel env vars** (Project Settings → Environment Variables):
    - `RESEND_API_KEY` — from resend.com (verify the sending domain first)
    - `LEAD_TO_EMAIL` = `service@kmstx.com`
@@ -32,6 +34,7 @@ the design or architecture**. Type-check (`pnpm check`) and production build
    `vercel.json`. pnpm auto-detected from the lockfile.
 
 ## NEEDS info/assets only Jimmy/Glenn have
+
 - **Google reviews rating** — `index.html` LocalBusiness schema still says
   `ratingValue 5 / 9 reviews`. Glenn said 4.8/5.0 — **do not ship unverified
   review markup** (Google penalty risk). Confirm real numbers, then update.
@@ -43,6 +46,7 @@ the design or architecture**. Type-check (`pnpm check`) and production build
 - **Favicon** — current one is auto-generated from the logo; swap if you want a pro-designed mark.
 
 ## FOLLOW-UP (deferred, by design)
+
 - **Prerendering for SEO** — needs headless Chrome at build; deferred to a round
   where we verify on a live Vercel preview (Google URL Inspection / Rich Results)
   that crawlers get full HTML + the JS-injected FAQ schema. SPA is JS-indexable meanwhile.

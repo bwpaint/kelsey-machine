@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
+import { Analytics } from "@vercel/analytics/react";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
@@ -15,7 +16,13 @@ import FluidPowerEnd from "./pages/FluidPowerEnd";
 import Warranty from "./pages/Warranty";
 import EmergencyService from "./pages/EmergencyService";
 import Contact from "./pages/Contact";
-import { LpCentrifuge, LpGearbox, LpBlower, LpCompressor, LpFluidEnd } from "./pages/LandingPages";
+import {
+  LpCentrifuge,
+  LpGearbox,
+  LpBlower,
+  LpCompressor,
+  LpFluidEnd,
+} from "./pages/LandingPages";
 import Industries from "./pages/Industries";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
@@ -32,9 +39,18 @@ function Router() {
       <Route path="/services" component={ServicesOverview} />
       <Route path="/services/centrifuge-repair" component={CentrifugeRepair} />
       <Route path="/services/gearbox-repair" component={GearboxRepair} />
-      <Route path="/services/industrial-blower-repair" component={BlowerRepair} />
-      <Route path="/services/industrial-compressors" component={IndustrialCompressors} />
-      <Route path="/services/fluid-power-end-repair" component={FluidPowerEnd} />
+      <Route
+        path="/services/industrial-blower-repair"
+        component={BlowerRepair}
+      />
+      <Route
+        path="/services/industrial-compressors"
+        component={IndustrialCompressors}
+      />
+      <Route
+        path="/services/fluid-power-end-repair"
+        component={FluidPowerEnd}
+      />
       <Route path="/warranty" component={Warranty} />
       <Route path="/emergency-service" component={EmergencyService} />
       <Route path="/contact" component={Contact} />
@@ -57,20 +73,32 @@ function Router() {
       {/* Google Ads landing page aliases (URL-stable destinations for paid traffic) */}
       <Route path="/fluid-end-power-end-repair" component={FluidPowerEnd} />
       <Route path="/gearbox-repair-service" component={GearboxRepair} />
-      <Route path="/services/centrifuge-repair-service" component={CentrifugeRepair} />
-      <Route path="/services/compressor-repair-service" component={IndustrialCompressors} />
+      <Route
+        path="/services/centrifuge-repair-service"
+        component={CentrifugeRepair}
+      />
+      <Route
+        path="/services/compressor-repair-service"
+        component={IndustrialCompressors}
+      />
       <Route path="/blower-vacuum-pump-repair" component={BlowerRepair} />
       <Route path="/pump-service" component={PumpService} />
       <Route path="/competitors" component={Competitors} />
       {/* Blog post landing page aliases (used as AdWords destinations without /blog/ prefix) */}
       <Route path="/decanter-centrifuge-repair-a-comprehensive-maintenance-and-troubleshooting-checklist">
-        {() => <BlogPost slug="decanter-centrifuge-repair-a-comprehensive-maintenance-and-troubleshooting-checklist" />}
+        {() => (
+          <BlogPost slug="decanter-centrifuge-repair-a-comprehensive-maintenance-and-troubleshooting-checklist" />
+        )}
       </Route>
       <Route path="/centrifuge-dynamic-balancing-a-technical-guide-for-industrial-operations">
-        {() => <BlogPost slug="centrifuge-dynamic-balancing-a-technical-guide-for-industrial-operations" />}
+        {() => (
+          <BlogPost slug="centrifuge-dynamic-balancing-a-technical-guide-for-industrial-operations" />
+        )}
       </Route>
       <Route path="/emergency-industrial-repair-in-houston-24-7-response-for-critical-rotating-equipment">
-        {() => <BlogPost slug="emergency-industrial-repair-in-houston-24-7-response-for-critical-rotating-equipment" />}
+        {() => (
+          <BlogPost slug="emergency-industrial-repair-in-houston-24-7-response-for-critical-rotating-equipment" />
+        )}
       </Route>
 
       {/* 404 */}
@@ -87,6 +115,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
+          <Analytics />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

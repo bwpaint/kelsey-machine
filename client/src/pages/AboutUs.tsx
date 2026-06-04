@@ -8,17 +8,45 @@
  */
 
 import { Link } from "wouter";
-import { NavBar, Footer, NewsletterBar, InlineQuoteForm, WarrantyCallout, FreeNationwidePickupCallout, EmergencyCallout } from "@/components/KmsLayout";
+import {
+  NavBar,
+  Footer,
+  NewsletterBar,
+  InlineQuoteForm,
+  WarrantyCallout,
+  FreeNationwidePickupCallout,
+  EmergencyCallout,
+} from "@/components/KmsLayout";
 import { useEffect } from "react";
 
 const ABOUT_HERO = "/images/kms-about-hero.webp";
 
 const TIMELINE = [
-  { year: "1983", title: "Founded in Stafford, TX", desc: "Kelsey Machine Services opens its doors in Stafford, Texas — a small shop with big ambitions and a whole lot of rotating equipment to fix." },
-  { year: "1990s", title: "Expanding the Service Range", desc: "KMS grows beyond centrifuge repair into gearboxes, industrial blowers, and compressors. Word spreads fast when you do good work." },
-  { year: "2000s", title: "Going National", desc: "Free nationwide pickup and delivery changes everything. KMS starts serving customers in all 50 states — no matter how far the equipment needs to travel." },
-  { year: "2010s", title: "The 24-Month Warranty Standard", desc: "KMS introduces its industry-leading 24-month rebuilt warranty — twice what most competitors offer. If we fix it, we stand behind it." },
-  { year: "Today", title: "40+ Years Strong", desc: "Still family-owned. Still in Stafford. Still the most trusted name in rotating equipment repair across the U.S., Canada, and Mexico." },
+  {
+    year: "1983",
+    title: "Founded in Stafford, TX",
+    desc: "Kelsey Machine Services opens its doors in Stafford, Texas — a small shop with big ambitions and a whole lot of rotating equipment to fix.",
+  },
+  {
+    year: "1990s",
+    title: "Expanding the Service Range",
+    desc: "KMS grows beyond centrifuge repair into gearboxes, industrial blowers, and compressors. Word spreads fast when you do good work.",
+  },
+  {
+    year: "2000s",
+    title: "Going National",
+    desc: "Free nationwide pickup and delivery changes everything. KMS starts serving customers in all 50 states — no matter how far the equipment needs to travel.",
+  },
+  {
+    year: "2010s",
+    title: "The 24-Month Warranty Standard",
+    desc: "KMS introduces its industry-leading 24-month rebuilt warranty — twice what most competitors offer. If we fix it, we stand behind it.",
+  },
+  {
+    year: "Today",
+    title: "40+ Years Strong",
+    desc: "Still family-owned. Still in Stafford. Still the most trusted name in rotating equipment repair across the U.S., Canada, and Mexico.",
+  },
 ];
 
 const STATS = [
@@ -98,47 +126,55 @@ const SCHEMA = {
     {
       "@type": "LocalBusiness",
       "@id": "https://kmstx.com/#business",
-      "name": "Kelsey Machine Services",
-      "url": "https://kmstx.com",
-      "telephone": "+17134167111",
-      "email": "info@kmstx.com",
-      "foundingDate": "1983",
-      "description": "Kelsey Machine Services is a family-owned rotating equipment repair company based in Stafford, Texas, serving all 50 states with centrifuge, gearbox, blower, compressor, and fluid end repair since 1983.",
-      "address": {
+      name: "Kelsey Machine Services",
+      url: "https://kmstx.com",
+      telephone: "+17134167111",
+      email: "info@kmstx.com",
+      foundingDate: "1983",
+      description:
+        "Kelsey Machine Services is a family-owned rotating equipment repair company based in Stafford, Texas, serving all 50 states with centrifuge, gearbox, blower, compressor, and fluid end repair since 1983.",
+      address: {
         "@type": "PostalAddress",
-        "streetAddress": "Stafford, TX",
-        "addressLocality": "Stafford",
-        "addressRegion": "TX",
-        "addressCountry": "US"
+        streetAddress: "Stafford, TX",
+        addressLocality: "Stafford",
+        addressRegion: "TX",
+        addressCountry: "US",
       },
-      "areaServed": ["US", "CA", "MX"],
-      "hasOfferCatalog": {
+      areaServed: ["US", "CA", "MX"],
+      hasOfferCatalog: {
         "@type": "OfferCatalog",
-        "name": "Rotating Equipment Repair Services"
-      }
+        name: "Rotating Equipment Repair Services",
+      },
     },
     {
       "@type": "FAQPage",
-      "mainEntity": FAQS.map(f => ({
+      mainEntity: FAQS.map(f => ({
         "@type": "Question",
-        "name": f.q,
-        "acceptedAnswer": { "@type": "Answer", "text": f.a }
-      }))
-    }
-  ]
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    },
+  ],
 };
 
 export default function AboutUs() {
   useEffect(() => {
-    document.title = "About Kelsey Machine Services | 40+ Years of Rotating Equipment Repair in Texas";
+    document.title =
+      "About Kelsey Machine Services | 40+ Years of Rotating Equipment Repair in Texas";
     const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute("content", "Family-owned since 1983. Kelsey Machine Services has been repairing centrifuges, gearboxes, blowers, and compressors for over 40 years from Stafford, TX — serving all 50 states.");
+    if (meta)
+      meta.setAttribute(
+        "content",
+        "Family-owned since 1983. Kelsey Machine Services has been repairing centrifuges, gearboxes, blowers, and compressors for over 40 years from Stafford, TX — serving all 50 states."
+      );
     const schema = document.createElement("script");
     schema.type = "application/ld+json";
     schema.text = JSON.stringify(SCHEMA);
     schema.id = "kms-about-schema";
     document.head.appendChild(schema);
-    return () => { document.getElementById("kms-about-schema")?.remove(); };
+    return () => {
+      document.getElementById("kms-about-schema")?.remove();
+    };
   }, []);
 
   return (
@@ -157,12 +193,16 @@ export default function AboutUs() {
               Our Story
             </div>
             <h1 className="font-['Barlow_Condensed'] text-5xl md:text-6xl font-black text-white uppercase leading-tight mb-4">
-              40 Years of Getting<br />
-              <span className="text-[#78A546]">Texas-Tough Equipment</span><br />
+              40 Years of Getting
+              <br />
+              <span className="text-[#78A546]">Texas-Tough Equipment</span>
+              <br />
               Back to Work
             </h1>
             <p className="text-gray-200 text-xl leading-relaxed mb-8">
-              We're not the biggest shop in the country. We're just the one that fixes it right, backs it with a 24-month warranty, and answers the phone at 2 AM when your centrifuge decides to quit on a Sunday.
+              We're not the biggest shop in the country. We're just the one that
+              fixes it right, backs it with a 24-month warranty, and answers the
+              phone at 2 AM when your centrifuge decides to quit on a Sunday.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href="/contact">
@@ -184,17 +224,19 @@ export default function AboutUs() {
       <section className="bg-[#1E5080] py-8">
         <div className="container">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            {STATS.map((s) => (
+            {STATS.map(s => (
               <div key={s.label}>
-                <div className="font-['Barlow_Condensed'] text-4xl font-black text-[#78A546]">{s.value}</div>
-                <div className="text-white text-sm font-semibold uppercase tracking-wide mt-1">{s.label}</div>
+                <div className="font-['Barlow_Condensed'] text-4xl font-black text-[#78A546]">
+                  {s.value}
+                </div>
+                <div className="text-white text-sm font-semibold uppercase tracking-wide mt-1">
+                  {s.label}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
-
-
 
       {/* ── Our Story ── */}
       <section className="bg-gray-50 py-16">
@@ -202,46 +244,105 @@ export default function AboutUs() {
           <div className="grid md:grid-cols-2 gap-12 items-start">
             <div>
               <h2 className="font-['Barlow_Condensed'] text-4xl font-black text-[#1E5080] uppercase mb-6">
-                We Started With One Rule:<br />
-                <span className="text-[#78A546]">Fix It Right or Don't Charge For It</span>
+                We Started With One Rule:
+                <br />
+                <span className="text-[#78A546]">
+                  Fix It Right or Don't Charge For It
+                </span>
               </h2>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Back in 1983, Kelsey Machine Services opened its doors in Stafford, Texas with a simple philosophy: do the work right, stand behind it, and treat every customer like they're your only one. Forty-plus years later, that hasn't changed — even if the equipment has gotten a lot more complicated.
+                Back in 1983, Kelsey Machine Services opened its doors in
+                Stafford, Texas with a simple philosophy: do the work right,
+                stand behind it, and treat every customer like they're your only
+                one. Forty-plus years later, that hasn't changed — even if the
+                equipment has gotten a lot more complicated.
               </p>
               <p className="text-gray-700 leading-relaxed mb-4">
-                We started as a centrifuge repair shop serving the petrochemical and industrial markets around Houston. Word travels fast in this industry when you do good work, and it didn't take long before customers were shipping equipment to us from across the country. Today, we repair{" "}
-                <Link href="/services/centrifuge-repair" className="text-[#1E5080] underline hover:text-[#78A546]">centrifuges</Link>,{" "}
-                <Link href="/services/gearbox-repair" className="text-[#1E5080] underline hover:text-[#78A546]">industrial gearboxes</Link>,{" "}
-                <Link href="/services/industrial-blower-repair" className="text-[#1E5080] underline hover:text-[#78A546]">blowers</Link>,{" "}
-                <Link href="/services/industrial-compressors" className="text-[#1E5080] underline hover:text-[#78A546]">compressors</Link>, and{" "}
-                <Link href="/services/fluid-power-end-repair" className="text-[#1E5080] underline hover:text-[#78A546]">fluid end & power end components</Link>{" "}
+                We started as a centrifuge repair shop serving the petrochemical
+                and industrial markets around Houston. Word travels fast in this
+                industry when you do good work, and it didn't take long before
+                customers were shipping equipment to us from across the country.
+                Today, we repair{" "}
+                <Link
+                  href="/services/centrifuge-repair"
+                  className="text-[#1E5080] underline hover:text-[#78A546]"
+                >
+                  centrifuges
+                </Link>
+                ,{" "}
+                <Link
+                  href="/services/gearbox-repair"
+                  className="text-[#1E5080] underline hover:text-[#78A546]"
+                >
+                  industrial gearboxes
+                </Link>
+                ,{" "}
+                <Link
+                  href="/services/industrial-blower-repair"
+                  className="text-[#1E5080] underline hover:text-[#78A546]"
+                >
+                  blowers
+                </Link>
+                ,{" "}
+                <Link
+                  href="/services/industrial-compressors"
+                  className="text-[#1E5080] underline hover:text-[#78A546]"
+                >
+                  compressors
+                </Link>
+                , and{" "}
+                <Link
+                  href="/services/fluid-power-end-repair"
+                  className="text-[#1E5080] underline hover:text-[#78A546]"
+                >
+                  fluid end & power end components
+                </Link>{" "}
                 for customers in all 50 states, Canada, and Mexico.
               </p>
               <p className="text-gray-700 leading-relaxed mb-4">
-                We're still family-owned. Still in Stafford. Still answering the phone ourselves. And still doing the work the same way we always have — with the kind of care and precision that only comes from people who actually give a damn about what they're doing.
+                We're still family-owned. Still in Stafford. Still answering the
+                phone ourselves. And still doing the work the same way we always
+                have — with the kind of care and precision that only comes from
+                people who actually give a damn about what they're doing.
               </p>
               <p className="text-gray-700 leading-relaxed">
                 Our{" "}
-                <Link href="/warranty" className="text-[#1E5080] underline hover:text-[#78A546]">industry-leading 24-month warranty</Link>{" "}
-                on rebuilt equipment isn't a marketing gimmick — it's a reflection of how confident we are in our work. If something goes wrong after we fix it, we make it right. That's the KMS promise, and it's been the KMS promise since day one.
+                <Link
+                  href="/warranty"
+                  className="text-[#1E5080] underline hover:text-[#78A546]"
+                >
+                  industry-leading 24-month warranty
+                </Link>{" "}
+                on rebuilt equipment isn't a marketing gimmick — it's a
+                reflection of how confident we are in our work. If something
+                goes wrong after we fix it, we make it right. That's the KMS
+                promise, and it's been the KMS promise since day one.
               </p>
             </div>
             <div>
               <div className="bg-white rounded-xl shadow-lg overflow-hidden">
                 <div className="bg-[#1E5080] px-6 py-4">
-                  <h3 className="font-['Barlow_Condensed'] text-xl font-black text-white uppercase tracking-wide">Our History</h3>
+                  <h3 className="font-['Barlow_Condensed'] text-xl font-black text-white uppercase tracking-wide">
+                    Our History
+                  </h3>
                 </div>
                 <div className="p-6">
                   {TIMELINE.map((item, i) => (
                     <div key={i} className="flex gap-4 mb-6 last:mb-0">
                       <div className="flex-shrink-0">
                         <div className="w-16 h-16 rounded-full bg-[#78A546] flex items-center justify-center">
-                          <span className="font-['Barlow_Condensed'] text-white font-black text-sm text-center leading-tight">{item.year}</span>
+                          <span className="font-['Barlow_Condensed'] text-white font-black text-sm text-center leading-tight">
+                            {item.year}
+                          </span>
                         </div>
                       </div>
                       <div className="pt-1">
-                        <h4 className="font-bold text-[#1E5080] mb-1">{item.title}</h4>
-                        <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
+                        <h4 className="font-bold text-[#1E5080] mb-1">
+                          {item.title}
+                        </h4>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          {item.desc}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -260,15 +361,23 @@ export default function AboutUs() {
               What We Believe In
             </h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              These aren't values we put on a poster in the break room. They're the way we actually operate — every job, every day.
+              These aren't values we put on a poster in the break room. They're
+              the way we actually operate — every job, every day.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {VALUES.map((v, i) => (
-              <div key={i} className="bg-gray-50 rounded-xl p-6 border border-gray-100 hover:border-[#78A546] transition-colors">
+              <div
+                key={i}
+                className="bg-gray-50 rounded-xl p-6 border border-gray-100 hover:border-[#78A546] transition-colors"
+              >
                 <div className="text-3xl mb-3">{v.icon}</div>
-                <h3 className="font-bold text-[#1E5080] text-lg mb-2">{v.title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{v.desc}</p>
+                <h3 className="font-bold text-[#1E5080] text-lg mb-2">
+                  {v.title}
+                </h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  {v.desc}
+                </p>
               </div>
             ))}
           </div>
@@ -281,17 +390,31 @@ export default function AboutUs() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="font-['Barlow_Condensed'] text-4xl font-black text-white uppercase mb-6">
-                The KMS Difference:<br />
-                <span className="text-[#78A546]">It's Not Just What We Fix. It's How.</span>
+                The KMS Difference:
+                <br />
+                <span className="text-[#78A546]">
+                  It's Not Just What We Fix. It's How.
+                </span>
               </h2>
               <p className="text-gray-200 leading-relaxed mb-4">
-                There are plenty of repair shops out there. Most of them will fix your equipment. Some of them will fix it right. Very few of them will fix it right, back it with a 24-month warranty, pick it up from anywhere in the country for free, and have it back to you in 72 hours.
+                There are plenty of repair shops out there. Most of them will
+                fix your equipment. Some of them will fix it right. Very few of
+                them will fix it right, back it with a 24-month warranty, pick
+                it up from anywhere in the country for free, and have it back to
+                you in 72 hours.
               </p>
               <p className="text-gray-200 leading-relaxed mb-4">
-                That's the KMS standard. It's what we've been doing for over 40 years, and it's why customers keep coming back — and why they refer us to their colleagues, their contractors, and their competitors when equipment goes down.
+                That's the KMS standard. It's what we've been doing for over 40
+                years, and it's why customers keep coming back — and why they
+                refer us to their colleagues, their contractors, and their
+                competitors when equipment goes down.
               </p>
               <p className="text-gray-200 leading-relaxed mb-6">
-                We service all major brands — Alfa Laval, Andritz, SWECO, Flender, Falk, Gardner Denver, Roots, and dozens more. Our technicians have seen it all, fixed most of it, and know exactly what it takes to get your specific equipment running at peak performance again.
+                We service all major brands — Alfa Laval, Andritz, SWECO,
+                Flender, Falk, Gardner Denver, Roots, and dozens more. Our
+                technicians have seen it all, fixed most of it, and know exactly
+                what it takes to get your specific equipment running at peak
+                performance again.
               </p>
               <div className="flex flex-wrap gap-3">
                 <Link href="/services">
@@ -313,17 +436,42 @@ export default function AboutUs() {
               <div className="grid grid-cols-2 gap-x-4">
                 {[
                   { label: "Years in Business", value: "40+", icon: "📅" },
-                  { label: "States Served", value: "50 States + Canada + Mexico", icon: "🗺️" },
-                  { label: "Rebuilt Equipment Warranty", value: "24 Months", icon: "🛡️" },
-                  { label: "Standard Turnaround", value: "72 Hours", icon: "⚡" },
-                  { label: "Emergency Service", value: "24/7 / 365", icon: "🚨" },
-                  { label: "Pickup & Delivery", value: "Free Nationwide", icon: "🚛" },
+                  {
+                    label: "States Served",
+                    value: "50 States + Canada + Mexico",
+                    icon: "🗺️",
+                  },
+                  {
+                    label: "Rebuilt Equipment Warranty",
+                    value: "24 Months",
+                    icon: "🛡️",
+                  },
+                  {
+                    label: "Standard Turnaround",
+                    value: "72 Hours",
+                    icon: "⚡",
+                  },
+                  {
+                    label: "Emergency Service",
+                    value: "24/7 / 365",
+                    icon: "🚨",
+                  },
+                  {
+                    label: "Pickup & Delivery",
+                    value: "Free Nationwide",
+                    icon: "🚛",
+                  },
                 ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-3 py-3 border-b border-gray-100">
+                  <div
+                    key={i}
+                    className="flex items-start gap-3 py-3 border-b border-gray-100"
+                  >
                     <span className="text-xl mt-0.5">{item.icon}</span>
                     <div>
                       <div className="text-gray-500 text-xs">{item.label}</div>
-                      <div className="font-bold text-[#1E5080] text-sm leading-tight">{item.value}</div>
+                      <div className="font-bold text-[#1E5080] text-sm leading-tight">
+                        {item.value}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -341,7 +489,8 @@ export default function AboutUs() {
               Industries We Serve
             </h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              If your industry runs on rotating equipment, there's a good chance we've already fixed something just like yours.
+              If your industry runs on rotating equipment, there's a good chance
+              we've already fixed something just like yours.
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -364,7 +513,9 @@ export default function AboutUs() {
                 href={anchor ? `/industries#${anchor}` : "/industries"}
                 className="bg-white rounded-lg p-4 text-center border border-gray-100 hover:border-[#78A546] hover:shadow-sm transition-all no-underline block cursor-pointer"
               >
-                <span className="text-gray-700 font-medium text-sm">{label}</span>
+                <span className="text-gray-700 font-medium text-sm">
+                  {label}
+                </span>
               </a>
             ))}
           </div>
@@ -378,10 +529,14 @@ export default function AboutUs() {
             Ready to Get Your Equipment Back Online?
           </h2>
           <p className="text-white/90 text-lg mb-6 max-w-xl mx-auto">
-            Call us, fill out the form below, or request a free pickup. We'll take it from there.
+            Call us, fill out the form below, or request a free pickup. We'll
+            take it from there.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="tel:+17134167111" className="bg-white text-[#1E5080] font-bold px-8 py-3 rounded hover:bg-gray-100 transition-colors">
+            <a
+              href="tel:+17134167111"
+              className="bg-white text-[#1E5080] font-bold px-8 py-3 rounded hover:bg-gray-100 transition-colors"
+            >
               📞 713-416-7111
             </a>
             <Link href="/emergency-service">
@@ -403,11 +558,23 @@ export default function AboutUs() {
               <div className="bg-[#f0f6e8] border-l-4 border-[#78A546] rounded-lg p-6 mb-8">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-[#78A546] text-lg">✦</span>
-                  <span className="text-[#78A546] font-bold text-sm uppercase tracking-widest">Quick Answer</span>
+                  <span className="text-[#78A546] font-bold text-sm uppercase tracking-widest">
+                    Quick Answer
+                  </span>
                 </div>
-                <h2 className="text-xl font-bold text-[#1E5080] mb-2">What is Kelsey Machine Services?</h2>
+                <h2 className="text-xl font-bold text-[#1E5080] mb-2">
+                  What is Kelsey Machine Services?
+                </h2>
                 <p className="text-gray-700 leading-relaxed">
-                  Kelsey Machine Services (KMS) is a family-owned rotating equipment repair company founded in 1983 and based in Stafford, Texas. KMS specializes in the repair, rebuild, and recertification of centrifuges, industrial gearboxes, blowers, compressors, and fluid end &amp; power end components. The company serves customers across all 50 states, Canada, and Mexico with free nationwide pickup and delivery, 72-hour standard turnaround, 24/7 emergency service, and an industry-leading 24-month warranty on all rebuilt equipment.
+                  Kelsey Machine Services (KMS) is a family-owned rotating
+                  equipment repair company founded in 1983 and based in
+                  Stafford, Texas. KMS specializes in the repair, rebuild, and
+                  recertification of centrifuges, industrial gearboxes, blowers,
+                  compressors, and fluid end &amp; power end components. The
+                  company serves customers across all 50 states, Canada, and
+                  Mexico with free nationwide pickup and delivery, 72-hour
+                  standard turnaround, 24/7 emergency service, and an
+                  industry-leading 24-month warranty on all rebuilt equipment.
                 </p>
               </div>
               {/* FAQs */}
@@ -416,10 +583,15 @@ export default function AboutUs() {
               </h2>
               <div className="space-y-4">
                 {FAQS.map((faq, i) => (
-                  <details key={i} className="bg-white rounded-xl border border-gray-100 group">
+                  <details
+                    key={i}
+                    className="bg-white rounded-xl border border-gray-100 group"
+                  >
                     <summary className="flex justify-between items-center p-6 cursor-pointer font-bold text-[#1E5080] hover:text-[#78A546] transition-colors list-none">
                       <span>{faq.q}</span>
-                      <span className="text-[#78A546] text-xl group-open:rotate-45 transition-transform">+</span>
+                      <span className="text-[#78A546] text-xl group-open:rotate-45 transition-transform">
+                        +
+                      </span>
                     </summary>
                     <div className="px-6 pb-6 text-gray-600 leading-relaxed border-t border-gray-100 pt-4">
                       {faq.a}
@@ -430,7 +602,10 @@ export default function AboutUs() {
             </div>
             {/* Right: Quote Form + callouts (1/3 width) */}
             <div className="lg:col-span-1">
-              <div style={{ position: "sticky", top: 96 }} className="flex flex-col gap-5">
+              <div
+                style={{ position: "sticky", top: 96 }}
+                className="flex flex-col gap-5"
+              >
                 <InlineQuoteForm service="General Inquiry" dark={false} />
                 <WarrantyCallout />
                 <FreeNationwidePickupCallout />

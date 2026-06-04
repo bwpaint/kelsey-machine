@@ -65,7 +65,7 @@ function BlogSearchBox() {
           type="search"
           placeholder="Search the blog…"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={e => setQuery(e.target.value)}
           onFocus={() => results.length > 0 && setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 200)}
           style={{
@@ -80,8 +80,8 @@ function BlogSearchBox() {
             outline: "none",
             boxSizing: "border-box",
           }}
-          onFocusCapture={(e) => (e.currentTarget.style.borderColor = C.green)}
-          onBlurCapture={(e) => (e.currentTarget.style.borderColor = "#cdd5e0")}
+          onFocusCapture={e => (e.currentTarget.style.borderColor = C.green)}
+          onBlurCapture={e => (e.currentTarget.style.borderColor = "#cdd5e0")}
         />
       </div>
       {open && query.trim().length > 0 && (
@@ -101,46 +101,73 @@ function BlogSearchBox() {
           }}
         >
           {loading && (
-            <div style={{ padding: "0.875rem 1rem", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.88rem", color: C.textMid }}>
+            <div
+              style={{
+                padding: "0.875rem 1rem",
+                fontFamily: "'Source Sans 3', sans-serif",
+                fontSize: "0.88rem",
+                color: C.textMid,
+              }}
+            >
               Searching…
             </div>
           )}
           {!loading && error && (
-            <div style={{ padding: "0.875rem 1rem", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.88rem", color: "#c0392b" }}>
+            <div
+              style={{
+                padding: "0.875rem 1rem",
+                fontFamily: "'Source Sans 3', sans-serif",
+                fontSize: "0.88rem",
+                color: "#c0392b",
+              }}
+            >
               {error}
             </div>
           )}
           {!loading && !error && results.length === 0 && (
-            <div style={{ padding: "0.875rem 1rem", fontFamily: "'Source Sans 3', sans-serif", fontSize: "0.88rem", color: C.textMid }}>
+            <div
+              style={{
+                padding: "0.875rem 1rem",
+                fontFamily: "'Source Sans 3', sans-serif",
+                fontSize: "0.88rem",
+                color: C.textMid,
+              }}
+            >
               No matches for "{query}".
             </div>
           )}
-          {!loading && !error && results.map((r) => {
-            const url = new URL(r.url);
-            const parts = url.pathname.split("/").filter(Boolean);
-            const slug = parts[parts.length - 1] || "";
-            return (
-              <Link
-                key={r.id}
-                href={`/blog/${slug}`}
-                style={{
-                  display: "block",
-                  padding: "0.7rem 1rem",
-                  borderBottom: "1px solid #eef1f5",
-                  fontFamily: "'Barlow', sans-serif",
-                  fontWeight: 600,
-                  fontSize: "0.9rem",
-                  color: C.blueDark,
-                  textDecoration: "none",
-                  lineHeight: 1.4,
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "#f4f7fa")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
-              >
-                {r.title}
-              </Link>
-            );
-          })}
+          {!loading &&
+            !error &&
+            results.map(r => {
+              const url = new URL(r.url);
+              const parts = url.pathname.split("/").filter(Boolean);
+              const slug = parts[parts.length - 1] || "";
+              return (
+                <Link
+                  key={r.id}
+                  href={`/blog/${slug}`}
+                  style={{
+                    display: "block",
+                    padding: "0.7rem 1rem",
+                    borderBottom: "1px solid #eef1f5",
+                    fontFamily: "'Barlow', sans-serif",
+                    fontWeight: 600,
+                    fontSize: "0.9rem",
+                    color: C.blueDark,
+                    textDecoration: "none",
+                    lineHeight: 1.4,
+                  }}
+                  onMouseEnter={e =>
+                    (e.currentTarget.style.background = "#f4f7fa")
+                  }
+                  onMouseLeave={e =>
+                    (e.currentTarget.style.background = "white")
+                  }
+                >
+                  {r.title}
+                </Link>
+              );
+            })}
         </div>
       )}
     </div>
@@ -149,7 +176,10 @@ function BlogSearchBox() {
 
 export function BlogSidebar() {
   return (
-    <div style={{ position: "sticky", top: 100 }} className="flex flex-col gap-5">
+    <div
+      style={{ position: "sticky", top: 100 }}
+      className="flex flex-col gap-5"
+    >
       <BlogSearchBox />
       <InlineQuoteForm service="" dark={false} />
       <WarrantyCallout />
