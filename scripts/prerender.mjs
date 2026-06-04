@@ -332,11 +332,17 @@ async function main() {
     process.exit(1);
   }
 
+  // puppeteer-core + @sparticuz/chromium: the standard pattern for running
+  // headless Chromium inside Vercel/Lambda build environments where the OS
+  // image is missing libnss3.so and other system libraries Chrome needs.
+  // Sparticuz ships a self-contained Chromium binary with all deps bundled.
   let puppeteer;
+  let chromium;
   try {
-    ({ default: puppeteer } = await import("puppeteer"));
-  } catch {
-    console.warn("⚠  puppeteer not installed — skipping prerender (SPA fallback will still work)");
+    ({ default: puppeteer } = await import("puppeteer-core"));
+    ({ default: chromium } = await import("@sparticuz/chromium"));
+  } catch (e) {
+    console.warn(`⚠  puppeteer-core / @sparticuz/chromium not installed (${e.message}) — skipping prerender`);
     process.exit(0);
   }
 
@@ -358,8 +364,9 @@ async function main() {
   let browser;
   try {
     browser = await puppeteer.launch({
-      headless: "new",
-      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+      args: [...chromium.args, "--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
     });
   } catch (e) {
     console.warn(`⚠  could not launch Chrome (${e.message}) — skipping prerender`);
