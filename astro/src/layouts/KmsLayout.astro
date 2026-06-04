@@ -1,0 +1,71 @@
+---
+/**
+ * Site-wide layout.
+ *
+ * SEO comes from WebWize Connect RM (Route Meta) — each page calls
+ * getMeta('/path', { ...defaults }) in its frontmatter and passes the
+ * resolved PageMeta into the `seo` prop. This guarantees identical
+ * tag emission across pages and keeps RM as the single source of truth.
+ *
+ * Web fonts are loaded from Google Fonts — Barlow Condensed for headlines,
+ * Source Sans 3 for body, Barlow for nav. Matches the existing Vite site
+ * fonts exactly.
+ */
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import type { PageMeta } from "@/lib/rm";
+
+export interface Props {
+  seo: PageMeta;
+}
+
+const { seo } = Astro.props;
+const canonical = seo.canonical || new URL(Astro.url.pathname, Astro.site).href;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>{seo.title}</title>
+    <meta name="description" content={seo.description} />
+    <meta name="robots" content={seo.robots} />
+    <link rel="canonical" href={canonical} />
+
+    {/* Open Graph */}
+    <meta property="og:title"       content={seo.ogTitle} />
+    <meta property="og:description" content={seo.ogDescription} />
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content={canonical} />
+    {seo.ogImage && <meta property="og:image" content={seo.ogImage} />}
+
+    {/* Twitter */}
+    <meta name="twitter:card"        content={seo.twitterCard} />
+    <meta name="twitter:title"       content={seo.ogTitle} />
+    <meta name="twitter:description" content={seo.ogDescription} />
+    {seo.ogImage && <meta name="twitter:image" content={seo.ogImage} />}
+
+    {/* JSON-LD schema from RM, if present */}
+    {seo.schemaJson && (
+      <script type="application/ld+json" set:html={seo.schemaJson} />
+    )}
+
+    {/* Fonts — same families as the Vite client */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Barlow+Condensed:wght@400;600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap" />
+
+    <link rel="icon" href="/favicon.ico" />
+
+    {/* Slot for page-specific head additions (preload images, extra schema, etc.) */}
+    <slot name="head" />
+  </head>
+  <body class="min-h-screen bg-white text-kms-textDark antialiased" style="font-family:'Source Sans 3',sans-serif">
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

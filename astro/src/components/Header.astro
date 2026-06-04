@@ -1,0 +1,97 @@
+---
+import Icon from "@/components/Icons.astro";
+import { C, KMS_LOGO, KMS_PHONE, KMS_PHONE_HREF, KMS_EMAIL, SERVICE_NAV, MAIN_NAV } from "@/lib/brand";
+
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isActive = (href: string) => (href === "/" ? path === "/" : path === href || path.startsWith(href + "/"));
+---
+
+<nav role="navigation" aria-label="Main navigation" class="sticky top-0 z-50">
+  {/* Utility bar — green */}
+  <div style={`background:${C.green}`} class="py-1.5">
+    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <a href={KMS_PHONE_HREF} class="flex items-center gap-1.5 text-white no-underline" style="font-family:'Barlow',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:0.04em">
+          <Icon name="phone" size={12} /> {KMS_PHONE}
+        </a>
+        <a href={`mailto:${KMS_EMAIL}`} class="hidden md:flex items-center gap-1.5 text-white no-underline" style="font-family:'Barlow',sans-serif;font-weight:600;font-size:0.78rem;letter-spacing:0.04em">
+          <Icon name="mail" size={12} /> {KMS_EMAIL}
+        </a>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="text-white inline-flex items-center gap-1" style="font-family:'Barlow',sans-serif;font-weight:600;font-size:0.78rem;letter-spacing:0.04em">
+          <Icon name="map-pin" size={12} /> Stafford, Texas 77477
+        </span>
+        <a href="/emergency-service" class="text-white no-underline" style="font-family:'Barlow',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:0.04em;background:rgba(0,0,0,0.2);padding:0.15rem 0.6rem;border-radius:2px">24/7 EMERGENCY</a>
+      </div>
+    </div>
+  </div>
+
+  {/* Main row — black */}
+  <div class="bg-black border-b-2" style={`border-color:${C.green}33`}>
+    <div class="max-w-7xl mx-auto px-4 flex items-center justify-between" style="height:68px">
+      <a href="/" aria-label="KMS home">
+        <img src={KMS_LOGO} alt="Kelsey Machine Services" style="height:44px;width:auto" />
+      </a>
+
+      {/* Desktop nav */}
+      <div class="hidden lg:flex items-center gap-6">
+        <div class="relative group" style="padding-bottom:0.75rem;margin-bottom:-0.75rem">
+          <button type="button" class="text-white/90 hover:text-kms-green flex items-center gap-1 bg-transparent border-0 cursor-pointer" style="font-family:'Barlow',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.07em;text-transform:uppercase">
+            Services <Icon name="chevron-down" size={13} />
+          </button>
+          <div class="absolute top-full left-0 hidden group-hover:block" style={`background:#0d1a2a;border:1px solid ${C.green}33;border-radius:4px;min-width:230px;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:100`}>
+            {SERVICE_NAV.map(({ label, href }) => (
+              <a href={href} class="block no-underline border-b" style={`padding:0.6rem 1rem;font-family:'Barlow',sans-serif;font-weight:600;font-size:0.78rem;color:${isActive(href) ? C.green : "rgba(255,255,255,0.8)"};letter-spacing:0.04em;border-color:rgba(255,255,255,0.06)`}>{label}</a>
+            ))}
+          </div>
+        </div>
+        {MAIN_NAV.map(({ label, href }) => (
+          <a href={href} class="no-underline hover:text-kms-green transition-colors" style={`font-family:'Barlow',sans-serif;font-weight:700;font-size:0.82rem;color:${isActive(href) ? C.green : "rgba(255,255,255,0.88)"};letter-spacing:0.07em;text-transform:uppercase`}>{label}</a>
+        ))}
+      </div>
+
+      <div class="hidden lg:flex items-center gap-3">
+        <a href="/contact" class="text-white no-underline transition-colors" style={`font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;background:${C.green};padding:0.5rem 1.25rem;border-radius:2px;letter-spacing:0.06em`}>Get Free Quote</a>
+      </div>
+
+      <button id="kms-mobile-toggle" class="lg:hidden text-white p-2" aria-label="Toggle menu" aria-expanded="false" aria-controls="kms-mobile-menu">
+        <span id="kms-mobile-open-icon"><Icon name="menu" size={24} /></span>
+        <span id="kms-mobile-close-icon" style="display:none"><Icon name="x" size={24} /></span>
+      </button>
+    </div>
+  </div>
+
+  <div id="kms-mobile-menu" class="lg:hidden px-4 py-4 flex-col gap-3" style={`background:${C.blueDark};border-top:1px solid rgba(120,165,70,0.3);display:none`}>
+    <details class="text-white">
+      <summary class="cursor-pointer py-2 border-b border-white/10 list-none" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:0.06em;text-transform:uppercase">Services</summary>
+      {SERVICE_NAV.map(({ label, href }) => (
+        <a href={href} class="block text-white/75 no-underline" style="font-family:'Barlow',sans-serif;font-weight:600;font-size:0.95rem;padding:0.4rem 0 0.4rem 1rem">{label}</a>
+      ))}
+    </details>
+    {MAIN_NAV.map(({ label, href }) => (
+      <a href={href} class="block text-white no-underline border-b border-white/10" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.5rem 0">{label}</a>
+    ))}
+    <a href={KMS_PHONE_HREF} class="flex items-center justify-center gap-2 text-white no-underline mt-2" style={`background:${C.green};font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.06em;padding:0.75rem;border-radius:2px`}>
+      <Icon name="phone" size={16} /> Call {KMS_PHONE}
+    </a>
+  </div>
+</nav>
+
+<script is:inline>
+  // Mobile menu toggle — vanilla, no React island needed.
+  (function () {
+    var btn   = document.getElementById("kms-mobile-toggle");
+    var menu  = document.getElementById("kms-mobile-menu");
+    var open  = document.getElementById("kms-mobile-open-icon");
+    var close = document.getElementById("kms-mobile-close-icon");
+    if (!btn || !menu || !open || !close) return;
+    btn.addEventListener("click", function () {
+      var isOpen = menu.style.display !== "none";
+      menu.style.display  = isOpen ? "none" : "flex";
+      open.style.display  = isOpen ? "inline-block" : "none";
+      close.style.display = isOpen ? "none" : "inline-block";
+      btn.setAttribute("aria-expanded", String(!isOpen));
+    });
+  })();
+</script>

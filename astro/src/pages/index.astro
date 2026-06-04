@@ -1,0 +1,212 @@
+---
+/**
+ * KMS Homepage — Astro static render.
+ *
+ * SEO meta comes from WebWize Connect RM (Route Meta) — the title formula
+ * for `/` is `Industrial Rotating Equipment Repair · 40+ Yrs · Free Pickup`.
+ * Falls back to local defaults if RM is unreachable at build time.
+ *
+ * All body content is in the static HTML — crawlers see real copy on first
+ * byte. The only hydrating component is QuoteForm (React island).
+ */
+import KmsLayout from "@/layouts/KmsLayout.astro";
+import QuoteForm from "@/components/QuoteForm.tsx";
+import { getMeta } from "@/lib/rm";
+import { SERVICES, STATS, FAQS, INDUSTRIES, BRANDS } from "@/lib/homepage-data";
+import { C } from "@/lib/brand";
+
+const seo = await getMeta("/", {
+  title: "Industrial Rotating Equipment Repair · 40+ Yrs · Free Pickup",
+  description: "Centrifuge, gearbox, pump, blower, compressor & fluid-end repair. 24-month warranty, free nationwide pickup, 24/7 emergency service. Serving all 50 states.",
+  ogImage: "/images/kms-hero-bg.webp",
+});
+---
+<KmsLayout seo={seo}>
+
+  {/* ───── Hero ───── */}
+  <section
+    id="home"
+    class="relative min-h-screen flex items-center"
+    style={`background:linear-gradient(135deg, rgba(10,25,45,0.92) 0%, rgba(30,80,128,0.75) 100%), url(/images/kms-hero-bg.webp) center/cover no-repeat;border-bottom:3px solid ${C.green}`}
+    aria-label="Hero — industrial rotating equipment repair"
+  >
+    <div class="max-w-7xl mx-auto px-4 py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
+
+      {/* Left — copy */}
+      <div class="text-white">
+        <div class="inline-block bg-kms-green/20 border border-kms-green/40 text-kms-greenLight px-3 py-1 rounded-sm text-xs uppercase tracking-widest mb-5" style="font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:0.1em">
+          40+ Years · Free Nationwide Pickup · 24/7 Emergency
+        </div>
+        <h1 class="text-white mb-5" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(2.6rem, 4.5vw, 3.8rem);line-height:1.05;letter-spacing:0.01em">
+          INDUSTRIAL ROTATING<br />EQUIPMENT REPAIR.<br />
+          <span style={`color:${C.green}`}>NATIONWIDE.</span>
+        </h1>
+        <p class="text-white/85 text-lg mb-8" style="font-family:'Source Sans 3',sans-serif;line-height:1.6;max-width:32rem">
+          Centrifuges. Gearboxes. Pumps. Blowers. Compressors. Fluid &amp; power ends.
+          Kelsey Machine has rebuilt rotating equipment for the toughest industrial customers
+          in America for over 40 years — with a 24-month warranty and free pickup
+          to all 50 states.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#contact" class="bg-kms-green hover:bg-kms-greenDark text-white px-8 py-3 rounded-sm no-underline uppercase tracking-wider transition-colors" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:0.06em">
+            Request a Free Quote
+          </a>
+          <a href="tel:3463501464" class="border-2 border-white/40 hover:border-kms-green hover:text-kms-green text-white px-8 py-3 rounded-sm no-underline uppercase tracking-wider transition-colors" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:0.06em">
+            Call 346-350-1464
+          </a>
+        </div>
+      </div>
+
+      {/* Right — quote form (React island) */}
+      <div class="bg-black/60 backdrop-blur-sm border border-white/10 rounded-sm p-6 lg:p-8">
+        <QuoteForm client:load variant="hero" />
+      </div>
+    </div>
+  </section>
+
+  {/* ───── Stats Strip ───── */}
+  <section
+    style={`background:linear-gradient(135deg, ${C.blueDark} 0%, ${C.blueMid} 60%, ${C.blueSky} 100%);padding:4rem 0`}
+    aria-label="Company statistics"
+  >
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+      {STATS.map(({ value, label }) => (
+        <div>
+          <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(2.5rem, 5vw, 3.8rem);color:${C.green};line-height:1`}>{value}</div>
+          <div class="text-white/75 mt-2" style="font-family:'Barlow',sans-serif;font-weight:500;font-size:0.82rem;letter-spacing:0.1em;text-transform:uppercase">{label}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {/* ───── Services ───── */}
+  <section id="services" class="bg-white py-20" aria-label="Our services">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <div class="text-kms-green text-xs uppercase tracking-widest mb-2" style="font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:0.1em">What We Repair</div>
+        <h2 style={`font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(2rem, 4vw, 3rem);color:${C.blueDark}`}>
+          INDUSTRIAL REPAIR SERVICES
+        </h2>
+        <p class="text-kms-textMid max-w-2xl mx-auto mt-4" style="font-family:'Source Sans 3',sans-serif">
+          Six dedicated repair lines, one shop, 40+ years of expertise. Every rebuild
+          ships with our 24-month warranty.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {SERVICES.map((s) => (
+          <a
+            href={s.href}
+            class="group block no-underline border border-gray-200 hover:border-kms-green rounded-sm overflow-hidden transition-colors bg-white"
+          >
+            <div class="aspect-[4/3] overflow-hidden bg-gray-100">
+              <img src={s.image} alt={s.title} loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            </div>
+            <div class="p-5">
+              <h3 class="text-kms-blueDark group-hover:text-kms-green transition-colors" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.35rem;letter-spacing:0.02em">
+                {s.title.toUpperCase()}
+              </h3>
+              <p class="text-kms-textMid text-sm mt-2 leading-relaxed" style="font-family:'Source Sans 3',sans-serif">
+                {s.description}
+              </p>
+              <span class="mt-4 inline-flex items-center gap-1 text-kms-green text-sm uppercase tracking-wider" style="font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:0.06em">
+                Learn more →
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ───── Why KMS ───── */}
+  <section id="why-kms" class="bg-kms-lightBg py-20" aria-label="Why choose Kelsey Machine Services">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <div class="text-kms-green text-xs uppercase tracking-widest mb-2" style="font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:0.1em">Why Kelsey Machine</div>
+        <h2 class="mb-6" style={`font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(1.8rem, 3.5vw, 2.8rem);color:${C.blueDark}`}>
+          THE INDUSTRY'S BEST WARRANTY,<br />BACKED BY 40+ YEARS OF SHOP TIME.
+        </h2>
+        <ul class="space-y-4 text-kms-textMid" style="font-family:'Source Sans 3',sans-serif;font-size:1rem;line-height:1.6">
+          <li><strong class="text-kms-blueDark">24-month rebuilt warranty</strong> on every repair — the longest in the rotating equipment repair industry.</li>
+          <li><strong class="text-kms-blueDark">Free nationwide pickup &amp; delivery</strong> across all 50 states, Canada, and Mexico.</li>
+          <li><strong class="text-kms-blueDark">24/7 emergency response</strong> — we answer the phone day or night when your equipment is down.</li>
+          <li><strong class="text-kms-blueDark">All major brands serviced</strong> — Alfa Laval, Andritz, Falk, Sumitomo, Lufkin, Bosch Rexroth, and many more.</li>
+          <li><strong class="text-kms-blueDark">Often faster than OEM</strong> — 10-day centrifuge rebuilds and 72-hour emergency hydraulic pump repair are routine for us.</li>
+        </ul>
+      </div>
+      <div class="rounded-sm overflow-hidden">
+        <img src="/images/gearbox-open.webp" alt="KMS shop floor — gearbox teardown" loading="lazy" class="w-full h-full object-cover" />
+      </div>
+    </div>
+  </section>
+
+  {/* ───── Industries ───── */}
+  <section id="industries" style={`background:linear-gradient(135deg, ${C.blueDark} 0%, ${C.blueMid} 100%);padding:4rem 0`} aria-label="Industries served">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <div class="text-kms-greenLight text-xs uppercase tracking-widest mb-3" style="font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:0.1em">Sectors We Serve</div>
+      <h2 class="text-white mb-10" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(1.8rem, 3.5vw, 2.8rem)">
+        PROUDLY SERVING A WIDE RANGE<br />OF INDUSTRIES
+      </h2>
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+        {INDUSTRIES.map(({ name, icon, href }) => (
+          <a href={href} class="flex flex-col items-center gap-2 py-4 px-2 no-underline" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:2px">
+            <span style="font-size:1.75rem">{icon}</span>
+            <span class="text-white/80 text-center" style="font-family:'Barlow',sans-serif;font-weight:600;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;line-height:1.3">{name}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ───── Brands ───── */}
+  <section style={`background:${C.darkBg};padding:3rem 0`} aria-label="Brands we service">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p class="text-white/60 uppercase tracking-widest mb-6 text-xs" style="font-family:'Barlow',sans-serif;letter-spacing:0.15em">Brands We Service</p>
+      <div class="flex flex-wrap justify-center gap-x-8 gap-y-3 text-white/70" style="font-family:'Source Sans 3',sans-serif;font-size:0.95rem">
+        {BRANDS.map((b) => <span>{b}</span>)}
+      </div>
+    </div>
+  </section>
+
+  {/* ───── FAQ ───── */}
+  <section id="faq" class="bg-kms-lightBg py-20" aria-label="Frequently asked questions">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="text-center mb-10">
+        <div class="text-kms-green text-xs uppercase tracking-widest mb-2" style="font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:0.1em">FAQ</div>
+        <h2 style={`font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(1.8rem, 3.5vw, 2.8rem);color:${C.blueDark}`}>
+          FREQUENTLY ASKED QUESTIONS
+        </h2>
+      </div>
+      <div class="space-y-3">
+        {FAQS.map((f) => (
+          <details class="bg-white border border-gray-200 rounded-sm group">
+            <summary class="cursor-pointer p-5 list-none flex justify-between items-center" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;color:#1A2535;letter-spacing:0.02em">
+              <span>{f.q}</span>
+              <span class="text-kms-green group-open:rotate-180 transition-transform">▾</span>
+            </summary>
+            <div class="px-5 pb-5 text-kms-textMid leading-relaxed" style="font-family:'Source Sans 3',sans-serif">
+              {f.a}
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ───── Final CTA / Quote form ───── */}
+  <section id="contact" class="relative py-20" style={`background:linear-gradient(135deg, ${C.darkBg} 0%, ${C.blueDark} 100%)`} aria-label="Contact and quote request">
+    <div class="max-w-3xl mx-auto px-4 text-center">
+      <h2 class="text-white mb-4" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(2rem, 4vw, 3.5rem)">
+        READY TO GET YOUR EQUIPMENT BACK?
+      </h2>
+      <p class="text-white/85 text-lg mb-8" style="font-family:'Source Sans 3',sans-serif">
+        Free quote. 24-month warranty. Free nationwide pickup. We'll respond within one business hour.
+      </p>
+      <div class="bg-black/40 border border-white/10 rounded-sm p-6 lg:p-8 text-left">
+        <QuoteForm client:visible variant="contact" />
+      </div>
+    </div>
+  </section>
+
+</KmsLayout>

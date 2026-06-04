@@ -1,0 +1,109 @@
+---
+import Icon from "@/components/Icons.astro";
+import { C, KMS_LOGO, KMS_PHONE, KMS_PHONE_HREF, KMS_EMAIL } from "@/lib/brand";
+
+const serviceLinks = [
+  { label: "Services Overview",        href: "/services" },
+  { label: "Centrifuge Repair",        href: "/services/centrifuge-repair" },
+  { label: "Industrial Blower Repair", href: "/services/industrial-blower-repair" },
+  { label: "Gearbox Repair",           href: "/services/gearbox-repair" },
+  { label: "Industrial Compressors",   href: "/services/industrial-compressors" },
+  { label: "Fluid & Power End Repair", href: "/services/fluid-power-end-repair" },
+  { label: "Industrial Pump Repair",   href: "/services/pump-service" },
+];
+
+const companyLinks = [
+  { label: "About KMS",       href: "/about" },
+  { label: "Our Warranty",    href: "/warranty" },
+  { label: "24/7 Emergency",  href: "/emergency-service" },
+  { label: "Blog",            href: "/blog" },
+  { label: "Industries",      href: "/industries" },
+  { label: "Contact / Quote", href: "/contact" },
+];
+
+const year = new Date().getFullYear();
+---
+
+<footer role="contentinfo" style={`background:${C.darkBg};border-top:3px solid ${C.green}`}>
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+
+      <div>
+        <img src={KMS_LOGO} alt="Kelsey Machine Services" style="height:48px;margin-bottom:1rem" />
+        <p style="font-family:'Source Sans 3',sans-serif;font-size:0.88rem;color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:1.25rem">
+          Texas' most trusted rotating equipment repair shop. Serving all 50 states, Canada, and Mexico since 1983.
+        </p>
+        <div class="flex items-center gap-2 mb-2">
+          <span style={`color:${C.green};display:inline-flex`}><Icon name="phone" size={14} /></span>
+          <a href={KMS_PHONE_HREF} class="no-underline" style="font-family:'Source Sans 3',sans-serif;font-size:0.83rem;color:rgba(255,255,255,0.6)">{KMS_PHONE}</a>
+        </div>
+        <div class="flex items-center gap-2 mb-2">
+          <span style={`color:${C.green};display:inline-flex`}><Icon name="mail" size={14} /></span>
+          <a href={`mailto:${KMS_EMAIL}`} class="no-underline" style="font-family:'Source Sans 3',sans-serif;font-size:0.83rem;color:rgba(255,255,255,0.6)">{KMS_EMAIL}</a>
+        </div>
+        <div class="flex items-start gap-2 mt-1">
+          <span style={`color:${C.green};margin-top:2px;display:inline-flex`}><Icon name="map-pin" size={14} /></span>
+          <div style="font-family:'Source Sans 3',sans-serif;font-size:0.83rem;color:rgba(255,255,255,0.6);line-height:1.7">
+            <div>814 Summer Park Dr</div>
+            <div>Building #600</div>
+            <a href="https://maps.google.com/?q=814+Summer+Park+Dr+Building+600+Stafford+TX+77477" target="_blank" rel="noopener noreferrer" style="color:rgba(255,255,255,0.6);text-decoration:none">Stafford, TX 77477</a>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;color:white;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid ${C.green};display:inline-block`}>Our Services</div>
+        <ul class="flex flex-col gap-2 list-none p-0 m-0">
+          {serviceLinks.map(({ label, href }) => (
+            <li>
+              <a href={href} class="no-underline flex items-center gap-1.5" style="font-family:'Source Sans 3',sans-serif;font-size:0.88rem;color:rgba(255,255,255,0.6)">
+                <span style={`color:${C.green};display:inline-flex`}><Icon name="arrow-right" size={12} /></span>
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;color:white;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid ${C.green};display:inline-block`}>Company</div>
+        <ul class="flex flex-col gap-2 list-none p-0 m-0">
+          {companyLinks.map(({ label, href }) => (
+            <li>
+              <a href={href} class="no-underline flex items-center gap-1.5" style="font-family:'Source Sans 3',sans-serif;font-size:0.88rem;color:rgba(255,255,255,0.6)">
+                <span style={`color:${C.green};display:inline-flex`}><Icon name="arrow-right" size={12} /></span>
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;color:white;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid ${C.green};display:inline-block`}>Emergency &amp; Warranty</div>
+        <div style="background:rgba(120,165,70,0.1);border:1px solid rgba(120,165,70,0.3);border-radius:4px;padding:1.25rem;margin-bottom:0.75rem">
+          <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;color:${C.green};margin-bottom:0.5rem`}>EQUIPMENT DOWN?</div>
+          <p style="font-family:'Source Sans 3',sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.65);line-height:1.6;margin-bottom:1rem">
+            We respond immediately, 24 hours a day, 7 days a week. <a href="/emergency-service" style={`color:${C.green};text-decoration:none`}>Free pickup</a> available now.
+          </p>
+          <a href={KMS_PHONE_HREF} class="flex items-center justify-center gap-2 no-underline" style={`background:${C.green};color:white;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:0.95rem;letter-spacing:0.06em;padding:0.65rem 1rem;border-radius:2px;margin-bottom:0.5rem`}>
+            <Icon name="phone" size={15} /> {KMS_PHONE}
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div style="border-top:1px solid rgba(255,255,255,0.08);padding:1.25rem 0">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-between items-center gap-3">
+      <p style="font-family:'Source Sans 3',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.35)">
+        © {year} Kelsey Machine Services. All rights reserved. | Stafford, TX 77477
+      </p>
+      <div class="flex gap-4">
+        <a href="/privacy-policy" class="no-underline" style="font-family:'Source Sans 3',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.35)">Privacy Policy</a>
+        <a href="/terms" class="no-underline" style="font-family:'Source Sans 3',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.35)">Terms of Service</a>
+        <a href="/sitemap-index.xml" class="no-underline" style="font-family:'Source Sans 3',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.35)">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
