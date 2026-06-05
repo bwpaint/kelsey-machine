@@ -1,9 +1,11 @@
 /**
  * QuoteForm — React island, hydrates client-side.
  *
- * Posts to /api/submit (existing Vercel function at repo root) — no backend
- * changes. The function holds the WP_FORMS_API_KEY env var and forwards to
- * WebWize Connect Forms on cms.kmstx.com.
+ * Theme prop:
+ *   - "dark"  (default): white text on translucent-white inputs, for dark/gradient backgrounds
+ *   - "light": dark text on white inputs with visible borders, for light/cream backgrounds
+ *
+ * Posts to /api/submit (existing Vercel function at repo root) — no backend changes.
  */
 import { useState, useRef } from "react";
 
@@ -21,9 +23,10 @@ const SERVICE_OPTIONS = [
 
 interface Props {
   variant?: "hero" | "contact";
+  theme?: "dark" | "light";
 }
 
-export default function QuoteForm({ variant = "hero" }: Props) {
+export default function QuoteForm({ variant = "hero", theme = "dark" }: Props) {
   const [form, setForm] = useState({
     name: "", company: "", phone: "", email: "", service: "", message: "",
   });
@@ -75,28 +78,34 @@ export default function QuoteForm({ variant = "hero" }: Props) {
     }
   };
 
+  const isLight = theme === "light";
+
   if (submitted) {
     return (
-      <div className="text-white text-center py-8">
+      <div className={`text-center py-8 ${isLight ? "text-kms-textDark" : "text-white"}`}>
         <h3 className="text-2xl font-bold mb-3" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
           THANK YOU
         </h3>
-        <p className="text-white/85">
+        <p className={isLight ? "text-kms-textMid" : "text-white/85"}>
           We received your request and will reach out shortly.
-          For immediate help, call <a href="tel:3463501464" className="underline">346-350-1464</a>.
+          For immediate help, call <a href="tel:3463501464" className={isLight ? "text-kms-green underline font-bold" : "underline"}>346-350-1464</a>.
         </p>
       </div>
     );
   }
 
-  const input = "w-full bg-white/[0.08] border border-white/20 text-white px-3.5 py-2.5 rounded-sm outline-none focus:border-kms-green transition-colors";
-  const label = "block text-white/85 text-xs uppercase tracking-wider mb-1";
+  const input = isLight
+    ? "w-full bg-white border border-gray-300 text-kms-textDark px-3.5 py-2.5 rounded-sm outline-none focus:border-kms-green transition-colors"
+    : "w-full bg-white/[0.08] border border-white/20 text-white px-3.5 py-2.5 rounded-sm outline-none focus:border-kms-green transition-colors";
+  const label = isLight
+    ? "block text-kms-textDark text-xs uppercase tracking-wider mb-1 font-semibold"
+    : "block text-white/85 text-xs uppercase tracking-wider mb-1";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3" aria-label="Request a quote">
       {variant === "hero" && (
         <h2
-          className="text-white mb-1 text-center"
+          className={`mb-1 text-center ${isLight ? "text-kms-blueDark" : "text-white"}`}
           style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "1.6rem", fontWeight: 700, letterSpacing: "0.02em" }}
         >
           REQUEST A FREE QUOTE
@@ -143,7 +152,7 @@ export default function QuoteForm({ variant = "hero" }: Props) {
       </div>
 
       {error && (
-        <p className="text-red-300 text-sm" role="alert">{error}</p>
+        <p className="text-red-500 text-sm font-medium" role="alert">{error}</p>
       )}
 
       <button
@@ -155,9 +164,9 @@ export default function QuoteForm({ variant = "hero" }: Props) {
         {submitting ? "SENDING..." : "REQUEST FREE QUOTE"}
       </button>
 
-      <p className="text-white/60 text-xs text-center">
+      <p className={`text-xs text-center ${isLight ? "text-kms-textMid" : "text-white/60"}`}>
         We'll respond within 1 business hour. For immediate help, call{" "}
-        <a href="tel:3463501464" className="text-kms-greenLight underline">346-350-1464</a>.
+        <a href="tel:3463501464" className={isLight ? "text-kms-green underline font-bold" : "text-kms-greenLight underline"}>346-350-1464</a>.
       </p>
     </form>
   );
