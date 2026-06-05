@@ -1,60 +1,103 @@
 ---
-import ContentPage from "@/layouts/ContentPage.astro";
+import KmsLayout from "@/layouts/KmsLayout.astro";
 import QuoteForm from "@/components/QuoteForm.tsx";
 import Icon from "@/components/Icons.astro";
 import { getMeta } from "@/lib/rm";
 import { C, KMS_PHONE, KMS_PHONE_HREF, KMS_EMAIL } from "@/lib/brand";
+
 const seo = await getMeta("/contact", {
   title: "Request a Repair Quote · 40+ Yrs · Free Nationwide Pickup",
   description: "Request a free industrial repair quote. 24/7 emergency service, free nationwide pickup, 24-month warranty. Call 346-350-1464.",
   ogImage: "/images/kms-hero-bg.webp",
 });
 ---
-<ContentPage
-  seo={seo}
-  h1="Request a Repair Quote"
-  subheading="Tell us about your equipment and a Kelsey Machine specialist will respond within one business hour. For emergencies, call our 24/7 line directly."
-  bgImage="/images/kms-hero-bg.webp"
-  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Contact" }]}
-  sidebar={false}
->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+<KmsLayout seo={seo}>
 
-    <div class="content-prose">
-      <h2>Direct Contact</h2>
-      <p>
-        <strong>Phone:</strong> <a href={KMS_PHONE_HREF}>{KMS_PHONE}</a><br />
-        <strong>Email:</strong> <a href={`mailto:${KMS_EMAIL}`}>{KMS_EMAIL}</a><br />
-        <strong>Address:</strong> 814 Summer Park Drive, Building #600, Stafford, TX 77477
+  {/* Hero */}
+  <section style={`background:linear-gradient(135deg, rgba(10,25,45,0.92) 0%, rgba(30,80,128,0.75) 100%), url(/images/kms-hero-bg.webp) center/cover no-repeat;padding:4rem 0 3rem;border-bottom:3px solid ${C.green}`}>
+    <div class="max-w-7xl mx-auto px-4">
+      <nav aria-label="Breadcrumb" class="mb-4">
+        <ol class="flex gap-2 list-none p-0 m-0 text-xs">
+          <li><a href="/" class="text-kms-green no-underline" style="font-family:'Barlow',sans-serif">Home</a></li>
+          <li class="text-white/40">/</li>
+          <li class="text-white/80" style="font-family:'Barlow',sans-serif">Contact / Get a Quote</li>
+        </ol>
+      </nav>
+      <h1 class="text-white" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(2rem, 4vw, 3.2rem);line-height:1.1;text-transform:uppercase">Get a Free Quote — Or Just Give Us a Call</h1>
+      <p class="text-white/85 mt-4" style="font-family:'Source Sans 3',sans-serif;font-size:1.1rem;line-height:1.6;max-width:60ch">
+        No automated phone trees. No chatbots. No waiting three days for a reply. Fill out the form below or call us directly — we respond fast, because we know your downtime clock is running.
       </p>
-
-      <h2>Hours</h2>
-      <p>
-        Shop hours: Monday–Friday, 7:00 a.m. – 5:00 p.m. Central<br />
-        Emergency line: 24 hours a day, 7 days a week, every day of the year.
-      </p>
-
-      <h2>What to Expect</h2>
-      <ul>
-        <li>Quote response within one business hour during shop hours; immediate during emergencies</li>
-        <li>Written failure analysis before any repair work is authorized</li>
-        <li>Itemized quote with no hidden charges</li>
-        <li>Free pickup and delivery anywhere in the U.S., Canada, or Mexico</li>
-        <li>24-month written warranty on every rebuild</li>
-      </ul>
-
-      <h2>For Emergencies</h2>
-      <p>If your equipment is down and you need immediate response, call <a href={KMS_PHONE_HREF}>{KMS_PHONE}</a>. Don't wait for a callback — we answer the emergency line 24 hours a day.</p>
     </div>
+  </section>
 
-    <div style={`background:linear-gradient(135deg, ${C.darkBg} 0%, ${C.blueDark} 100%);border-radius:4px;padding:2rem;height:fit-content`}>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.4rem;color:white;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.5rem">
-        Send Us Your Details
+  <main class="bg-white">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+
+        {/* Left — quote form */}
+        <div class="lg:col-span-2">
+          <h2 style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.5rem;color:${C.blueDark};text-transform:uppercase;letter-spacing:-0.01em;margin-bottom:1.5rem`}>
+            Request a Free Quote
+          </h2>
+          <div style={`background:${C.lightBg};border:1px solid #dde3ec;border-radius:4px;padding:1.75rem`}>
+            <QuoteForm client:load variant="contact" />
+          </div>
+        </div>
+
+        {/* Right — dark contact info + need-it-fast callout */}
+        <aside class="lg:col-span-1 space-y-5">
+          <div style={`background:${C.darkBg};border-radius:4px;padding:2rem`}>
+            <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;color:${C.green};text-transform:uppercase;margin-bottom:1.25rem`}>Contact Information</div>
+            <div class="flex flex-col gap-4">
+
+              <div class="flex gap-3 items-start">
+                <span style={`color:${C.green};flex-shrink:0;margin-top:2px`}><Icon name="phone" size={18} /></span>
+                <div>
+                  <div style="font-family:'Barlow',sans-serif;font-weight:600;font-size:0.78rem;color:rgba(255,255,255,0.45);letter-spacing:0.08em;text-transform:uppercase">Main Line</div>
+                  <a href={KMS_PHONE_HREF} class="no-underline" style="font-family:'Source Sans 3',sans-serif;font-size:0.95rem;color:white">{KMS_PHONE}</a>
+                </div>
+              </div>
+
+              <div class="flex gap-3 items-start">
+                <span style={`color:${C.green};flex-shrink:0;margin-top:2px`}><Icon name="clock" size={18} /></span>
+                <div>
+                  <div style="font-family:'Barlow',sans-serif;font-weight:600;font-size:0.78rem;color:rgba(255,255,255,0.45);letter-spacing:0.08em;text-transform:uppercase">Emergency Line (24/7)</div>
+                  <a href={KMS_PHONE_HREF} class="no-underline" style="font-family:'Source Sans 3',sans-serif;font-size:0.95rem;color:white">{KMS_PHONE}</a>
+                </div>
+              </div>
+
+              <div class="flex gap-3 items-start">
+                <span style={`color:${C.green};flex-shrink:0;margin-top:2px`}><Icon name="mail" size={18} /></span>
+                <div>
+                  <div style="font-family:'Barlow',sans-serif;font-weight:600;font-size:0.78rem;color:rgba(255,255,255,0.45);letter-spacing:0.08em;text-transform:uppercase">Email</div>
+                  <a href={`mailto:${KMS_EMAIL}`} class="no-underline" style="font-family:'Source Sans 3',sans-serif;font-size:0.95rem;color:white">{KMS_EMAIL}</a>
+                </div>
+              </div>
+
+              <div class="flex gap-3 items-start">
+                <span style={`color:${C.green};flex-shrink:0;margin-top:2px`}><Icon name="map-pin" size={18} /></span>
+                <div>
+                  <div style="font-family:'Barlow',sans-serif;font-weight:600;font-size:0.78rem;color:rgba(255,255,255,0.45);letter-spacing:0.08em;text-transform:uppercase">Location</div>
+                  <span style="font-family:'Source Sans 3',sans-serif;font-size:0.95rem;color:white">Stafford, TX 77477</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div style={`background:${C.lightBg};border:2px solid ${C.green};border-radius:4px;padding:1.5rem`}>
+            <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1rem;color:${C.blueDark};text-transform:uppercase;margin-bottom:0.75rem`}>
+              Need It Fast?
+            </div>
+            <p style={`font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:${C.textMid};line-height:1.6;margin-bottom:1rem`}>
+              Our <a href="/emergency-service" style={`color:${C.green};font-weight:700;text-decoration:none`}>24/7 emergency service</a> is available every day of the year. Call the emergency line and we'll get moving immediately — <a href={KMS_PHONE_HREF} style={`color:${C.green};font-weight:700;text-decoration:none`}>call {KMS_PHONE}</a>.
+            </p>
+            <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:0.85rem;color:${C.textMid};text-transform:uppercase;letter-spacing:0.05em`}>
+              Backed by our <a href="/warranty" style={`color:${C.green};text-decoration:none`}>24-month warranty</a>
+            </div>
+          </div>
+        </aside>
       </div>
-      <p style="font-family:'Source Sans 3',sans-serif;font-size:0.95rem;color:rgba(255,255,255,0.65);margin-bottom:1.5rem">
-        We'll respond within one business hour. For immediate help, call <a href={KMS_PHONE_HREF} style={`color:${C.green};text-decoration:none`}>{KMS_PHONE}</a>.
-      </p>
-      <QuoteForm client:load variant="contact" />
     </div>
-  </div>
-</ContentPage>
+  </main>
+</KmsLayout>

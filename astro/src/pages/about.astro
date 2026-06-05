@@ -1,46 +1,293 @@
 ---
-import ContentPage from "@/layouts/ContentPage.astro";
+import KmsLayout from "@/layouts/KmsLayout.astro";
+import QuoteForm from "@/components/QuoteForm.tsx";
+import Icon from "@/components/Icons.astro";
 import { getMeta } from "@/lib/rm";
+import { C, KMS_PHONE, KMS_PHONE_HREF } from "@/lib/brand";
+
 const seo = await getMeta("/about", {
   title: "About KMS — 40+ Years Industrial Rotating Equipment Repair",
   description: "Kelsey Machine Services has been rebuilding industrial rotating equipment since 1983. 40+ years. All 50 states. 24-month warranty.",
-  ogImage: "/images/kms-hero-bg.webp",
+  ogImage: "/images/kms-about-hero.webp",
 });
+
+const TIMELINE = [
+  { year: "1983",  title: "Founded in Stafford, TX",      desc: "Kelsey Machine Services opens its doors in Stafford, Texas — a small shop with big ambitions and a whole lot of rotating equipment to fix." },
+  { year: "1990s", title: "Expanding the Service Range",   desc: "KMS grows beyond centrifuge repair into gearboxes, industrial blowers, and compressors. Word spreads fast when you do good work." },
+  { year: "2000s", title: "Going National",                desc: "Free nationwide pickup and delivery changes everything. KMS starts serving customers in all 50 states — no matter how far the equipment needs to travel." },
+  { year: "2010s", title: "The 24-Month Warranty Standard", desc: "KMS introduces its industry-leading 24-month rebuilt warranty — twice what most competitors offer. If we fix it, we stand behind it." },
+  { year: "Today", title: "40+ Years Strong",              desc: "Still family-owned. Still in Stafford. Still the most trusted name in rotating equipment repair across the U.S., Canada, and Mexico." },
+];
+
+const STATS = [
+  { value: "40+",   label: "Years in Business" },
+  { value: "50",    label: "States Served" },
+  { value: "24-Mo", label: "Rebuilt Warranty" },
+  { value: "72 Hr", label: "Avg. Turnaround" },
+];
+
+const VALUES = [
+  { icon: "🔧", title: "We Fix It Right the First Time",         desc: "Every repair goes through a rigorous inspection, precision machining, and performance testing before it leaves our shop. We don't cut corners — because corners have a way of coming back to bite you." },
+  { icon: "🤝", title: "We Stand Behind Our Work",                desc: "Our industry-leading 24-month warranty on rebuilt equipment isn't a marketing line — it's a promise. If something goes wrong after we fix it, we make it right. Period." },
+  { icon: "⚡", title: "Speed Matters When You're Down",          desc: "Downtime costs money. That's why we offer 72-hour standard turnaround and 24/7 emergency service for critical failures. We move fast so you can get back to work." },
+  { icon: "🌎", title: "We Come to You — Anywhere",                desc: "Free national pickup and delivery means you're never stuck because you can't get equipment to us. We've served customers in all 50 states, Canada, and Mexico." },
+  { icon: "🏭", title: "OEM-Level Expertise, Independent Prices",  desc: "Our technicians have decades of hands-on experience with every major brand — Alfa Laval, Andritz, SWECO, Flender, Falk, and dozens more. You get OEM-quality results without the OEM wait times and markups." },
+  { icon: "🇺🇸", title: "Texas-Built. American-Proud.",            desc: "We've been doing this in Stafford, Texas for over 40 years. We're not a national chain or a private equity rollup. We're a family-owned Texas shop that takes pride in every single job." },
+];
+
+const FAQS = [
+  { q: "Where is Kelsey Machine Services located?",          a: "Kelsey Machine Services is located in Stafford, Texas — just southwest of Houston. We've been at this location for over 40 years. While we're based in Texas, we serve customers across all 50 states, Canada, and Mexico with free nationwide pickup and delivery." },
+  { q: "What types of equipment does KMS repair?",            a: "We specialize in rotating equipment repair including centrifuges, industrial gearboxes, blowers, compressors, and fluid end & power end components. We service all major brands including Alfa Laval, Andritz, SWECO, Flender, Falk, Gardner Denver, and many more." },
+  { q: "How long has Kelsey Machine Services been in business?", a: "Kelsey Machine Services was founded in 1983 — that's over 40 years of rotating equipment repair experience. We're still family-owned and operated from the same Stafford, Texas facility." },
+  { q: "Does KMS offer a warranty on repairs?",                a: "Yes — we offer an industry-leading 24-month warranty on all rebuilt equipment. That's twice what most competitors offer and a direct reflection of our confidence in the quality of our work." },
+  { q: "Does KMS offer emergency repair service?",             a: "Absolutely. We offer 24/7 emergency rotating equipment repair service. Call our emergency line any time — day or night, weekday or weekend — and we'll get your equipment moving again as fast as possible." },
+  { q: "Can KMS pick up my equipment anywhere in the country?", a: "Yes. We offer free nationwide pickup and delivery for all repair jobs. Whether you're in Houston, New York, or anywhere in between, we'll arrange transportation so you don't have to." },
+  { q: "What industries does KMS serve?",                       a: "We serve a wide range of industries including oil & gas, chemical processing, food & beverage, wastewater treatment, pulp & paper, mining, pharmaceutical, and general manufacturing. If it rotates and it's broken, we can fix it." },
+];
+
+const BY_NUMBERS = [
+  { label: "Years in Business",         value: "40+",                          icon: "📅" },
+  { label: "States Served",             value: "50 States + Canada + Mexico",  icon: "🗺️" },
+  { label: "Rebuilt Equipment Warranty", value: "24 Months",                    icon: "🛡️" },
+  { label: "Standard Turnaround",        value: "72 Hours",                     icon: "⚡" },
+  { label: "Emergency Service",          value: "24/7 / 365",                   icon: "🚨" },
+  { label: "Pickup & Delivery",          value: "Free Nationwide",              icon: "🚛" },
+];
 ---
-<ContentPage
-  seo={seo}
-  h1="About Kelsey Machine Services"
-  subheading="Forty-plus years of industrial rotating equipment repair, from a single shop in Stafford, Texas to all 50 states, Canada, and Mexico."
-  bgImage="/images/kms-hero-bg.webp"
-  breadcrumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
->
-  <div class="content-prose">
-    <p>Kelsey Machine Services has been rebuilding industrial rotating equipment since 1983. Forty-plus years of centrifuge, gearbox, pump, blower, compressor, and fluid-end work for some of the toughest industrial customers in America — oil and gas operators, refineries, petrochemical plants, wastewater utilities, food processors, paper mills, mining operations, and general manufacturers.</p>
+<KmsLayout seo={seo}>
 
-    <p>We started in Stafford, Texas as a small machine shop with a reputation for honest work. Four decades later we're still in Stafford, still privately held, and still building the same kind of trust — one rebuild at a time. The difference now is reach: we pick up equipment at no charge from every state in the lower 48, plus Canada and Mexico, and we ship it back faster than the OEM more times than we can count.</p>
+  {/* Hero with green "Our Story" badge */}
+  <section class="relative flex items-center" style={`min-height:480px;background:linear-gradient(to right, rgba(10,25,41,0.92) 0%, rgba(10,25,41,0.75) 55%, rgba(10,25,41,0.45) 100%), url(/images/kms-about-hero.webp) center/cover no-repeat`}>
+    <div class="max-w-7xl mx-auto px-4 py-20 w-full">
+      <div class="max-w-2xl">
+        <div class="inline-block mb-4" style={`background:${C.green};color:white;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.3rem 0.75rem;border-radius:2px`}>
+          Our Story
+        </div>
+        <h1 class="text-white mb-4" style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.5rem, 5vw, 3.5rem);text-transform:uppercase;line-height:1.05">
+          40 Years of Getting<br /><span style={`color:${C.green}`}>Texas-Tough Equipment</span><br />Back to Work
+        </h1>
+        <p class="text-gray-200 mb-8" style="font-family:'Source Sans 3',sans-serif;font-size:1.2rem;line-height:1.7">
+          We're not the biggest shop in the country. We're just the one that fixes it right, backs it with a 24-month warranty, and answers the phone at 2 AM when your centrifuge decides to quit on a Sunday.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="/contact" class="text-white no-underline" style={`background:${C.green};font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1rem;padding:0.85rem 2rem;border-radius:2px;letter-spacing:0.05em;text-transform:uppercase`}>Get a Free Quote</a>
+          <a href="/emergency-service" class="text-white no-underline border-2 border-white" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1rem;padding:0.75rem 2rem;border-radius:2px;letter-spacing:0.05em;text-transform:uppercase">24/7 Emergency Line</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <h2>What We Stand For</h2>
-    <ul>
-      <li><strong>Honesty about what your equipment needs.</strong> Every repair starts with a written failure analysis. If we can't fix it, or repair doesn't make economic sense, we'll tell you straight.</li>
-      <li><strong>The industry's longest written warranty.</strong> 24 months on every rebuild. Not a verbal promise — a written commitment in your documentation package.</li>
-      <li><strong>Showing up when it matters.</strong> Our emergency line is answered 24/7, every day of the year. When your equipment is down, we respond immediately.</li>
-      <li><strong>Doing the work in-house.</strong> Our machine shop, our balancing equipment, our technicians. We don't farm out the critical work and hope for the best.</li>
-    </ul>
+  {/* Blue stats bar */}
+  <section style={`background:${C.blueDark};padding:2rem 0`}>
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        {STATS.map((s) => (
+          <div>
+            <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2.5rem;color:${C.green}`}>{s.value}</div>
+            <div class="text-white mt-1" style="font-family:'Barlow',sans-serif;font-weight:600;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em">{s.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
 
-    <h2>Where We Work</h2>
-    <p>From our facility at 814 Summer Park Drive, Building #600, Stafford, Texas 77477, we serve industrial customers across all 50 U.S. states, Canada, and Mexico. Free pickup and delivery is included on every repair job. If your equipment can be moved, we can pick it up.</p>
+  {/* Our Story — 2-col with timeline card */}
+  <section class="bg-gray-50" style="padding:4rem 0">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid md:grid-cols-2 gap-12 items-start">
+        <div>
+          <h2 style={`font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2.5rem;color:${C.blueDark};text-transform:uppercase;margin-bottom:1.5rem`}>
+            We Started With One Rule:<br /><span style={`color:${C.green}`}>Fix It Right or Don't Charge For It</span>
+          </h2>
+          <p style={`font-family:'Source Sans 3',sans-serif;color:#4a5568;line-height:1.7;margin-bottom:1rem`}>
+            Back in 1983, Kelsey Machine Services opened its doors in Stafford, Texas with a simple philosophy: do the work right, stand behind it, and treat every customer like they're your only one. Forty-plus years later, that hasn't changed — even if the equipment has gotten a lot more complicated.
+          </p>
+          <p style={`font-family:'Source Sans 3',sans-serif;color:#4a5568;line-height:1.7;margin-bottom:1rem`}>
+            We started as a centrifuge repair shop serving the petrochemical and industrial markets around Houston. Word travels fast in this industry when you do good work, and it didn't take long before customers were shipping equipment to us from across the country. Today, we repair <a href="/services/centrifuge-repair" style={`color:${C.blueDark};text-decoration:underline`}>centrifuges</a>, <a href="/services/gearbox-repair" style={`color:${C.blueDark};text-decoration:underline`}>industrial gearboxes</a>, <a href="/services/industrial-blower-repair" style={`color:${C.blueDark};text-decoration:underline`}>blowers</a>, <a href="/services/industrial-compressors" style={`color:${C.blueDark};text-decoration:underline`}>compressors</a>, and <a href="/services/fluid-power-end-repair" style={`color:${C.blueDark};text-decoration:underline`}>fluid end & power end components</a> for customers in all 50 states, Canada, and Mexico.
+          </p>
+          <p style={`font-family:'Source Sans 3',sans-serif;color:#4a5568;line-height:1.7;margin-bottom:1rem`}>
+            We're still family-owned. Still in Stafford. Still answering the phone ourselves. And still doing the work the same way we always have — with the kind of care and precision that only comes from people who actually give a damn about what they're doing.
+          </p>
+          <p style={`font-family:'Source Sans 3',sans-serif;color:#4a5568;line-height:1.7`}>
+            Our <a href="/warranty" style={`color:${C.blueDark};text-decoration:underline`}>industry-leading 24-month warranty</a> on rebuilt equipment isn't a marketing gimmick — it's a reflection of how confident we are in our work. If something goes wrong after we fix it, we make it right. That's the KMS promise, and it's been the KMS promise since day one.
+          </p>
+        </div>
 
-    <h2>Our Capabilities</h2>
-    <ul>
-      <li>In-house precision machine shop — bore restoration, shaft repair, housing reconditioning</li>
-      <li>Dynamic balancing to ISO 1940 G2.5 (G1.0 available on request)</li>
-      <li>Tungsten-carbide hard-facing for abrasive service applications</li>
-      <li>Complete teardown, inspection, and written failure analysis on every unit</li>
-      <li>Component replacement with quality parts and full documentation</li>
-      <li>Pressure testing and operational testing where applicable</li>
-    </ul>
+        {/* Timeline card */}
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div style={`background:${C.blueDark};padding:1rem 1.5rem`}>
+            <h3 style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.25rem;color:white;text-transform:uppercase;letter-spacing:0.04em">Our History</h3>
+          </div>
+          <div style="padding:1.5rem">
+            {TIMELINE.map((t) => (
+              <div class="flex gap-4 mb-6 last:mb-0">
+                <div class="flex-shrink-0">
+                  <div style={`width:64px;height:64px;border-radius:50%;background:${C.green};display:flex;align-items:center;justify-content:center`}>
+                    <span class="text-white text-center" style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:0.85rem;line-height:1.1">{t.year}</span>
+                  </div>
+                </div>
+                <div style="padding-top:0.25rem">
+                  <h4 class="font-bold mb-1" style={`color:${C.blueDark}`}>{t.title}</h4>
+                  <p class="text-gray-600 text-sm" style="line-height:1.6">{t.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <h2>Get In Touch</h2>
-    <p>Equipment problem? Call us at <a href="tel:3463501464">346-350-1464</a> or <a href="/contact">request a free quote</a>. We respond within one business hour, and our emergency line is available 24/7.</p>
-  </div>
-</ContentPage>
+  {/* Values — 3-col cards */}
+  <section class="bg-white" style="padding:4rem 0">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 style={`font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2.5rem;color:${C.blueDark};text-transform:uppercase;margin-bottom:0.75rem`}>What We Believe In</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto" style="font-size:1.1rem">
+          These aren't values we put on a poster in the break room. They're the way we actually operate — every job, every day.
+        </p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {VALUES.map((v) => (
+          <div style="background:#f9fafb;border-radius:0.75rem;padding:1.5rem;border:1px solid #f3f4f6">
+            <div style="font-size:2rem;margin-bottom:0.75rem">{v.icon}</div>
+            <h3 class="font-bold mb-2" style={`color:${C.blueDark};font-size:1.1rem`}>{v.title}</h3>
+            <p class="text-gray-600 text-sm" style="line-height:1.6">{v.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Why Choose KMS — blue with by-the-numbers card */}
+  <section style={`background:${C.blueDark};padding:4rem 0`}>
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2.5rem;color:white;text-transform:uppercase;margin-bottom:1.5rem">
+            The KMS Difference:<br /><span style={`color:${C.green}`}>It's Not Just What We Fix. It's How.</span>
+          </h2>
+          <p class="text-gray-200 mb-4" style="line-height:1.7">
+            There are plenty of repair shops out there. Most of them will fix your equipment. Some of them will fix it right. Very few of them will fix it right, back it with a 24-month warranty, pick it up from anywhere in the country for free, and have it back to you in 72 hours.
+          </p>
+          <p class="text-gray-200 mb-4" style="line-height:1.7">
+            That's the KMS standard. It's what we've been doing for over 40 years, and it's why customers keep coming back — and why they refer us to their colleagues, their contractors, and their competitors when equipment goes down.
+          </p>
+          <p class="text-gray-200 mb-6" style="line-height:1.7">
+            We service all major brands — Alfa Laval, Andritz, SWECO, Flender, Falk, Gardner Denver, Roots, and dozens more. Our technicians have seen it all, fixed most of it, and know exactly what it takes to get your specific equipment running at peak performance again.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a href="/services" class="text-white no-underline" style={`background:${C.green};font-family:'Barlow Condensed',sans-serif;font-weight:800;padding:0.75rem 1.5rem;border-radius:2px;text-transform:uppercase;letter-spacing:0.05em`}>View All Services</a>
+            <a href="/contact" class="text-white no-underline border-2 border-white" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;padding:0.65rem 1.5rem;border-radius:2px;text-transform:uppercase;letter-spacing:0.05em">Get a Free Quote</a>
+          </div>
+        </div>
+
+        {/* By the Numbers card */}
+        <div class="bg-white rounded-xl" style="padding:2rem">
+          <h3 style={`font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.6rem;color:${C.blueDark};text-transform:uppercase;margin-bottom:1.5rem`}>By the Numbers</h3>
+          <div class="grid grid-cols-2 gap-x-4">
+            {BY_NUMBERS.map((n) => (
+              <div class="flex items-start gap-3 py-3 border-b border-gray-100">
+                <span style="font-size:1.25rem;margin-top:2px">{n.icon}</span>
+                <div>
+                  <div class="text-gray-500 text-xs">{n.label}</div>
+                  <div class="font-bold leading-tight" style={`color:${C.blueDark};font-size:0.88rem`}>{n.value}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Industries grid */}
+  <section class="bg-gray-50" style="padding:4rem 0">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center mb-10">
+        <h2 style={`font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2.5rem;color:${C.blueDark};text-transform:uppercase;margin-bottom:0.75rem`}>Industries We Serve</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto" style="font-size:1.1rem">
+          If your industry runs on rotating equipment, there's a good chance we've already fixed something just like yours.
+        </p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { label: "Oil & Gas",            anchor: "oil-gas" },
+          { label: "Chemical Processing",   anchor: null },
+          { label: "Food & Beverage",       anchor: "food-beverage" },
+          { label: "Wastewater Treatment",  anchor: "wastewater" },
+          { label: "Pulp & Paper",          anchor: "pulp-paper" },
+          { label: "Mining & Minerals",     anchor: null },
+          { label: "Pharmaceutical",        anchor: "pharmaceutical" },
+          { label: "Power Generation",      anchor: "power-generation" },
+          { label: "Petrochemical",         anchor: "petrochemical" },
+          { label: "Fertilizer Production", anchor: null },
+          { label: "General Manufacturing", anchor: "manufacturing" },
+          { label: "Marine & Offshore",     anchor: null },
+        ].map(({ label, anchor }) => (
+          <a href={anchor ? `/industries#${anchor}` : "/industries"} class="bg-white rounded-lg text-center border block no-underline cursor-pointer" style="padding:1rem;border-color:#f3f4f6">
+            <span class="text-gray-700 font-medium text-sm">{label}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Mid-page green CTA strip */}
+  <section style={`background:${C.green};padding:3rem 0`}>
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <h2 style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.75rem;color:white;text-transform:uppercase;margin-bottom:0.75rem">
+        Ready to Get Your Equipment Back Online?
+      </h2>
+      <p class="text-white/90 mb-6 max-w-xl mx-auto" style="font-size:1.1rem">
+        Call us, fill out the form below, or request a free pickup. We'll take it from there.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href={KMS_PHONE_HREF} class="no-underline" style={`background:white;color:${C.blueDark};font-family:'Barlow Condensed',sans-serif;font-weight:800;padding:0.75rem 2rem;border-radius:2px;text-transform:uppercase;letter-spacing:0.05em`}>📞 {KMS_PHONE}</a>
+        <a href="/emergency-service" class="text-white no-underline border-2 border-white" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;padding:0.65rem 2rem;border-radius:2px;text-transform:uppercase;letter-spacing:0.05em">24/7 Emergency Service</a>
+      </div>
+    </div>
+  </section>
+
+  {/* FAQ + Quote Form sidebar */}
+  <section class="bg-gray-50" style="padding:4rem 0">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+        <div class="lg:col-span-2">
+          <h2 style={`font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2.25rem;color:${C.blueDark};text-transform:uppercase;margin-bottom:1.5rem`}>About Us — Frequently Asked Questions</h2>
+          <div style="border:1px solid rgba(30,80,128,0.15);border-radius:2px;overflow:hidden">
+            {FAQS.map((f) => (
+              <details class="group bg-white border-b border-blue-900/10 last:border-b-0">
+                <summary class="cursor-pointer list-none flex justify-between items-center" style={`padding:1.25rem 1.5rem;color:${C.blueDark};font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.05rem`}>
+                  <span>{f.q}</span>
+                  <span class="text-kms-green group-open:rotate-180 transition-transform">▾</span>
+                </summary>
+                <div style={`padding:0 1.5rem 1.25rem;font-family:'Source Sans 3',sans-serif;font-size:0.95rem;color:${C.textMid};line-height:1.7`}>{f.a}</div>
+              </details>
+            ))}
+          </div>
+        </div>
+        <aside class="lg:col-span-1 space-y-5">
+          <div style={`background:linear-gradient(135deg, ${C.darkBg} 0%, ${C.blueDark} 100%);border-radius:4px;padding:1.5rem`}>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;color:white;text-transform:uppercase;margin-bottom:0.25rem">Get a Free Repair Quote</div>
+            <p style="font-family:'Source Sans 3',sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.55);margin-bottom:1rem">Available 24/7 · Respond within the hour</p>
+            <QuoteForm client:visible variant="contact" />
+          </div>
+          <div style={`background:white;border:1px solid ${C.green}33;border-radius:4px;padding:1.25rem`}>
+            <div class="flex items-center gap-2 mb-2">
+              <span style={`color:${C.green};display:inline-flex`}><Icon name="shield" size={22} /></span>
+              <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;color:${C.blueDark};text-transform:uppercase`}>24-Month Warranty</div>
+            </div>
+            <p style={`font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:${C.textMid};line-height:1.6;margin:0 0 0.75rem`}>The longest written warranty in the rotating equipment repair industry.</p>
+            <a href="/warranty" class="text-kms-green no-underline text-sm uppercase tracking-wider" style="font-family:'Barlow',sans-serif;font-weight:700">Learn more →</a>
+          </div>
+          <div style={`background:${C.darkBg};border-radius:4px;padding:1.25rem;color:white`}>
+            <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;color:${C.green};text-transform:uppercase;margin-bottom:0.4rem`}>Equipment Down?</div>
+            <p style="font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.7);line-height:1.6;margin:0 0 0.75rem">24/7 emergency response. We answer the phone day or night.</p>
+            <a href={KMS_PHONE_HREF} class="block text-center text-white no-underline" style={`background:${C.green};font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:0.95rem;padding:0.65rem;border-radius:2px`}>Call {KMS_PHONE}</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</KmsLayout>

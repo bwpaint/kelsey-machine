@@ -1,50 +1,131 @@
 ---
-import ContentPage from "@/layouts/ContentPage.astro";
+import KmsLayout from "@/layouts/KmsLayout.astro";
+import Icon from "@/components/Icons.astro";
 import { getMeta } from "@/lib/rm";
+import { C, KMS_PHONE, KMS_PHONE_HREF } from "@/lib/brand";
+
 const seo = await getMeta("/emergency-service", {
   title: "24/7 Emergency Industrial Repair · Free Nationwide Pickup",
-  description: "Equipment down? KMS 24/7 emergency line is answered every day. Free pickup, rush repair, expedited shipping. Call 346-350-1464.",
+  description: "Equipment down? KMS 24/7 emergency line answered every day. Free pickup, rush repair, expedited shipping. Call 346-350-1464.",
   ogImage: "/images/kms-hero-bg.webp",
 });
+
+const STEPS = [
+  { icon: "phone",        step: "01", title: "Call Our Emergency Line", desc: "Call 346-350-1464 any time — day or night, weekday or weekend, holiday or not. A real person answers. Tell us what you have, what happened, and how urgently you need it back." },
+  { icon: "truck",        step: "02", title: "We Arrange Pickup",       desc: "We'll coordinate pickup from your facility anywhere in the continental U.S. — or you can ship directly to our facility in Stafford, TX. For critical situations, we can have a driver dispatched within hours." },
+  { icon: "clock",        step: "03", title: "Rush Intake & Assessment", desc: "Your equipment goes to the front of the line. We perform complete disassembly, inspection, and failure analysis — and we call you with a written quote before any work begins. No surprises." },
+  { icon: "check-circle", step: "04", title: "Expedited Repair & Return", desc: "We complete the repair on an expedited timeline and ship your equipment back via the fastest available carrier — or arrange direct delivery. Every emergency repair is backed by our 24-month warranty." },
+];
+
+const FAQS = [
+  { q: "What qualifies as an emergency repair?",                       a: "Any situation where equipment failure is causing or about to cause significant production loss, safety risk, or operational shutdown qualifies for emergency service. Call us and describe your situation — we'll tell you honestly whether we can help and how fast." },
+  { q: "How quickly can KMS respond to an emergency?",                  a: "We can initiate emergency intake within hours of your call. Pickup can typically be arranged within 24 hours for most locations in the continental U.S. Repair timeline depends on the extent of damage and parts availability — we'll give you a realistic estimate when we assess the unit." },
+  { q: "Is emergency service available on weekends and holidays?",      a: "Yes. Our emergency line is answered every day of the year — 365 days, 24 hours a day. We don't take holidays when your equipment doesn't." },
+  { q: "Do you offer emergency service outside the continental U.S.?",  a: "Yes. We serve all 50 states, Canada, and Mexico. For Alaska, Hawaii, and international locations, we work with freight forwarders to arrange the fastest possible shipping." },
+  { q: "Is the warranty the same for emergency repairs?",               a: "Yes. Every repair — emergency or standard — is backed by our 24-month rebuilt warranty. Emergency service does not reduce the warranty coverage." },
+  { q: "What types of equipment can you handle on an emergency basis?", a: "We handle emergency repairs for all equipment types we service: centrifuges, gearboxes, industrial blowers, industrial compressors, and mud pump fluid ends and power ends." },
+];
 ---
-<ContentPage
-  seo={seo}
-  h1="24/7 Emergency Industrial Repair"
-  subheading="When your equipment is down and every hour costs money, you don't have time to wait. Our emergency line is answered every day of the year — call 346-350-1464."
-  bgImage="/images/kms-hero-bg.webp"
-  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Emergency Service" }]}
->
-  <div class="content-prose">
-    <h2>Call Us — Anytime</h2>
-    <p style="font-size:1.5rem;font-weight:700"><a href="tel:3463501464">346-350-1464</a></p>
-    <p>Our emergency line is answered 24 hours a day, 7 days a week, every day of the year. No voicemail tree, no callback queue — a real person who can dispatch a response. When your centrifuge crashes at 2 a.m. on a Sunday, that's when you find out what your repair partner is made of.</p>
+<KmsLayout seo={seo}>
 
-    <h2>What "Emergency Service" Actually Means</h2>
-    <ul>
-      <li><strong>Immediate response.</strong> We pick up the phone, take the details, and tell you what's possible.</li>
-      <li><strong>Free emergency pickup.</strong> We coordinate inbound freight from anywhere in the U.S., Canada, or Mexico, including specialty rigging for oversized equipment.</li>
-      <li><strong>Rush intake and processing.</strong> Your unit goes to the front of the queue. We've done 10-day centrifuge rebuilds and 72-hour hydraulic pump repairs when the situation demanded it.</li>
-      <li><strong>Expedited return shipping.</strong> Hot-shot, dedicated, or air freight as the situation requires. We don't economy-ship emergency repairs.</li>
-      <li><strong>24-month warranty applies.</strong> Emergency repairs get the same written warranty as standard repairs. Speed doesn't compromise quality.</li>
-    </ul>
+  {/* Hero */}
+  <section style={`background:linear-gradient(135deg, rgba(10,25,45,0.92) 0%, rgba(30,80,128,0.75) 100%), url(/images/kms-hero-bg.webp) center/cover no-repeat;padding:4rem 0 3rem;border-bottom:3px solid ${C.green}`}>
+    <div class="max-w-7xl mx-auto px-4">
+      <nav aria-label="Breadcrumb" class="mb-4">
+        <ol class="flex gap-2 list-none p-0 m-0 text-xs">
+          <li><a href="/" class="text-kms-green no-underline" style="font-family:'Barlow',sans-serif">Home</a></li>
+          <li class="text-white/40">/</li>
+          <li class="text-white/80" style="font-family:'Barlow',sans-serif">24/7 Emergency Service</li>
+        </ol>
+      </nav>
+      <h1 class="text-white" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(2rem, 4vw, 3.2rem);line-height:1.1;text-transform:uppercase">24/7 Emergency Rotating Equipment Repair — We Answer Every Call</h1>
+      <p class="text-white/85 mt-4" style="font-family:'Source Sans 3',sans-serif;font-size:1.1rem;line-height:1.6;max-width:60ch">
+        When your equipment goes down at 2 AM on a Sunday, you need a shop that actually picks up the phone. KMS does. Every day of the year, every hour of the day — real people, real answers, real repairs.
+      </p>
+    </div>
+  </section>
 
-    <h2>What We Need From You</h2>
-    <p>The faster we can get details, the faster we can move. When you call, have ready:</p>
-    <ul>
-      <li>Equipment type, brand, and model (or just a photo of the nameplate — that's enough)</li>
-      <li>What failed, or what symptoms you're seeing</li>
-      <li>Your location, and how the equipment can be loaded for pickup</li>
-      <li>How critical the timeline is — is the plant down, or is there a workaround?</li>
-    </ul>
+  <main class="bg-white">
+    <div class="max-w-5xl mx-auto px-4 py-12">
 
-    <p>Don't have everything? Call anyway. We'll figure out what we don't know on the call.</p>
+      {/* Big phone CTA box */}
+      <div class="text-center mb-12" style={`background:linear-gradient(135deg, ${C.blueDark} 0%, ${C.darkBg} 100%);border-radius:4px;padding:2.5rem`}>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.5rem, 4vw, 2.5rem);color:white;text-transform:uppercase;letter-spacing:-0.01em;margin-bottom:0.5rem">
+          Emergency Line — Available 24/7/365
+        </div>
+        <a href={KMS_PHONE_HREF} class="inline-block no-underline" style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(2rem, 5vw, 3.5rem);color:${C.green};letter-spacing:0.02em;line-height:1.1;margin-bottom:1rem`}>
+          {KMS_PHONE}
+        </a>
+        <p style="font-family:'Source Sans 3',sans-serif;font-size:1rem;color:rgba(255,255,255,0.65);margin:0">
+          Real people. Real answers. Every call answered.
+        </p>
+      </div>
 
-    <h2>What Counts as an Emergency?</h2>
-    <p>You decide. If your operation is shut down or about to be, it's an emergency. If you've got a unit in standby and a couple of weeks of runway, it's still a priority job — just not an emergency. We'll be honest with you about which one your situation is and price accordingly.</p>
+      <p style={`font-family:'Source Sans 3',sans-serif;font-size:1.08rem;color:${C.textDark};line-height:1.8;margin-bottom:1.5rem`}>
+        Equipment failures don't follow business hours. A centrifuge that goes down at midnight on a Friday, a gearbox that fails on Christmas morning, a mud pump fluid end that washes out on a Sunday — these are real situations that real KMS customers have called us about. And we answered. Every time.
+      </p>
+      <p style={`font-family:'Source Sans 3',sans-serif;font-size:1.08rem;color:${C.textDark};line-height:1.8;margin-bottom:2.5rem`}>
+        Our <a href="/emergency-service" style={`color:${C.green};font-weight:700;text-decoration:none`}>24/7 emergency service</a> isn't a marketing claim — it's a commitment backed by 40 years of showing up when it matters. We offer emergency intake, rush processing, and expedited return shipping. Every emergency repair is backed by the same <a href="/warranty" style={`color:${C.green};font-weight:700;text-decoration:none`}>24-month warranty</a> as our standard repairs.
+      </p>
 
-    <h2>Why Our Customers Trust the Emergency Line</h2>
-    <p>Because we answer it. For 40+ years, when industrial customers across the country have called Kelsey Machine at 3 a.m. with a rotating equipment failure, somebody at KMS has picked up the phone. That's not marketing — it's a reputation built one emergency repair at a time.</p>
+      <h2 style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.5rem, 3vw, 2rem);color:${C.blueDark};text-transform:uppercase;letter-spacing:-0.01em;margin-bottom:1.5rem`}>
+        How Emergency Service Works
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        {STEPS.map((s) => (
+          <div class="flex gap-5 items-start" style={`background:${C.lightBg};border:1px solid #dde3ec;border-radius:4px;padding:1.75rem`}>
+            <div class="flex-shrink-0 flex items-center justify-center" style={`width:56px;height:56px;background:${C.blueDark};border-radius:2px;color:${C.green}`}>
+              <Icon name={s.icon as any} size={28} />
+            </div>
+            <div>
+              <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:0.75rem;color:${C.green};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem`}>STEP {s.step}</div>
+              <h3 style={`font-family:'Barlow',sans-serif;font-weight:700;font-size:1rem;color:${C.textDark};margin-bottom:0.4rem`}>{s.title}</h3>
+              <p style={`font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:${C.textMid};line-height:1.65;margin:0`}>{s.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
 
-    <p>Need help right now? <a href="tel:3463501464">Call 346-350-1464</a>. Or if your situation is urgent but not immediate, <a href="/contact">request a quote</a> and tell us your timeline.</p>
-  </div>
-</ContentPage>
+      {/* Coverage strip */}
+      <div style={`background:${C.lightBg};border:2px solid ${C.green};border-radius:4px;padding:2rem;margin-bottom:2.5rem`}>
+        <h2 style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.3rem;color:${C.blueDark};text-transform:uppercase;margin-bottom:1rem`}>
+          Emergency Service Coverage
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {[
+            { label: "All 50 States",    desc: "Continental U.S. pickup available within 24 hours" },
+            { label: "Canada & Mexico",  desc: "International service via freight forwarder" },
+            { label: "365 Days a Year",  desc: "No holidays, no blackout dates, no exceptions" },
+          ].map((c) => (
+            <div class="text-center">
+              <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.25rem;color:${C.blueDark};text-transform:uppercase`}>{c.label}</div>
+              <p style={`font-family:'Source Sans 3',sans-serif;font-size:0.88rem;color:${C.textMid};line-height:1.5;margin:0.25rem 0 0`}>{c.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* FAQ */}
+    <section style={`background:${C.lightBg};padding:4rem 0`}>
+      <div class="max-w-4xl mx-auto px-4">
+        <div class="text-center mb-10">
+          <div class="text-kms-green text-xs uppercase tracking-widest mb-3" style="font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:0.1em">Common Questions</div>
+          <div style={`width:50px;height:3px;background:${C.green};margin:0 auto 0.75rem`}></div>
+          <h2 style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.8rem, 3.5vw, 2.8rem);color:${C.blueDark};text-transform:uppercase`}>FREQUENTLY ASKED QUESTIONS</h2>
+        </div>
+        <div style="border:1px solid rgba(30,80,128,0.15);border-radius:2px;overflow:hidden">
+          {FAQS.map((f) => (
+            <details class="group bg-white border-b border-blue-900/10 last:border-b-0">
+              <summary class="cursor-pointer list-none flex justify-between items-center" style={`padding:1.25rem 1.5rem;color:${C.blueDark};font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.05rem`}>
+                <span>{f.q}</span>
+                <span class="text-kms-green group-open:rotate-180 transition-transform">▾</span>
+              </summary>
+              <div style={`padding:0 1.5rem 1.25rem;font-family:'Source Sans 3',sans-serif;font-size:0.95rem;color:${C.textMid};line-height:1.7`}>{f.a}</div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+</KmsLayout>
