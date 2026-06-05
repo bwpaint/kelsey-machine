@@ -1,21 +1,24 @@
 ---
 /**
- * Tiny inline SVG icons — Astro-native, zero JS, zero React bundle.
- * Mirrors lucide-react icon set used in the Vite client.
+ * Inline SVG icons — Astro-native, zero JS, zero React bundle.
+ * Mirrors the lucide-react icons used in the Vite client.
  */
 export interface Props {
-  name: "phone" | "mail" | "map-pin" | "chevron-down" | "menu" | "x" | "arrow-right" | "shield" | "clock" | "star" | "truck";
+  name: "phone" | "mail" | "map-pin" | "chevron-down" | "chevron-up" | "chevron-left" | "chevron-right" | "menu" | "x" | "arrow-right" | "shield" | "clock" | "star" | "truck" | "zap" | "globe" | "check" | "check-circle";
   size?: number;
   class?: string;
+  fill?: string;
 }
-const { name, size = 16, class: className = "" } = Astro.props;
+const { name, size = 16, class: className = "", fill = "none" } = Astro.props;
 
-// Lucide-style SVG paths — same icon shapes, no React.
 const paths: Record<string, string> = {
   "phone":         `<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>`,
   "mail":          `<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/>`,
   "map-pin":       `<path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>`,
   "chevron-down":  `<polyline points="6 9 12 15 18 9"/>`,
+  "chevron-up":    `<polyline points="18 15 12 9 6 15"/>`,
+  "chevron-left":  `<polyline points="15 18 9 12 15 6"/>`,
+  "chevron-right": `<polyline points="9 18 15 12 9 6"/>`,
   "menu":          `<line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>`,
   "x":             `<path d="M18 6 6 18"/><path d="m6 6 12 12"/>`,
   "arrow-right":   `<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>`,
@@ -23,7 +26,11 @@ const paths: Record<string, string> = {
   "clock":         `<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>`,
   "star":          `<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>`,
   "truck":         `<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>`,
+  "zap":           `<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>`,
+  "globe":         `<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>`,
+  "check":         `<polyline points="20 6 9 17 4 12"/>`,
+  "check-circle":  `<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>`,
 };
 const inner = paths[name] || "";
 ---
-<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class={className} set:html={inner} />
+<svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class={className} set:html={inner} />
