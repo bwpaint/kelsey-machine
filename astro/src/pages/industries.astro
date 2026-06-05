@@ -1,0 +1,44 @@
+---
+import ContentPage from "@/layouts/ContentPage.astro";
+import { getMeta } from "@/lib/rm";
+const seo = await getMeta("/industries", {
+  title: "Industries We Serve — Oil & Gas, Food, Wastewater, Mining",
+  description: "Industrial rotating equipment repair for oil & gas, petrochemical, food & beverage, wastewater, power, pulp & paper, pharmaceutical, mining.",
+  ogImage: "/images/oilfield-hero.webp",
+});
+---
+<ContentPage
+  seo={seo}
+  h1="Industries We Serve"
+  subheading="Forty years of repair experience across America's heaviest industries. If your operation relies on rotating equipment, we've kept somebody like you running."
+  bgImage="/images/oilfield-hero.webp"
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Industries" }]}
+>
+  <div class="content-prose">
+    <h2 id="oil-gas">Oil & Gas</h2>
+    <p>Mud pumps, fluid ends, power ends, oilfield tools, compressors, and process pumps. From drilling operations to gas gathering to refining, KMS rebuilds the rotating equipment that keeps oil and gas operations running. Our 24/7 emergency service understands that rig downtime is the most expensive downtime in the business.</p>
+
+    <h2 id="petrochemical">Petrochemical & Refining</h2>
+    <p>Centrifugal compressors, reciprocating compressors, process pumps, gearboxes, and centrifuges for petrochemical and refining operations. We work on units from every major OEM and many specialty configurations, with the precision machining and balancing required for high-criticality service.</p>
+
+    <h2 id="food-beverage">Food & Beverage</h2>
+    <p>Disc stack centrifuges for separation, scroll centrifuges for dewatering, sanitary pumps for product handling, and gearboxes for processing equipment. We understand sanitary design and the documentation requirements that food and beverage operations require.</p>
+
+    <h2 id="wastewater">Wastewater Treatment</h2>
+    <p>Aeration blowers (Roots-type, centrifugal, and screw), decanter centrifuges for sludge dewatering, gearboxes for clarifiers and digesters, and pumps for influent, effluent, and biosolids handling. We serve municipal and industrial wastewater facilities across the country.</p>
+
+    <h2 id="power-generation">Power Generation</h2>
+    <p>Cooling tower gearboxes, boiler feed pumps, condensate pumps, fan and blower units, and turbine auxiliary equipment. We work with utility, IPP, and cogeneration facilities on both planned outages and emergency repairs.</p>
+
+    <h2 id="pulp-paper">Pulp & Paper</h2>
+    <p>Stock pumps, white water pumps, vacuum pumps, refiner gearboxes, and decanter centrifuges for sludge handling. Paper machine equipment service requires understanding the process, the operational constraints, and the cost of downtime. We get it.</p>
+
+    <h2 id="pharmaceutical">Pharmaceutical</h2>
+    <p>Disc stack centrifuges, basket centrifuges, sanitary pumps, and process equipment with documentation requirements that pharmaceutical operations demand. Clean room awareness, FDA-compliant materials traceability, and thorough validation documentation.</p>
+
+    <h2 id="manufacturing">General Manufacturing</h2>
+    <p>Gearboxes for conveyors, mixers, and process equipment. Pumps for utilities and process fluids. Compressors and blowers for plant air. Whatever rotates in your manufacturing facility, we've probably already rebuilt one for somebody.</p>
+
+    <p>Don't see your industry listed? <a href="/contact">Call us</a> — chances are we've worked on equipment in your sector and just haven't called it out here.</p>
+  </div>
+</ContentPage>

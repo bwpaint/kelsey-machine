@@ -1,0 +1,43 @@
+---
+import ContentPage from "@/layouts/ContentPage.astro";
+import { getMeta } from "@/lib/rm";
+const seo = await getMeta("/warranty", {
+  title: "Industrial Repair Warranty — 40+ Yrs · Free Pickup | KMS",
+  description: "KMS offers the industry's longest written warranty — 24 months on every rotating equipment rebuild. Free pickup, 24/7 emergency service.",
+  ogImage: "/images/kms-hero-bg.webp",
+});
+---
+<ContentPage
+  seo={seo}
+  h1="The KMS 24-Month Warranty"
+  subheading="The longest written warranty in the rotating equipment repair industry. Not a verbal promise — a written commitment in your documentation package."
+  bgImage="/images/kms-hero-bg.webp"
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Warranty" }]}
+>
+  <div class="content-prose">
+    <p>Every rebuild Kelsey Machine Services performs is backed by our 24-month written warranty — twice the industry standard. This isn't a verbal promise or a marketing tagline. It's a written commitment included in your repair documentation package, and we honor it.</p>
+
+    <h2>What's Covered</h2>
+    <ul>
+      <li>All components replaced or restored during the repair are warranted against defects in workmanship for 24 months from the date of return shipment.</li>
+      <li>If a warranted component fails during the warranty period, we will repair or replace it at no charge.</li>
+      <li>Coverage includes the rebuilt rotating assembly, bearings, seals, gaskets, and any machined surfaces we restored.</li>
+    </ul>
+
+    <h2>What's Not Covered</h2>
+    <ul>
+      <li>Damage caused by improper installation, misalignment, or contamination after delivery.</li>
+      <li>Damage from operating the equipment outside its rated design conditions (pressure, speed, temperature, or load).</li>
+      <li>Damage from process upsets, water hammer, dry running, or operational conditions outside our control.</li>
+      <li>Wear components on parts we did not replace (we'll tell you on the inspection report what we did and did not touch).</li>
+    </ul>
+
+    <h2>How to Make a Claim</h2>
+    <p>If you suspect a warranty issue, call us at <a href="tel:3463501464">346-350-1464</a>. Have your repair documentation handy — it includes the warranty serial number, the components replaced, and our as-left dimensions. We'll work with you to assess the issue and schedule warranty service.</p>
+
+    <h2>Why We Offer the Industry's Longest Warranty</h2>
+    <p>Because we can. The work we do in our shop — precision machining, dynamic balancing, root-cause failure analysis, OEM-spec reassembly — is what allows us to stand behind every rebuild for 24 months. If we weren't confident in the work, we wouldn't put a warranty on it.</p>
+
+    <p>If you've been burned by short OEM warranties or by repair shops that won't stand behind their work, we'd like to earn your business. <a href="/contact">Request a free repair quote</a> and see for yourself.</p>
+  </div>
+</ContentPage>

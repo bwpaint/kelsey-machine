@@ -1,0 +1,72 @@
+---
+/**
+ * Blog index — fetches latest posts from cms.kmstx.com at build time.
+ * Falls back to a "blog coming soon" message if CMS is unreachable.
+ */
+import ContentPage from "@/layouts/ContentPage.astro";
+import { getMeta } from "@/lib/rm";
+import { C } from "@/lib/brand";
+
+const seo = await getMeta("/blog", {
+  title: "Industrial Repair Blog — Centrifuge, Gearbox, Pump Tips",
+  description: "Field-tested insights on industrial centrifuge, gearbox, pump, blower & compressor repair. Maintenance tips and failure analysis.",
+});
+
+const CMS = (import.meta.env.PUBLIC_CMS_URL as string | undefined) || "https://cms.kmstx.com";
+
+interface Post {
+  id: number; slug: string; date: string;
+  title: { rendered: string };
+  excerpt: { rendered: string };
+  _embedded?: { "wp:featuredmedia"?: Array<{ source_url: string; alt_text: string }> };
+}
+
+let posts: Post[] = [];
+try {
+  const res = await fetch(`${CMS}/wp-json/wp/v2/posts?per_page=24&_embed=wp:featuredmedia&status=publish`);
+  if (res.ok) posts = await res.json();
+} catch (err) {
+  console.warn("[blog] WP fetch failed at build:", err);
+}
+
+function strip(html: string) { return html.replace(/<[^>]*>/g, "").replace(/&[a-z]+;/gi, " ").trim(); }
+function fmtDate(iso: string) {
+  try { return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }); }
+  catch { return iso; }
+}
+---
+<ContentPage
+  seo={seo}
+  h1="Industrial Repair Blog"
+  subheading="Field-tested insights from the KMS shop floor — failure analysis, maintenance tips, and rebuild guides for industrial rotating equipment."
+  bgImage="/images/kms-hero-bg.webp"
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Blog" }]}
+>
+  {posts.length === 0 ? (
+    <div class="content-prose">
+      <p>Blog posts are temporarily unavailable. Please check back shortly, or <a href="/contact">contact us</a> for direct technical questions about your equipment.</p>
+    </div>
+  ) : (
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {posts.map((p) => {
+        const img = p._embedded?.["wp:featuredmedia"]?.[0];
+        const title = strip(p.title.rendered);
+        const excerpt = strip(p.excerpt.rendered).slice(0, 200);
+        return (
+          <a href={`/blog/${p.slug}/`} class="block no-underline border border-gray-200 hover:border-kms-green rounded-sm overflow-hidden transition-colors bg-white">
+            {img && (
+              <div class="aspect-[16/9] overflow-hidden bg-gray-100">
+                <img src={img.source_url} alt={img.alt_text || title} loading="lazy" class="w-full h-full object-cover" />
+              </div>
+            )}
+            <div class="p-5">
+              <div style={`color:${C.green};font-family:'Barlow',sans-serif;font-weight:600;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem`}>{fmtDate(p.date)}</div>
+              <h2 set:html={p.title.rendered} style={`font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.25rem;color:${C.blueDark};line-height:1.2;margin:0 0 0.5rem;text-transform:none`} />
+              <p style={`font-family:'Source Sans 3',sans-serif;font-size:0.95rem;color:${C.textMid};line-height:1.6;margin:0`}>{excerpt}…</p>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  )}
+</ContentPage>

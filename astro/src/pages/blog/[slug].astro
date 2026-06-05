@@ -1,0 +1,90 @@
+---
+/**
+ * Blog post detail — getStaticPaths fetches all post slugs at build,
+ * then renders each post's content using its embedded WP REST data.
+ *
+ * SEO comes from the SEO Connect module if RM has an entry for the path;
+ * otherwise we fall back to the post's own title + excerpt.
+ */
+import ContentPage from "@/layouts/ContentPage.astro";
+import { getMeta } from "@/lib/rm";
+import { C } from "@/lib/brand";
+
+const CMS = (import.meta.env.PUBLIC_CMS_URL as string | undefined) || "https://cms.kmstx.com";
+
+interface Post {
+  id: number; slug: string; date: string; link: string;
+  title: { rendered: string };
+  content: { rendered: string };
+  excerpt: { rendered: string };
+  _embedded?: {
+    "wp:featuredmedia"?: Array<{ source_url: string; alt_text: string }>;
+    "author"?: Array<{ name: string }>;
+    "wp:term"?: Array<Array<{ name: string; slug: string }>>;
+  };
+}
+
+function strip(html: string) { return html.replace(/<[^>]*>/g, "").replace(/&[a-z]+;/gi, " ").trim(); }
+function fmtDate(iso: string) {
+  try { return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }); }
+  catch { return iso; }
+}
+
+export async function getStaticPaths() {
+  try {
+    const res = await fetch(`${CMS}/wp-json/wp/v2/posts?per_page=100&_embed=wp:featuredmedia,author,wp:term&status=publish`);
+    if (!res.ok) {
+      console.warn(`[blog] /wp-json/wp/v2/posts returned ${res.status}`);
+      return [];
+    }
+    const posts = (await res.json()) as Post[];
+    return posts.map((post) => ({
+      params: { slug: post.slug },
+      props:  { post },
+    }));
+  } catch (err) {
+    console.warn("[blog] getStaticPaths fetch failed:", err);
+    return [];
+  }
+}
+
+const { post } = Astro.props;
+const title = strip(post.title.rendered);
+const excerpt = strip(post.excerpt.rendered).slice(0, 160);
+const img = post._embedded?.["wp:featuredmedia"]?.[0];
+const author = post._embedded?.["author"]?.[0]?.name;
+const categories = post._embedded?.["wp:term"]?.[0] || [];
+
+const seo = await getMeta(`/blog/${post.slug}`, {
+  title: `${title} | KMS Blog`,
+  description: excerpt,
+  ogImage: img?.source_url,
+});
+---
+<ContentPage
+  seo={seo}
+  h1={title}
+  subheading={excerpt}
+  bgImage={img?.source_url || "/images/kms-hero-bg.webp"}
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Blog", href: "/blog" }, { label: title }]}
+>
+  <div class="content-prose">
+    <div class="flex flex-wrap items-center gap-3 mb-6" style={`font-family:'Barlow',sans-serif;font-size:0.85rem;color:${C.textMid}`}>
+      <span>{fmtDate(post.date)}</span>
+      {author && <><span>·</span><span>{author}</span></>}
+      {categories.length > 0 && <>
+        <span>·</span>
+        <span>
+          {categories.map((cat: { name: string; slug: string }, i: number) => (
+            <>{i > 0 && ", "}<span style={`color:${C.green}`}>{cat.name}</span></>
+          ))}
+        </span>
+      </>}
+    </div>
+
+    <div set:html={post.content.rendered} />
+
+    <hr class="my-10 border-gray-200" />
+    <p><a href="/blog">← Back to all blog posts</a></p>
+  </div>
+</ContentPage>

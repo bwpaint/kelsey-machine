@@ -1,0 +1,37 @@
+---
+import ContentPage from "@/layouts/ContentPage.astro";
+import { getMeta } from "@/lib/rm";
+const seo = await getMeta("/terms", {
+  title: "Terms of Service — Kelsey Machine Services",
+  description: "Kelsey Machine Services terms of service for website use and repair work.",
+});
+---
+<ContentPage
+  seo={seo}
+  h1="Terms of Service"
+  subheading="The terms under which we provide repair services and information through this website."
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Terms of Service" }]}
+  sidebar={false}
+>
+  <div class="content-prose max-w-3xl mx-auto">
+    <p><strong>Last updated:</strong> 2026</p>
+
+    <h2>Website Use</h2>
+    <p>The content on this website is provided for general information about our services. Pricing, turnaround estimates, and capability descriptions are provided as guidance, not as firm commitments. Specific commitments are made in written quotes and repair contracts.</p>
+
+    <h2>Repair Services</h2>
+    <p>Our 24-month written warranty applies to repair work we perform, as detailed in your repair documentation package and on our <a href="/warranty">Warranty</a> page. Repair scope, pricing, and timeline are documented in your written quote before work begins.</p>
+
+    <h2>Intellectual Property</h2>
+    <p>Content on this website — text, images, logos, and design — is the property of Kelsey Machine Services unless otherwise noted. Don't reproduce it without permission.</p>
+
+    <h2>Limitation of Liability</h2>
+    <p>Our liability for repair work is limited to the terms of our warranty as set forth in your repair documentation. We are not liable for consequential damages such as lost production or downstream operational losses.</p>
+
+    <h2>Governing Law</h2>
+    <p>These terms are governed by the laws of the State of Texas. Disputes will be resolved in the courts of Fort Bend County, Texas.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about these terms: <a href="mailto:info@kmstx.com">info@kmstx.com</a> or 346-350-1464.</p>
+  </div>
+</ContentPage>

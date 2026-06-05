@@ -1,0 +1,29 @@
+---
+import ContentPage from "@/layouts/ContentPage.astro";
+import { getMeta } from "@/lib/rm";
+const seo = await getMeta("/404", {
+  title: "Page Not Found · Kelsey Machine Services",
+  description: "We couldn't find that page. Try the menu or search for what you need.",
+  noindex: true,
+});
+---
+<ContentPage
+  seo={seo}
+  h1="Page Not Found"
+  subheading="The page you were looking for isn't here — but the rest of the site is."
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "404" }]}
+  sidebar={false}
+>
+  <div class="content-prose max-w-3xl mx-auto">
+    <p>Looks like the page you were after has moved, was renamed, or never existed. No harm done. Here's where you might be headed:</p>
+    <ul>
+      <li><a href="/">Home page</a></li>
+      <li><a href="/services">Services overview</a></li>
+      <li><a href="/about">About Kelsey Machine</a></li>
+      <li><a href="/contact">Request a quote</a></li>
+      <li><a href="/emergency-service">24/7 emergency service</a></li>
+      <li><a href="/blog">Blog</a></li>
+    </ul>
+    <p>Or if you need help finding something specific, give us a call at <a href="tel:3463501464">346-350-1464</a> — we'll point you in the right direction.</p>
+  </div>
+</ContentPage>

@@ -1,0 +1,12 @@
+---
+import ServicePage from "@/layouts/ServicePage.astro";
+import { getMeta } from "@/lib/rm";
+import { data } from "@/lib/services/gearbox-repair";
+const seo = await getMeta("/gearbox-repair-service", {
+  title: "Gearbox Repair Service — 40+ Yrs · Free Nationwide Pickup",
+  description: data.fallback.description,
+  ogImage: data.fallback.ogImage,
+  canonical: "https://www.kmstx.com/services/gearbox-repair",
+});
+---
+<ServicePage data={data} seo={seo} />

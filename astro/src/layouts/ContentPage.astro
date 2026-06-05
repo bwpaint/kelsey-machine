@@ -1,0 +1,109 @@
+---
+/**
+ * Lightweight content page layout — used for hub pages, About, Industries,
+ * Contact, Warranty, Emergency, Competitors, Privacy, Terms.
+ *
+ * Renders a PageHero + main content slot. Each page's frontmatter resolves
+ * its own SEO meta via getMeta() and passes content via the default slot.
+ */
+import KmsLayout from "@/layouts/KmsLayout.astro";
+import QuoteForm from "@/components/QuoteForm.tsx";
+import Icon from "@/components/Icons.astro";
+import { C, KMS_PHONE, KMS_PHONE_HREF } from "@/lib/brand";
+import type { PageMeta } from "@/lib/rm";
+
+export interface Props {
+  seo: PageMeta;
+  h1: string;
+  subheading: string;
+  bgImage?: string;
+  breadcrumbs?: Array<{ label: string; href?: string }>;
+  sidebar?: boolean;  // show form + warranty + free pickup callouts
+}
+
+const { seo, h1, subheading, bgImage, breadcrumbs = [{ label: "Home", href: "/" }], sidebar = true } = Astro.props;
+---
+<KmsLayout seo={seo}>
+
+  {/* Hero */}
+  <section style={bgImage
+    ? `background:linear-gradient(135deg, rgba(10,25,45,0.92) 0%, rgba(30,80,128,0.75) 100%), url(${bgImage}) center/cover no-repeat;padding:4rem 0 3rem;border-bottom:3px solid ${C.green}`
+    : `background:linear-gradient(135deg, ${C.darkBg} 0%, ${C.blueDark} 100%);padding:4rem 0 3rem;border-bottom:3px solid ${C.green}`
+  } aria-label="Page hero">
+    <div class="max-w-7xl mx-auto px-4">
+      <nav aria-label="Breadcrumb" class="mb-4">
+        <ol class="flex gap-2 list-none p-0 m-0 text-xs">
+          {breadcrumbs.map((c, i) => (
+            <>
+              {i > 0 && <li class="text-white/40">/</li>}
+              <li>
+                {c.href ? <a href={c.href} class="text-kms-green no-underline" style="font-family:'Barlow',sans-serif">{c.label}</a> : <span class="text-white/80" style="font-family:'Barlow',sans-serif">{c.label}</span>}
+              </li>
+            </>
+          ))}
+        </ol>
+      </nav>
+      <h1 class="text-white" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(2rem, 4vw, 3.2rem);line-height:1.1;letter-spacing:0.01em;text-transform:uppercase">
+        {h1}
+      </h1>
+      <p class="text-white/85 mt-4" style="font-family:'Source Sans 3',sans-serif;font-size:1.1rem;line-height:1.6;max-width:60ch">
+        {subheading}
+      </p>
+    </div>
+  </section>
+
+  {/* Main content */}
+  <div class="bg-white">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+      <div class={sidebar ? "grid grid-cols-1 lg:grid-cols-3 gap-12" : ""}>
+        <article class={sidebar ? "lg:col-span-2" : ""}>
+          <slot />
+        </article>
+
+        {sidebar && (
+          <aside class="lg:sticky lg:top-32 h-fit space-y-6">
+            <div style={`background:linear-gradient(135deg, ${C.darkBg} 0%, ${C.blueDark} 100%);border-radius:4px;padding:1.5rem`}>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;color:white;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.25rem">Get a Free Repair Quote</div>
+              <p style="font-family:'Source Sans 3',sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.55);margin-bottom:1rem">Available 24/7 · Respond within the hour</p>
+              <QuoteForm client:visible variant="contact" />
+            </div>
+
+            <div style={`background:white;border:1px solid ${C.green}33;border-radius:4px;padding:1.25rem`}>
+              <div class="flex items-center gap-2 mb-2">
+                <span style={`color:${C.green};display:inline-flex`}><Icon name="shield" size={22} /></span>
+                <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;color:${C.blueDark};text-transform:uppercase`}>24-Month Warranty</div>
+              </div>
+              <p style={`font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:${C.textMid};line-height:1.6;margin:0 0 0.75rem`}>The longest written warranty in the rotating equipment repair industry.</p>
+              <a href="/warranty" class="text-kms-green no-underline text-sm uppercase tracking-wider" style="font-family:'Barlow',sans-serif;font-weight:700">Learn more →</a>
+            </div>
+
+            <div style={`background:white;border:1px solid ${C.green}33;border-radius:4px;padding:1.25rem`}>
+              <div class="flex items-center gap-2 mb-2">
+                <span style={`color:${C.green};display:inline-flex`}><Icon name="truck" size={22} /></span>
+                <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;color:${C.blueDark};text-transform:uppercase`}>Free Nationwide Pickup</div>
+              </div>
+              <p style={`font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:${C.textMid};line-height:1.6;margin:0`}>Inbound freight from anywhere in the U.S., Canada, or Mexico — no charge.</p>
+            </div>
+
+            <div style={`background:${C.darkBg};border-radius:4px;padding:1.25rem;color:white`}>
+              <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;color:${C.green};text-transform:uppercase;margin-bottom:0.4rem`}>Equipment Down?</div>
+              <p style="font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.7);line-height:1.6;margin:0 0 0.75rem">24/7 emergency response. We answer the phone day or night.</p>
+              <a href={KMS_PHONE_HREF} class="block text-center text-white no-underline" style={`background:${C.green};font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:0.95rem;padding:0.65rem;border-radius:2px`}>Call {KMS_PHONE}</a>
+            </div>
+          </aside>
+        )}
+      </div>
+    </div>
+  </div>
+</KmsLayout>
+
+<style>
+  .content-prose h2 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: clamp(1.5rem, 3vw, 2rem); color: #1E5080; text-transform: uppercase; letter-spacing: 0.01em; margin: 2rem 0 1rem; }
+  .content-prose h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.2rem; color: #1E5080; text-transform: uppercase; letter-spacing: 0.02em; margin: 1.25rem 0 0.5rem; }
+  .content-prose p  { font-family: 'Source Sans 3', sans-serif; font-size: 1.05rem; color: #1A2535; line-height: 1.8; margin-bottom: 1.25rem; }
+  .content-prose ul { font-family: 'Source Sans 3', sans-serif; font-size: 1.05rem; color: #1A2535; line-height: 1.7; margin-bottom: 1.25rem; padding-left: 1.5rem; }
+  .content-prose li { margin-bottom: 0.5rem; }
+  .content-prose a  { color: #78A546; font-weight: 600; text-decoration: none; }
+  .content-prose a:hover { text-decoration: underline; }
+  .content-prose strong { color: #1E5080; }
+</style>

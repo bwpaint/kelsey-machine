@@ -1,0 +1,46 @@
+---
+import ContentPage from "@/layouts/ContentPage.astro";
+import { getMeta } from "@/lib/rm";
+const seo = await getMeta("/about", {
+  title: "About KMS — 40+ Years Industrial Rotating Equipment Repair",
+  description: "Kelsey Machine Services has been rebuilding industrial rotating equipment since 1983. 40+ years. All 50 states. 24-month warranty.",
+  ogImage: "/images/kms-hero-bg.webp",
+});
+---
+<ContentPage
+  seo={seo}
+  h1="About Kelsey Machine Services"
+  subheading="Forty-plus years of industrial rotating equipment repair, from a single shop in Stafford, Texas to all 50 states, Canada, and Mexico."
+  bgImage="/images/kms-hero-bg.webp"
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
+>
+  <div class="content-prose">
+    <p>Kelsey Machine Services has been rebuilding industrial rotating equipment since 1983. Forty-plus years of centrifuge, gearbox, pump, blower, compressor, and fluid-end work for some of the toughest industrial customers in America — oil and gas operators, refineries, petrochemical plants, wastewater utilities, food processors, paper mills, mining operations, and general manufacturers.</p>
+
+    <p>We started in Stafford, Texas as a small machine shop with a reputation for honest work. Four decades later we're still in Stafford, still privately held, and still building the same kind of trust — one rebuild at a time. The difference now is reach: we pick up equipment at no charge from every state in the lower 48, plus Canada and Mexico, and we ship it back faster than the OEM more times than we can count.</p>
+
+    <h2>What We Stand For</h2>
+    <ul>
+      <li><strong>Honesty about what your equipment needs.</strong> Every repair starts with a written failure analysis. If we can't fix it, or repair doesn't make economic sense, we'll tell you straight.</li>
+      <li><strong>The industry's longest written warranty.</strong> 24 months on every rebuild. Not a verbal promise — a written commitment in your documentation package.</li>
+      <li><strong>Showing up when it matters.</strong> Our emergency line is answered 24/7, every day of the year. When your equipment is down, we respond immediately.</li>
+      <li><strong>Doing the work in-house.</strong> Our machine shop, our balancing equipment, our technicians. We don't farm out the critical work and hope for the best.</li>
+    </ul>
+
+    <h2>Where We Work</h2>
+    <p>From our facility at 814 Summer Park Drive, Building #600, Stafford, Texas 77477, we serve industrial customers across all 50 U.S. states, Canada, and Mexico. Free pickup and delivery is included on every repair job. If your equipment can be moved, we can pick it up.</p>
+
+    <h2>Our Capabilities</h2>
+    <ul>
+      <li>In-house precision machine shop — bore restoration, shaft repair, housing reconditioning</li>
+      <li>Dynamic balancing to ISO 1940 G2.5 (G1.0 available on request)</li>
+      <li>Tungsten-carbide hard-facing for abrasive service applications</li>
+      <li>Complete teardown, inspection, and written failure analysis on every unit</li>
+      <li>Component replacement with quality parts and full documentation</li>
+      <li>Pressure testing and operational testing where applicable</li>
+    </ul>
+
+    <h2>Get In Touch</h2>
+    <p>Equipment problem? Call us at <a href="tel:3463501464">346-350-1464</a> or <a href="/contact">request a free quote</a>. We respond within one business hour, and our emergency line is available 24/7.</p>
+  </div>
+</ContentPage>

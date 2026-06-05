@@ -1,0 +1,38 @@
+---
+import ContentPage from "@/layouts/ContentPage.astro";
+import { getMeta } from "@/lib/rm";
+const seo = await getMeta("/privacy-policy", {
+  title: "Privacy Policy — Kelsey Machine Services",
+  description: "Kelsey Machine Services privacy policy — what we collect, how we use it, and your rights.",
+  noindex: false,
+});
+---
+<ContentPage
+  seo={seo}
+  h1="Privacy Policy"
+  subheading="How Kelsey Machine Services handles the information you share with us."
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Privacy Policy" }]}
+  sidebar={false}
+>
+  <div class="content-prose max-w-3xl mx-auto">
+    <p><strong>Last updated:</strong> 2026</p>
+
+    <h2>Information We Collect</h2>
+    <p>We collect information you provide directly to us when you request a quote, contact us, or sign up for our newsletter: your name, company, phone, email, and any details you share about your equipment or repair needs. We also collect basic technical information from your browser when you visit our site (IP address, browser type, pages visited) to help us improve the site experience.</p>
+
+    <h2>How We Use Information</h2>
+    <p>We use the information you provide to respond to your inquiries, prepare repair quotes, follow up on jobs, and send occasional updates about our services if you've opted into our newsletter. We do not sell your information to third parties.</p>
+
+    <h2>Cookies & Analytics</h2>
+    <p>We use cookies and standard web analytics (such as Google Analytics or Google Tag Manager when active) to understand how visitors use our site. You can disable cookies in your browser if you prefer, though some site features may not work as well.</p>
+
+    <h2>Data Sharing</h2>
+    <p>We share your information only with the service providers who help us operate our business (email systems, form processing, CRM). We may share information if required by law.</p>
+
+    <h2>Your Rights</h2>
+    <p>You can ask us what information we have about you, request that we update or delete it, or opt out of any future communications. Contact us at <a href="mailto:info@kmstx.com">info@kmstx.com</a> or 346-350-1464.</p>
+
+    <h2>Contact</h2>
+    <p>Kelsey Machine Services<br />814 Summer Park Drive, Building #600<br />Stafford, TX 77477<br />346-350-1464</p>
+  </div>
+</ContentPage>

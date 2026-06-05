@@ -1,0 +1,55 @@
+---
+import ContentPage from "@/layouts/ContentPage.astro";
+import { getMeta } from "@/lib/rm";
+const seo = await getMeta("/competitors", {
+  title: "Why Choose KMS — Industrial Equipment Repair Comparisons",
+  description: "How Kelsey Machine compares to OEM service centers and other repair shops. Warranty, turnaround, pricing, and capabilities side-by-side.",
+  ogImage: "/images/kms-hero-bg.webp",
+});
+---
+<ContentPage
+  seo={seo}
+  h1="Why Choose Kelsey Machine"
+  subheading="A straight-up comparison: how KMS stacks up against OEM service centers and other independent repair shops on the things that actually matter."
+  bgImage="/images/kms-hero-bg.webp"
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Why Choose KMS" }]}
+>
+  <div class="content-prose">
+    <p>We get it — when you're choosing a repair partner for critical rotating equipment, you have options. OEM service centers. Other independent repair shops. Local machine shops. Here's how we line up on the things that matter most.</p>
+
+    <h2>Warranty</h2>
+    <p><strong>KMS:</strong> 24-month written warranty on every rebuild. The longest in the industry.</p>
+    <p><strong>Most OEM service centers:</strong> 6-12 months on rebuilt equipment, often with limitations on what's covered.</p>
+    <p><strong>Other independent shops:</strong> Typically 6-12 months. Some offer "lifetime" warranties that are heavily caveated.</p>
+
+    <h2>Turnaround Time</h2>
+    <p><strong>KMS:</strong> Standard 1-3 weeks. Emergency turnaround in days when the situation demands it — we've done 10-day centrifuge rebuilds and 72-hour hydraulic pump repairs.</p>
+    <p><strong>Most OEM service centers:</strong> 8-12 weeks is typical. OEM rush service usually means a premium, and "rush" is relative.</p>
+    <p><strong>Other independent shops:</strong> Varies widely. Many can't match emergency turnaround because they don't have parts inventory or in-house machining capacity.</p>
+
+    <h2>Pricing</h2>
+    <p><strong>KMS:</strong> Itemized written quote after inspection. No surprises at invoice.</p>
+    <p><strong>Most OEM service centers:</strong> Premium pricing, especially on emergency or rush work. Limited price flexibility.</p>
+    <p><strong>Other independent shops:</strong> Often the lowest sticker price, but watch for quote scope creep during the job.</p>
+
+    <h2>Pickup & Delivery</h2>
+    <p><strong>KMS:</strong> Free pickup and delivery nationwide — all 50 states, Canada, Mexico. We coordinate freight.</p>
+    <p><strong>Most OEM service centers:</strong> You ship to them.</p>
+    <p><strong>Other independent shops:</strong> You ship to them. Local shops may pick up regionally.</p>
+
+    <h2>Capabilities</h2>
+    <p><strong>KMS:</strong> In-house precision machining, dynamic balancing, tungsten-carbide hard-facing, written failure analysis, OEM-spec reassembly.</p>
+    <p><strong>Most OEM service centers:</strong> Strong on their own brand. Limited or no work on competitive equipment.</p>
+    <p><strong>Other independent shops:</strong> Varies. Many farm out the critical machining work to subcontractors.</p>
+
+    <h2>Brand Coverage</h2>
+    <p><strong>KMS:</strong> Every major brand. Alfa Laval, Andritz, Falk, Sumitomo, Lufkin, Goulds, Sulzer, NOV, Gardner Denver, Ingersoll Rand, Atlas Copco, Roots, Tuthill, and many more.</p>
+    <p><strong>OEM service centers:</strong> Their own brand only, in most cases.</p>
+    <p><strong>Other independent shops:</strong> Varies — some specialize in specific brands or equipment types.</p>
+
+    <h2>The Bottom Line</h2>
+    <p>If you're choosing a repair partner based purely on lowest sticker price, you can probably beat us. If you're choosing on longest warranty, fastest emergency response, broadest brand coverage, and a 40-year track record of doing the work right the first time — Kelsey Machine should be on your shortlist.</p>
+
+    <p><a href="/contact">Request a quote</a> and let us prove it on your next repair.</p>
+  </div>
+</ContentPage>
