@@ -10,8 +10,6 @@ import ContentPage from "@/layouts/ContentPage.astro";
 import { getMeta } from "@/lib/rm";
 import { C } from "@/lib/brand";
 
-const CMS = (import.meta.env.PUBLIC_CMS_URL as string | undefined) || "https://cms.kmstx.com";
-
 interface Post {
   id: number; slug: string; date: string; link: string;
   title: { rendered: string };
@@ -31,6 +29,7 @@ function fmtDate(iso: string) {
 }
 
 export async function getStaticPaths() {
+  const CMS = (import.meta.env.PUBLIC_CMS_URL as string | undefined) || "https://cms.kmstx.com";
   try {
     const res = await fetch(`${CMS}/wp-json/wp/v2/posts?per_page=100&_embed=wp:featuredmedia,author,wp:term&status=publish`);
     if (!res.ok) {

@@ -1,7 +1,19 @@
+# robots.txt — kmstx.com
+# Last updated: 2026
+
 User-agent: *
 Allow: /
 
-# PPC landing pages — noindex, also disallow crawling
+# PPC landing pages — paid-traffic only.
+# These pages also emit <meta name="robots" content="noindex,nofollow">
+# at the page level. Disallow here saves crawl budget; the noindex
+# meta is the actual signal that keeps them out of search results.
+Disallow: /lp/centrifuge-repair
+Disallow: /lp/gearbox-repair
+Disallow: /lp/industrial-blower-repair
+Disallow: /lp/industrial-compressors
+Disallow: /lp/fluid-power-end-repair
 Disallow: /lp/
 
-Sitemap: https://kmstx.com/sitemap.xml
+# Sitemaps — Astro auto-generates the indexed sitemap-index.xml at build.
+Sitemap: https://www.kmstx.com/sitemap-index.xml

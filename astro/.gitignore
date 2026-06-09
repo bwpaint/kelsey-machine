@@ -1,0 +1,13 @@
+# Astro build output
+dist/
+.astro/
+
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Copied public assets — source of truth is ../client/public.
+# The prebuild script syncs into public/ so .astro build can package them.
+# Ignored here because we don't want duplicate copies in git.
+public/

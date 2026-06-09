@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "sync-public": "node -e \"const fs=require('fs');const path=require('path');const src=path.resolve('../client/public');const dst=path.resolve('./public');if(fs.existsSync(src)){fs.cpSync(src,dst,{recursive:true,force:true});console.log('[sync-public] copied',src,'->',dst);}else{console.warn('[sync-public] source not found:',src);}\"",
+    "predev": "npm run sync-public",
+    "prebuild": "npm run sync-public",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview"
