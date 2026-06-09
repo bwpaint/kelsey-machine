@@ -11,7 +11,10 @@
  * Source Sans 3 for body, Barlow for nav. Matches the existing Vite site
  * fonts exactly.
  *
- * Google Ads gtag (AW-724228467) — site-wide conversion tracking.
+ * Google tags (gtag.js):
+ *   - AW-724228467     Google Ads conversion tracking
+ *   - G-FJZRMGRQCD     Google Analytics 4 measurement ID
+ *   Both configured on the same gtag.js loader.
  */
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
@@ -30,13 +33,14 @@ const canonical = seo.canonical || new URL(Astro.url.pathname, Astro.site).href;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    {/* Google tag (gtag.js) - Google Ads — AW-724228467 */}
+    {/* Google tag (gtag.js) — Google Ads + GA4 */}
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-724228467"></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'AW-724228467');
+      gtag('config', 'G-FJZRMGRQCD');
     </script>
 
     <title>{seo.title}</title>
