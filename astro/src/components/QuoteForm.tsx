@@ -71,6 +71,12 @@ export default function QuoteForm({ variant = "hero", theme = "dark" }: Props) {
         throw new Error(msg);
       }
       setSubmitted(true);
+      // Google Ads conversion — fires only on a verified successful submit.
+      if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+        (window as any).gtag("event", "conversion", {
+          send_to: "AW-724228467/cIo7CI3oq7sZEPOyq9kC",
+        });
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please call 346-350-1464.");
     } finally {
