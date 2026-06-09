@@ -72,13 +72,18 @@ export default function QuoteForm({ variant = "hero", theme = "dark" }: Props) {
       }
       setSubmitted(true);
       // Google Ads conversion — fires only on a verified successful submit.
+      // Enhanced conversions: pass user data (email + phone) so Google can
+      // match conversions back to ad clicks even when cookies are missing.
+      // gtag hashes the values client-side per the enhanced-conversions spec.
       if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
-        // TODO: conversion label "cIo7CI3oq7sZEPOyq9kC" is from the OLD AW
-        // account (724228467). Generate a fresh label in the new account
-        // (18043825480) under Conversions > New conversion action, then
-        // replace the value after the slash below.
+        const userData: Record<string, string> = {};
+        if (form.email.trim()) userData.email = form.email.trim();
+        if (form.phone.trim()) userData.phone_number = form.phone.trim();
+        if (Object.keys(userData).length > 0) {
+          (window as any).gtag("set", "user_data", userData);
+        }
         (window as any).gtag("event", "conversion", {
-          send_to: "AW-18043825480/cIo7CI3oq7sZEPOyq9kC",
+          send_to: "AW-18043825480/iw04CO2Wg7wcEMja-5tD",
         });
       }
     } catch (err) {

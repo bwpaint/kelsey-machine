@@ -48,13 +48,18 @@ export default function LpQuoteForm({ service }: Props) {
         throw new Error(msg);
       }
       setSubmitted(true);
-      // Google Ads conversion fire — same conversion ID as the main quote form
+      // Google Ads conversion fire — same conversion as the main quote form.
+      // Enhanced conversions: send hashable user data with the event for
+      // better attribution. gtag handles the SHA-256 hashing client-side.
       if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
-        // TODO: conversion label "cIo7CI3oq7sZEPOyq9kC" is from the OLD AW
-        // account (724228467). Generate a fresh label in the new account
-        // (18043825480) and replace the value after the slash below.
+        const userData: Record<string, string> = {};
+        if (form.email.trim()) userData.email = form.email.trim();
+        if (form.phone.trim()) userData.phone_number = form.phone.trim();
+        if (Object.keys(userData).length > 0) {
+          (window as any).gtag("set", "user_data", userData);
+        }
         (window as any).gtag("event", "conversion", {
-          send_to: "AW-18043825480/cIo7CI3oq7sZEPOyq9kC",
+          send_to: "AW-18043825480/iw04CO2Wg7wcEMja-5tD",
         });
       }
     } catch (err) {
