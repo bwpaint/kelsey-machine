@@ -73,8 +73,12 @@ export default function QuoteForm({ variant = "hero", theme = "dark" }: Props) {
       setSubmitted(true);
       // Google Ads conversion — fires only on a verified successful submit.
       if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+        // TODO: conversion label "cIo7CI3oq7sZEPOyq9kC" is from the OLD AW
+        // account (724228467). Generate a fresh label in the new account
+        // (18043825480) under Conversions > New conversion action, then
+        // replace the value after the slash below.
         (window as any).gtag("event", "conversion", {
-          send_to: "AW-724228467/cIo7CI3oq7sZEPOyq9kC",
+          send_to: "AW-18043825480/cIo7CI3oq7sZEPOyq9kC",
         });
       }
     } catch (err) {
