@@ -25,11 +25,15 @@ const { seo, h1, subheading, bgImage, breadcrumbs = [{ label: "Home", href: "/" 
 ---
 <KmsLayout seo={seo}>
 
-  {/* Hero */}
-  <section style={bgImage
-    ? `background:linear-gradient(135deg, rgba(10,25,45,0.92) 0%, rgba(30,80,128,0.75) 100%), url(${bgImage}) center/cover no-repeat;padding:4rem 0 3rem;border-bottom:3px solid ${C.green}`
-    : `background:linear-gradient(135deg, ${C.darkBg} 0%, ${C.blueDark} 100%);padding:4rem 0 3rem;border-bottom:3px solid ${C.green}`
-  } aria-label="Page hero">
+  {/* Hero — bg image only loads at md+ to keep mobile LCP fast */}
+  <section
+    class="content-page-hero"
+    style={bgImage
+      ? `background:linear-gradient(135deg, rgba(10,25,45,0.92) 0%, rgba(30,80,128,0.75) 100%);padding:4rem 0 3rem;border-bottom:3px solid ${C.green}`
+      : `background:linear-gradient(135deg, ${C.darkBg} 0%, ${C.blueDark} 100%);padding:4rem 0 3rem;border-bottom:3px solid ${C.green}`
+    }
+    aria-label="Page hero"
+  >
     <div class="max-w-7xl mx-auto px-4">
       <nav aria-label="Breadcrumb" class="mb-4">
         <ol class="flex gap-2 list-none p-0 m-0 text-xs">
@@ -107,3 +111,16 @@ const { seo, h1, subheading, bgImage, breadcrumbs = [{ label: "Home", href: "/" 
   .content-prose a:hover { text-decoration: underline; }
   .content-prose strong { color: #1E5080; }
 </style>
+
+{bgImage && (
+  <style is:inline define:vars={{ heroBg: `url(${bgImage})` }}>
+    @media (min-width: 768px) {
+      .content-page-hero {
+        background-image: linear-gradient(135deg, rgba(10,25,45,0.92) 0%, rgba(30,80,128,0.75) 100%), var(--heroBg) !important;
+        background-position: center !important;
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+      }
+    }
+  </style>
+)}

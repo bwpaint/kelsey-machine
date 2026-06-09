@@ -49,7 +49,11 @@ const faqSchema = {
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 
   {/* ───── Hero ───── */}
-  <section style={`background:linear-gradient(135deg, rgba(10,25,45,0.92) 0%, rgba(30,80,128,0.75) 100%), url(${data.hero.bgImage}) center/cover no-repeat;padding:4rem 0 3rem;border-bottom:3px solid ${C.green}`} aria-label="Page hero">
+  <section
+    class="service-page-hero"
+    style={`background:linear-gradient(135deg, rgba(10,25,45,0.92) 0%, rgba(30,80,128,0.75) 100%);padding:4rem 0 3rem;border-bottom:3px solid ${C.green}`}
+    aria-label="Page hero"
+  >
     <div class="max-w-7xl mx-auto px-4">
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" class="mb-4">
@@ -191,3 +195,15 @@ const faqSchema = {
   </div>
 
 </KmsLayout>
+
+<style is:inline define:vars={{ heroBg: `url(${data.hero.bgImage})` }}>
+  /* Hero bg image is desktop-only — saves mobile from downloading a big LCP-blocking image. */
+  @media (min-width: 768px) {
+    .service-page-hero {
+      background-image: linear-gradient(135deg, rgba(10,25,45,0.92) 0%, rgba(30,80,128,0.75) 100%), var(--heroBg) !important;
+      background-position: center !important;
+      background-size: cover !important;
+      background-repeat: no-repeat !important;
+    }
+  }
+</style>

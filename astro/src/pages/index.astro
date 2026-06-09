@@ -31,7 +31,21 @@ const seo = await getMeta("/", {
   {/* ───── Hero ───── */}
   <section class="relative min-h-screen flex items-center" style="padding-top:68px" aria-label="Hero">
     {/* BG image */}
-    <div class="absolute inset-0 bg-cover" style="background-image:url(/images/kms-hero-bg.webp);background-position:left center"></div>
+    <div class="absolute inset-0 home-hero-bg"></div>
+    <style is:inline>
+      /* Mobile (default): no hero bg image — saves the LCP-blocking download on slow connections. */
+      .home-hero-bg { background-color: #1A2535; }
+      /* Desktop / tablet: real background image. */
+      @media (min-width: 768px) {
+        .home-hero-bg {
+          background-image: url(/images/kms-hero-bg.webp);
+          background-position: left center;
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-color: transparent;
+        }
+      }
+    </style>
     {/* Gradient overlay */}
     <div class="absolute inset-0" style="background:linear-gradient(105deg, rgba(30,80,128,0.72) 0%, rgba(30,80,128,0.78) 50%, rgba(26,37,53,0.80) 100%)"></div>
 
@@ -76,7 +90,7 @@ const seo = await getMeta("/", {
           <div style={`font-family:'Barlow',sans-serif;font-weight:600;font-size:0.78rem;color:${C.green};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem`}>
             Get Equipment Help Now
           </div>
-          <QuoteForm client:load variant="hero" />
+          <QuoteForm client:idle variant="hero" />
 
           {/* Trust badges row */}
           <div style="margin-top:1.25rem;border-top:1px solid rgba(255,255,255,0.1);padding-top:1.25rem">

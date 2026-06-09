@@ -9,7 +9,12 @@ export default defineConfig({
   // Default publicDir = ./public. The prebuild script in package.json copies
   // client/public into astro/public before `astro build` runs.
   integrations: [react(), tailwind(), sitemap()],
-  build: { format: "directory" },
+  build: {
+    format: "directory",
+    // Inline all page stylesheets so we don't pay the per-page CSS round trip.
+    // Tradeoff: every page HTML is a bit larger; gain: no render-blocking CSS fetch.
+    inlineStylesheets: "always",
+  },
   vite: {
     define: {
       "import.meta.env.PUBLIC_CMS_URL": JSON.stringify(

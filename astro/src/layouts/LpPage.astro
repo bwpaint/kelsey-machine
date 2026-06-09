@@ -88,7 +88,7 @@ const { seo, h1, subheading, service, bullets, row2, row3 } = Astro.props;
         <div id="quote" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2rem">
           <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.4rem;color:white;text-transform:uppercase;margin-bottom:0.4rem">Get Your Free Quote</div>
           <p style="font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.55);margin-bottom:1.25rem">We respond within one business hour. Emergency? Call us directly.</p>
-          <LpQuoteForm client:load service={service} />
+          <LpQuoteForm client:idle service={service} />
         </div>
 
       </div>
