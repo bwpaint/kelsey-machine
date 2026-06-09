@@ -22,7 +22,7 @@ export const STATS = [
   { value: "40+",   label: "Years of Proven Expertise" },
   { value: "24-Mo", label: "Rebuilt Warranty" },
   { value: "50",    label: "States Served Nationwide" },
-  { value: "72hr",  label: "Emergency Turnaround" },
+  { value: "Fast",  label: "Emergency Turnaround" },
 ] as const;
 
 export const WHY_KMS = [
@@ -57,7 +57,7 @@ export const FAQS = [
   { q: "What types of rotating equipment does Kelsey Machine repair?", a: "Kelsey Machine Services repairs a comprehensive range of rotating equipment, including industrial centrifuges (decanter, basket, disc stack), gearboxes (speed reducers, speed increasers, planetary), pumps (centrifugal, vertical turbine, horizontal split case), blowers and compressors, and hydraulic drives and pumps. We service all major brands." },
   { q: "What warranty does Kelsey Machine offer on repairs?", a: "We offer an industry-leading 24-month rebuilt warranty on all repaired and rebuilt equipment. This is the best guarantee in the rotating equipment repair industry and reflects our confidence in the quality of our workmanship." },
   { q: "Does Kelsey Machine offer 24/7 emergency repair service?", a: "Yes. We provide 24/7 emergency repair services, including free pickup and delivery nationwide. When your equipment goes down, call us at 346-350-1464 and we will respond immediately to minimize your downtime." },
-  { q: "How quickly can Kelsey Machine repair my equipment?", a: "Our large inventory of parts and experienced team allow us to offer rapid turnaround times — often significantly faster than the OEM. We have completed centrifuge rebuilds in as little as 10 days and hydraulic pump repairs within 72 hours." },
+  { q: "How quickly can Kelsey Machine repair my equipment?", a: "Our large inventory of parts and experienced team allow us to offer rapid turnaround times — often significantly faster than the OEM. We have completed centrifuge rebuilds in as little as 10 days and turned hydraulic pump repairs around fast." },
   { q: "Does Kelsey Machine offer free pickup and delivery?", a: "Yes. We offer free pickup and delivery for all repair jobs, nationwide across all 50 states, plus Canada and Mexico. Simply call us and we will arrange pickup at your facility." },
   { q: "What brands of rotating equipment does Kelsey Machine service?", a: "We service all major brands, including Alfa Laval, Andritz, Bird, Sharples, Flottweg, Sulzer, Dodge, Sumitomo, Falk, Brevini, Chemineer, Davis-Standard, Rossi, Bosch Rexroth, and many more." },
   { q: "Can Kelsey Machine repair equipment the OEM says is beyond repair?", a: "In many cases, yes. We have successfully rebuilt centrifuges and other equipment that OEMs declared beyond repair, saving our customers the cost of purchasing new equipment." },
