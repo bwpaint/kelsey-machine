@@ -1,0 +1,22 @@
+---
+import LpPage from "@/layouts/LpPage.astro";
+import { getMeta } from "@/lib/rm";
+import { LP_DATA } from "@/lib/lp-data";
+
+const data = LP_DATA["industrial-compressors"];
+const seo = await getMeta(data.url, {
+  title:       data.title,
+  description: data.desc,
+  ogImage:     data.ogImage,
+  noindex:     true,
+});
+---
+<LpPage
+  seo={seo}
+  h1={data.h1}
+  subheading={data.subheading}
+  service={data.service}
+  bullets={data.bullets}
+  row2={data.row2}
+  row3={data.row3}
+/>

@@ -1,0 +1,160 @@
+---
+/**
+ * PPC Landing Page layout — paid-search destination template.
+ *
+ * noindex,nofollow is enforced via the seo prop (passed in by each /lp/*
+ * route's getMeta() with noindex: true), so these pages don't compete
+ * with the canonical /services/* pages for organic traffic.
+ *
+ * Single shared template — each /lp/* route file just supplies its
+ * data block (h1, subheading, bullets, row2, row3, service).
+ */
+import KmsLayout from "@/layouts/KmsLayout.astro";
+import LpQuoteForm from "@/components/LpQuoteForm.tsx";
+import Icon from "@/components/Icons.astro";
+import { C, KMS_PHONE, KMS_PHONE_HREF } from "@/lib/brand";
+import type { PageMeta } from "@/lib/rm";
+
+export interface Props {
+  seo: PageMeta;
+  h1: string;
+  subheading: string;
+  service: string;
+  bullets: string[];
+  row2: { headline: string; body: string; items: string[] };
+  row3: { headline: string; body: string };
+}
+
+const { seo, h1, subheading, service, bullets, row2, row3 } = Astro.props;
+---
+<KmsLayout seo={seo}>
+
+  {/* HERO */}
+  <section style={`background:linear-gradient(135deg, ${C.darkBg} 0%, ${C.blueDark} 100%);padding:4rem 0 3rem;min-height:85vh;display:flex;align-items:center`}>
+    <div class="max-w-7xl mx-auto px-4 w-full">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+        {/* Left — copy + bullets + CTAs + trust badges */}
+        <div>
+          <div class="inline-block mb-5" style={`background:${C.green};color:white;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.3rem 0.75rem;border-radius:2px`}>
+            Kelsey Machine Services — Texas-Based, Nationwide
+          </div>
+          <h1 style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.2rem, 5vw, 3.5rem);color:white;text-transform:uppercase;letter-spacing:-0.02em;line-height:1.05;margin-bottom:1.25rem">
+            {h1}
+          </h1>
+          <p style="font-family:'Source Sans 3',sans-serif;font-size:1.1rem;color:rgba(255,255,255,0.75);line-height:1.7;margin-bottom:1.75rem">
+            {subheading}
+          </p>
+
+          <ul class="list-none p-0 m-0 flex flex-col gap-2.5 mb-8">
+            {bullets.map((b) => (
+              <li class="flex items-center gap-2.5">
+                <span style={`color:${C.green};flex-shrink:0;display:inline-flex`}><Icon name="check-circle" size={16} /></span>
+                <span style="font-family:'Source Sans 3',sans-serif;font-size:0.97rem;color:rgba(255,255,255,0.85)">{b}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div class="flex flex-wrap gap-3 mb-8">
+            <a href={KMS_PHONE_HREF} class="inline-flex items-center gap-2 text-white no-underline" style={`background:${C.green};font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.9rem 2rem;border-radius:2px`}>
+              <Icon name="phone" size={18} /> Call {KMS_PHONE}
+            </a>
+            <a href="#quote" class="inline-flex items-center gap-2 text-white no-underline border-2 border-white/30" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.8rem 2rem;border-radius:2px">
+              Get Free Quote
+            </a>
+            <a href={KMS_PHONE_HREF} class="inline-flex items-center gap-2 text-white no-underline" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.85rem 2rem;border-radius:2px">
+              <Icon name="clock" size={18} /> 24/7 Emergency
+            </a>
+          </div>
+
+          {/* Trust badges */}
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {[
+              { icon: "shield",       label: "24-Month Warranty", sub: "Written, not verbal" },
+              { icon: "truck",        label: "Free Pickup",       sub: "All 50 states" },
+              { icon: "clock",        label: "24/7 Emergency",    sub: "365 days a year" },
+              { icon: "check-circle", label: "40+ Years",         sub: "In business" },
+            ].map((tb) => (
+              <div class="text-center" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:1rem">
+                <div style={`color:${C.green};display:flex;justify-content:center;margin-bottom:0.4rem`}><Icon name={tb.icon as any} size={22} /></div>
+                <div style="font-family:'Barlow',sans-serif;font-weight:700;font-size:0.88rem;color:white;line-height:1.2">{tb.label}</div>
+                <div style="font-family:'Source Sans 3',sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.5);margin-top:0.2rem">{tb.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right — focused quote form */}
+        <div id="quote" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2rem">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.4rem;color:white;text-transform:uppercase;margin-bottom:0.4rem">Get Your Free Quote</div>
+          <p style="font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.55);margin-bottom:1.25rem">We respond within one business hour. Emergency? Call us directly.</p>
+          <LpQuoteForm client:load service={service} />
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  {/* ROW 2 — what's included + Why KMS panel */}
+  <section class="bg-white" style="padding:4rem 0">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.5rem, 3vw, 2.2rem);color:${C.blueDark};text-transform:uppercase;letter-spacing:-0.01em;margin-bottom:1rem`}>
+            {row2.headline}
+          </h2>
+          <p style={`font-family:'Source Sans 3',sans-serif;font-size:1rem;color:${C.textMid};line-height:1.75;margin-bottom:1.5rem`}>
+            {row2.body}
+          </p>
+          <ul class="list-none p-0 m-0 flex flex-col gap-2.5">
+            {row2.items.map((item) => (
+              <li class="flex items-start gap-2.5">
+                <span style={`color:${C.green};flex-shrink:0;margin-top:3px;display:inline-flex`}><Icon name="check-circle" size={16} /></span>
+                <span style={`font-family:'Source Sans 3',sans-serif;font-size:0.95rem;color:${C.textDark};line-height:1.5`}>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div style={`background:${C.lightBg};border:2px solid ${C.green};border-radius:4px;padding:2.5rem`}>
+          <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;color:${C.blueDark};text-transform:uppercase;margin-bottom:1.25rem`}>Why KMS?</div>
+          {[
+            { label: "24-Month Written Warranty",         desc: "The industry standard is 90 days. We give you 24 months — in writing." },
+            { label: "Free National Pickup",              desc: "We'll come get your equipment anywhere in the continental U.S." },
+            { label: "24/7 Emergency Service",            desc: "Our emergency line is answered every day of the year. No exceptions." },
+            { label: "All 50 States + Canada & Mexico",   desc: "Distance is not a barrier. We serve North America." },
+          ].map((p) => (
+            <div style="margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid #dde3ec">
+              <div style={`font-family:'Barlow',sans-serif;font-weight:700;font-size:0.92rem;color:${C.blueDark};margin-bottom:0.2rem`}>{p.label}</div>
+              <p style={`font-family:'Source Sans 3',sans-serif;font-size:0.88rem;color:${C.textMid};line-height:1.5;margin:0`}>{p.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ROW 3 — centered CTA */}
+  <section style={`background:linear-gradient(135deg, ${C.blueDark} 0%, ${C.darkBg} 100%);padding:4rem 0`}>
+    <div class="max-w-5xl mx-auto px-4 text-center">
+      <h2 style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.75rem, 4vw, 2.75rem);color:white;text-transform:uppercase;letter-spacing:-0.02em;margin-bottom:1rem">
+        {row3.headline}
+      </h2>
+      <p style="font-family:'Source Sans 3',sans-serif;font-size:1.05rem;color:rgba(255,255,255,0.7);line-height:1.75;margin:0 auto 2.5rem;max-width:680px">
+        {row3.body}
+      </p>
+      <div class="flex flex-wrap gap-4 justify-center">
+        <a href={KMS_PHONE_HREF} class="inline-flex items-center gap-2 text-white no-underline" style={`background:${C.green};font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.15rem;letter-spacing:0.06em;text-transform:uppercase;padding:1rem 2.5rem;border-radius:2px`}>
+          <Icon name="phone" size={20} /> Call {KMS_PHONE}
+        </a>
+        <a href="#quote" class="inline-flex items-center gap-2 text-white no-underline border-2 border-white/30" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.15rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.9rem 2.5rem;border-radius:2px">
+          Get Free Quote
+        </a>
+      </div>
+      <div style="margin-top:2rem;font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.45)">
+        Backed by a 24-month written warranty · Free pickup in all 50 states · 24/7 emergency service · Canada &amp; Mexico service available
+      </div>
+    </div>
+  </section>
+
+</KmsLayout>
