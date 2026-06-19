@@ -10,6 +10,16 @@ export const data = {
     h1:         "Industrial Gearbox Repair & Rebuild — All Types, All Brands",
     subheading: "When your gearbox goes down, the whole drive train follows. KMS has been rebuilding industrial gearboxes for over 40 years — from fractional horsepower to multi-thousand horsepower. Faster than the OEM, with a better warranty.",
     bgImage:    "/images/kms-gearbox.webp",
+    slider: [
+      { src: "/images/work/gearbox-work-1.webp", alt: "Precision gear machining on a lathe at the KMS shop" },
+      { src: "/images/work/gearbox-work-2.webp", alt: "Industrial gearbox on a work stand during rebuild at KMS" },
+      { src: "/images/work/gearbox-work-3.webp", alt: "Large rebuilt gearbox loaded on a trailer for delivery from KMS" },
+      { src: "/images/work/gearbox-work-4.webp", alt: "Industrial gearbox in the KMS shop awaiting inspection" },
+      { src: "/images/work/gearbox-work-5.webp", alt: "Rebuilt gearbox palletized and ready to ship from KMS" },
+      { src: "/images/work/gearbox-work-6.webp", alt: "Restored industrial gearbox painted and crated at KMS" },
+      { src: "/images/work/gearbox-work-7.webp", alt: "Large industrial gearbox rebuilt at KMS in Stafford, TX" },
+      { src: "/images/work/gearbox-work-8.webp", alt: "Machined gear shafts and components during a KMS gearbox rebuild" },
+    ],
   },
   intro: [
     "If your gearbox is making noise, leaking oil, or has already failed, you've got a production problem with a clock ticking. Kelsey Machine Services has been rebuilding industrial gearboxes of all sizes and configurations for over 40 years, with the in-house machining capability and experienced technicians to restore your unit to OEM performance. Every rebuild is backed by a written 24-month warranty, and our 24/7 emergency service is answered every day of the year.",

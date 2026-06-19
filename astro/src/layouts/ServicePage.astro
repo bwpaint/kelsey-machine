@@ -10,6 +10,7 @@
  */
 import KmsLayout from "@/layouts/KmsLayout.astro";
 import QuoteForm from "@/components/QuoteForm.tsx";
+import HeroSlider from "@/components/HeroSlider.astro";
 import { C, KMS_PHONE, KMS_PHONE_HREF } from "@/lib/brand";
 import type { PageMeta } from "@/lib/rm";
 
@@ -19,6 +20,11 @@ export interface Props {
 }
 
 const { data, seo } = Astro.props;
+
+// Optional "Our Work" photo slider in the hero right column (only on pages
+// that supply data.hero.slider). Pages without photos render the hero as before.
+const heroSlides = data.hero.slider ?? [];
+const hasSlider  = heroSlides.length > 0;
 
 // JSON-LD: Service schema + FAQPage schema + Breadcrumbs — all baked in HTML
 const breadcrumbSchema = {
@@ -66,15 +72,24 @@ const faqSchema = {
         </ol>
       </nav>
 
-      <h1 class="text-white" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(2rem, 4vw, 3.2rem);line-height:1.1;letter-spacing:0.01em;text-transform:uppercase">
-        {data.hero.h1}
-      </h1>
-      <p class="text-white/85 mt-4" style="font-family:'Source Sans 3',sans-serif;font-size:1.1rem;line-height:1.6;max-width:60ch">
-        {data.hero.subheading}
-      </p>
-      <div class="flex gap-3 mt-6">
-        <a href="#quote" class="text-white no-underline" style={`background:${C.green};font-family:'Barlow Condensed',sans-serif;font-weight:700;padding:0.65rem 1.5rem;border-radius:2px;letter-spacing:0.06em;text-transform:uppercase`}>Get Free Quote</a>
-        <a href={KMS_PHONE_HREF} class="text-white no-underline border-2 border-white/40 hover:border-kms-green" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;padding:0.55rem 1.5rem;border-radius:2px;letter-spacing:0.06em;text-transform:uppercase">Call {KMS_PHONE}</a>
+      <div class={hasSlider ? "grid grid-cols-1 lg:grid-cols-5 gap-10 items-center" : ""}>
+        <div class={hasSlider ? "lg:col-span-3" : ""}>
+          <h1 class="text-white" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(2rem, 4vw, 3.2rem);line-height:1.1;letter-spacing:0.01em;text-transform:uppercase">
+            {data.hero.h1}
+          </h1>
+          <p class="text-white/85 mt-4" style="font-family:'Source Sans 3',sans-serif;font-size:1.1rem;line-height:1.6;max-width:60ch">
+            {data.hero.subheading}
+          </p>
+          <div class="flex gap-3 mt-6">
+            <a href="#quote" class="text-white no-underline" style={`background:${C.green};font-family:'Barlow Condensed',sans-serif;font-weight:700;padding:0.65rem 1.5rem;border-radius:2px;letter-spacing:0.06em;text-transform:uppercase`}>Get Free Quote</a>
+            <a href={KMS_PHONE_HREF} class="text-white no-underline border-2 border-white/40 hover:border-kms-green" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;padding:0.55rem 1.5rem;border-radius:2px;letter-spacing:0.06em;text-transform:uppercase">Call {KMS_PHONE}</a>
+          </div>
+        </div>
+        {hasSlider && (
+          <div class="lg:col-span-2">
+            <HeroSlider slides={heroSlides} label={data.hero.sliderLabel ?? "Our Work"} />
+          </div>
+        )}
       </div>
     </div>
   </section>

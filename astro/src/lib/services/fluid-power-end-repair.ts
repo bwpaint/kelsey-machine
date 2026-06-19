@@ -10,6 +10,16 @@ export const data = {
     h1:         "Fluid End & Power End Repair — Mud Pumps, Oilfield Tools",
     subheading: "Rig downtime is the most expensive downtime in the business. KMS has been rebuilding mud pump fluid ends, power ends, and oilfield tools for over 40 years — with emergency service, nationwide coverage, and a 24-month warranty.",
     bgImage:    "/images/fluid-end-module_97356062.jpg",
+    slider: [
+      { src: "/images/work/fluid-end-work-1.webp", alt: "Mud pump fluid end module palletized after repair at KMS" },
+      { src: "/images/work/fluid-end-work-2.webp", alt: "Mud pump power end rebuilt at the KMS shop in Stafford, TX" },
+      { src: "/images/work/fluid-end-work-3.webp", alt: "Fluid end block in the KMS machine shop during repair" },
+      { src: "/images/work/fluid-end-work-4.webp", alt: "Power end block and gearing during rebuild at KMS" },
+      { src: "/images/work/fluid-end-work-5.webp", alt: "Mud pump frame under repair in the KMS fabrication shop" },
+      { src: "/images/work/fluid-end-work-6.webp", alt: "Welding repair work on oilfield pump components at KMS" },
+      { src: "/images/work/fluid-end-work-7.webp", alt: "Fluid end block primed and ready for machining at KMS" },
+      { src: "/images/work/fluid-end-work-8.webp", alt: "Repaired mud pump fluid end blocks staged at the KMS shop" },
+    ],
   },
   intro: [
     "In the oilfield, a mud pump failure doesn't just slow you down — it stops the drill. Every hour your rig sits waiting on a fluid end or power end repair is money walking out the door. Kelsey Machine Services has been rebuilding mud pump fluid ends, power ends, and oilfield tools for over 40 years, with the in-house machining capability to restore your equipment to OEM performance fast. Every rebuild is backed by a written 24-month warranty, and our 24/7 emergency service is answered every day of the year.",

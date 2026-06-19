@@ -17,6 +17,16 @@ export const data = {
     h1:         "Industrial Centrifuge Repair & Rebuild — All Brands, Nationwide",
     subheading: "When your centrifuge quits, your whole operation stops — and every hour costs real money. KMS has been putting centrifuges back to work for over 40 years. Call us before you call the OEM.",
     bgImage:    "/images/centrifuge-repair.webp",
+    slider: [
+      { src: "/images/work/centrifuge-work-3.webp", alt: "KMS technician welding a centrifuge component during repair" },
+      { src: "/images/work/centrifuge-work-1.webp", alt: "Decanter centrifuge rotor assembly rebuilt at the KMS shop" },
+      { src: "/images/work/centrifuge-work-2.webp", alt: "Repaired industrial centrifuge loaded for delivery from KMS" },
+      { src: "/images/work/centrifuge-work-4.webp", alt: "Opened centrifuge bowl during inspection and rebuild at KMS" },
+      { src: "/images/work/centrifuge-work-5.webp", alt: "Fully assembled decanter centrifuge after rebuild at KMS" },
+      { src: "/images/work/centrifuge-work-6.webp", alt: "Precision-machined centrifuge bowl component crated at KMS" },
+      { src: "/images/work/centrifuge-work-7.webp", alt: "Stainless centrifuge rotor in the KMS shop during repair" },
+      { src: "/images/work/centrifuge-work-8.webp", alt: "Polished centrifuge bowl head restored by KMS" },
+    ],
   },
 
   intro: [

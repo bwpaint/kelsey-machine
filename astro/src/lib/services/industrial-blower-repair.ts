@@ -10,6 +10,14 @@ export const data = {
     h1:         "Industrial Blower Repair & Rebuild — All Types, All Brands",
     subheading: "When your blower goes down, your aeration system, conveying line, or process air supply goes with it. KMS has been rebuilding industrial blowers for over 40 years — faster than the OEM, with a better warranty.",
     bgImage:    "/images/blower-roots.webp",
+    slider: [
+      { src: "/images/work/blower-work-1.webp", alt: "Rebuilt industrial blower painted and ready for delivery from KMS" },
+      { src: "/images/work/blower-work-2.webp", alt: "Rotary lobe blower rebuild in progress at the KMS shop in Stafford, TX" },
+      { src: "/images/work/blower-work-3.webp", alt: "Roots-type blower mounted for inspection during a KMS rebuild" },
+      { src: "/images/work/blower-work-4.webp", alt: "Industrial blower housing in primer during rebuild at KMS" },
+      { src: "/images/work/blower-work-5.webp", alt: "Multistage centrifugal blower rebuilt and palletized at KMS" },
+      { src: "/images/work/blower-work-6.webp", alt: "Finished multistage centrifugal blower repair ready to ship from KMS" },
+    ],
   },
   intro: [
     "If your blower just quit on you, you've got two options: call the OEM and wait, or call Kelsey Machine and get it done right. We've been rebuilding industrial blowers of all types and sizes for over 40 years — from small Roots-type units in wastewater plants to large centrifugal blowers in petrochemical facilities. Every rebuild is backed by a written 24-month warranty, and our 24/7 emergency service means we're ready when you need us most.",

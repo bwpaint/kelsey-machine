@@ -1,0 +1,154 @@
+---
+/**
+ * HeroSlider — real shop-photo slider for the right column of service-page heroes.
+ * Ported from the React PageHero slider (client/src/components/KmsLayout.tsx).
+ * Pure Astro + a small inline vanilla script — no React island, keeps the hero light.
+ *
+ * Behaviour: fade transition, 5s autoplay that pauses on hover/touch, prev/next
+ * arrows, swipe on mobile, and clickable dots. Single image → static, no controls.
+ */
+import { C } from "@/lib/brand";
+
+export interface HeroSlide {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  slides: HeroSlide[];
+  label?: string;
+}
+
+const { slides, label = "Our Work" } = Astro.props;
+const multi = slides.length > 1;
+---
+
+{slides.length > 0 && (
+  <div
+    class="kms-hero-slider"
+    role="region"
+    aria-label={`${label} photo slider`}
+    data-hero-slider
+    style={`position:relative;border-radius:4px;overflow:hidden;border:1px solid rgba(255,255,255,0.18);box-shadow:0 8px 32px rgba(0,0,0,0.4);background:${C.darkBg}`}
+  >
+    <div style="aspect-ratio:4 / 3;position:relative">
+      {slides.map((s, i) => (
+        <img
+          src={s.src}
+          alt={s.alt}
+          loading={i === 0 ? "eager" : "lazy"}
+          decoding="async"
+          data-slide
+          data-active={i === 0 ? "true" : "false"}
+          style={`position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:${i === 0 ? 1 : 0};transition:opacity 0.6s ease`}
+        />
+      ))}
+
+      {/* Label badge */}
+      <div style={`position:absolute;top:12px;left:12px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:white;background:${C.green}E6;padding:0.25rem 0.7rem;border-radius:2px`}>
+        {label}
+      </div>
+
+      {multi && (
+        <>
+          <button
+            type="button"
+            aria-label="Previous photo"
+            data-prev
+            style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:rgba(10,25,45,0.55);border:none;border-radius:2px;color:white;width:34px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <button
+            type="button"
+            aria-label="Next photo"
+            data-next
+            style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(10,25,45,0.55);border:none;border-radius:2px;color:white;width:34px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+
+          <div data-dots style="position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:6px">
+            {slides.map((_, i) => (
+              <button
+                type="button"
+                aria-label={`Go to photo ${i + 1}`}
+                data-dot
+                data-index={i}
+                style={`width:${i === 0 ? 22 : 8}px;height:8px;border-radius:4px;border:none;cursor:pointer;background:${i === 0 ? C.green : "rgba(255,255,255,0.45)"};transition:all 0.3s ease;padding:0`}
+              ></button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+)}
+
+<script>
+  const GREEN = "#78A546";
+  const DOT_OFF = "rgba(255,255,255,0.45)";
+
+  function initSlider(root: HTMLElement) {
+    const slides = Array.from(root.querySelectorAll<HTMLImageElement>("[data-slide]"));
+    if (slides.length < 2) return;
+    const dots = Array.from(root.querySelectorAll<HTMLElement>("[data-dot]"));
+    const prev = root.querySelector<HTMLButtonElement>("[data-prev]");
+    const next = root.querySelector<HTMLButtonElement>("[data-next]");
+    let index = 0;
+    let paused = false;
+    let timer: number | undefined;
+
+    function render() {
+      slides.forEach((s, i) => {
+        s.style.opacity = i === index ? "1" : "0";
+        s.dataset.active = i === index ? "true" : "false";
+      });
+      dots.forEach((d, i) => {
+        d.style.width = i === index ? "22px" : "8px";
+        d.style.background = i === index ? GREEN : DOT_OFF;
+      });
+    }
+    function go(dir: number) {
+      index = (index + dir + slides.length) % slides.length;
+      render();
+    }
+    function start() {
+      stop();
+      if (!paused) timer = window.setInterval(() => go(1), 5000);
+    }
+    function stop() {
+      if (timer) window.clearInterval(timer);
+    }
+
+    prev?.addEventListener("click", () => { go(-1); start(); });
+    next?.addEventListener("click", () => { go(1); start(); });
+    dots.forEach((d) =>
+      d.addEventListener("click", () => {
+        index = Number(d.dataset.index);
+        render();
+        start();
+      })
+    );
+
+    root.addEventListener("mouseenter", () => { paused = true; stop(); });
+    root.addEventListener("mouseleave", () => { paused = false; start(); });
+
+    let touchX: number | null = null;
+    root.addEventListener("touchstart", (e) => { touchX = e.touches[0].clientX; paused = true; stop(); }, { passive: true });
+    root.addEventListener("touchend", (e) => {
+      if (touchX !== null) {
+        const dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+      }
+      touchX = null;
+      paused = false;
+      start();
+    });
+
+    render();
+    start();
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-hero-slider]").forEach(initSlider);
+</script>
