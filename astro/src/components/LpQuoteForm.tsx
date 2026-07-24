@@ -8,6 +8,7 @@
  *   - Fires the same Google Ads conversion on success
  */
 import { useState } from "react";
+import { getAdTracking } from "@/lib/adTracking";
 
 interface Props {
   service: string;
@@ -16,7 +17,7 @@ interface Props {
 const C = { green: "#78A546", greenDark: "#5E8535" };
 
 export default function LpQuoteForm({ service }: Props) {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", interest: service });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", interest: service, company: "" });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -25,6 +26,13 @@ export default function LpQuoteForm({ service }: Props) {
     e.preventDefault();
     if (!form.name.trim() || !form.phone.trim()) {
       setError("Please add your name and phone so we can call you back.");
+      return;
+    }
+    // Honeypot — "company" is hidden from real visitors via CSS below. Bots
+    // that auto-fill every field will fill this one; humans never see it.
+    if (form.company.trim()) {
+      setSubmitting(true);
+      setTimeout(() => setSubmitted(true), 600); // fake success, don't hit the API
       return;
     }
     setSubmitting(true);
@@ -40,6 +48,8 @@ export default function LpQuoteForm({ service }: Props) {
           phone: form.phone,
           interest: form.interest,
           source: typeof window !== "undefined" ? window.location.pathname : "",
+          hp: form.company,
+          ...getAdTracking(),
         }),
       });
       if (!res.ok) {
@@ -92,6 +102,17 @@ export default function LpQuoteForm({ service }: Props) {
 
   return (
     <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+      {/* Honeypot — real users never see or reach this field */}
+      <input
+        type="text"
+        name="company"
+        value={form.company}
+        onChange={(e) => setForm({ ...form, company: e.target.value })}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+      />
       <input type="text" placeholder="Your Name *" required style={input}
              value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} autoComplete="name" />
       <input type="email" placeholder="Email Address" style={input}

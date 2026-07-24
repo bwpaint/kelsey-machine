@@ -8,6 +8,7 @@
  * Posts to /api/submit (existing Vercel function at repo root) — no backend changes.
  */
 import { useState, useRef } from "react";
+import { getAdTracking } from "@/lib/adTracking";
 
 const SERVICE_OPTIONS = [
   { value: "",              label: "Select service type *" },
@@ -28,7 +29,7 @@ interface Props {
 
 export default function QuoteForm({ variant = "hero", theme = "dark" }: Props) {
   const [form, setForm] = useState({
-    name: "", company: "", phone: "", email: "", service: "", message: "",
+    name: "", company: "", phone: "", email: "", service: "", message: "", hpWebsite: "",
   });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -43,6 +44,13 @@ export default function QuoteForm({ variant = "hero", theme = "dark" }: Props) {
     e.preventDefault();
     if (!form.name.trim() || !form.phone.trim()) {
       setError("Please include your name and phone so we can reach you.");
+      return;
+    }
+    // Honeypot — "hpWebsite" is hidden from real visitors via CSS. Bots that
+    // auto-fill every input on the page will fill this one; humans never see it.
+    if (form.hpWebsite.trim()) {
+      setSubmitting(true);
+      setTimeout(() => setSubmitted(true), 600); // fake success, don't hit the API
       return;
     }
     setSubmitting(true);
@@ -60,6 +68,8 @@ export default function QuoteForm({ variant = "hero", theme = "dark" }: Props) {
           interest: form.service,
           message: form.message,
           source: typeof window !== "undefined" ? window.location.pathname : "",
+          hp: form.hpWebsite,
+          ...getAdTracking(),
         }),
       });
       if (!res.ok) {
@@ -118,6 +128,17 @@ export default function QuoteForm({ variant = "hero", theme = "dark" }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3" aria-label="Request a quote">
+      {/* Honeypot — real users never see or reach this field */}
+      <input
+        type="text"
+        name="website"
+        value={form.hpWebsite}
+        onChange={set("hpWebsite")}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+      />
       {variant === "hero" && (
         <h2
           className={`mb-1 text-center ${isLight ? "text-kms-blueDark" : "text-white"}`}

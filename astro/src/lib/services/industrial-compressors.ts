@@ -1,10 +1,6 @@
 export const data = {
   slug: "industrial-compressors",
   url:  "/services/industrial-compressors",
-  // Pilot: Groas dynamic landing-page personalization (swaps hero headline/
-  // subheading based on which ad/keyword the visitor clicked). Set false to
-  // disable without touching markup. See ServicePage.astro for the hooks.
-  dynamicPersonalization: true,
   fallback: {
     title:       "Industrial Compressor Repair · 40+ Yrs · Free Pickup",
     description: "Centrifugal, reciprocating, rotary screw, vane & scroll compressor repair. 24-mo warranty, free nationwide pickup, 24/7 emergency.",

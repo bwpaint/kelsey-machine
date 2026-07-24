@@ -21,6 +21,19 @@ interface LeadBody {
   interest?: string;
   message?: string;
   source?: string;
+  // Honeypot — hidden form field. Real visitors never fill it; bots that
+  // auto-fill every input do. Non-empty means "drop this submission."
+  hp?: string;
+  // Ad-click attribution — see astro/src/lib/adTracking.ts for how these
+  // get captured from the landing page URL.
+  gclid?: string;
+  adKeyword?: string;
+  adCampaignId?: string;
+  adMatchType?: string;
+  adDevice?: string;
+  adNetwork?: string;
+  landingPage?: string;
+  adParamsRaw?: string;
 }
 
 const SERVICE_LABELS: Record<string, string> = {
@@ -61,6 +74,19 @@ export async function POST(req: Request): Promise<Response> {
     return json({ error: "Invalid request." }, 400);
   }
 
+  // Honeypot check — do this before anything else. Log it so blocked
+  // attempts are visible in Vercel function logs, but return a fake success
+  // so scripted bots don't learn to retry with different data.
+  if ((body.hp || "").trim()) {
+    console.warn("[lead] Honeypot triggered — dropped submission", {
+      name: body.name,
+      email: body.email,
+      source: body.source,
+      ip: clientIp(req),
+    });
+    return json({ ok: true }, 200);
+  }
+
   const name = (body.name || "").trim();
   const email = (body.email || "").trim();
   const phone = (body.phone || "").trim();
@@ -99,6 +125,19 @@ export async function POST(req: Request): Promise<Response> {
         : "",
       message: body.message || "",
       source: body.source || referer,
+      // Ad-click attribution — field keys chosen to match the existing
+      // GCLID / Ad Keyword / Ad Campaign ID / Ad Match Type / Ad Device /
+      // Landing Page columns. If these still show blank in WP after this
+      // ships, the WP-side field_map likely needs to add these keys —
+      // that's a WP Admin config check, not a code fix.
+      gclid: body.gclid || "",
+      ad_keyword: body.adKeyword || "",
+      ad_campaign_id: body.adCampaignId || "",
+      ad_match_type: body.adMatchType || "",
+      ad_device: body.adDevice || "",
+      ad_network: body.adNetwork || "",
+      landing_page: body.landingPage || body.source || referer,
+      ad_params_raw: body.adParamsRaw || "",
     };
 
     try {
@@ -178,6 +217,12 @@ export async function POST(req: Request): Promise<Response> {
     ["Message", body.message || "—"],
     ["Form", formType],
     ["Submitted from", body.source || referer || "—"],
+    ["GCLID", body.gclid || "—"],
+    ["Ad Keyword", body.adKeyword || "—"],
+    ["Ad Campaign ID", body.adCampaignId || "—"],
+    ["Ad Match Type", body.adMatchType || "—"],
+    ["Ad Device", body.adDevice || "—"],
+    ["Landing Page", body.landingPage || body.source || "—"],
   ];
 
   const html =
