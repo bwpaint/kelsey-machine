@@ -61,6 +61,13 @@ export default function LpQuoteForm({ service }: Props) {
       // Google Ads conversion fire — same conversion as the main quote form.
       // Enhanced conversions: send hashable user data with the event for
       // better attribution. gtag handles the SHA-256 hashing client-side.
+      //
+      // Then hand off to /thank-you (see QuoteForm.tsx for the rationale):
+      // event_callback fires once the hit is sent; the timeout covers ad
+      // blockers that swallow gtag and never call back.
+      const goToThankYou = () => {
+        if (typeof window !== "undefined") window.location.assign("/thank-you");
+      };
       if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
         const userData: Record<string, string> = {};
         if (form.email.trim()) userData.email = form.email.trim();
@@ -70,7 +77,11 @@ export default function LpQuoteForm({ service }: Props) {
         }
         (window as any).gtag("event", "conversion", {
           send_to: "AW-18043825480/iw04CO2Wg7wcEMja-5tD",
+          event_callback: goToThankYou,
         });
+        window.setTimeout(goToThankYou, 1200);
+      } else {
+        goToThankYou();
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please call 346-350-1464.");

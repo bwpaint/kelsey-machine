@@ -89,5 +89,14 @@ const canonical = seo.canonical || new URL(Astro.url.pathname, Astro.site).href;
       <slot />
     </main>
     <Footer />
+    <script>
+      // Capture Google Ads click attribution (gclid + ValueTrack params) on
+      // every page load, persisting it to localStorage so it survives the
+      // visitor navigating between pages before submitting a form. Without
+      // this, attribution only worked when the form lived on the landing
+      // page itself. See src/lib/adTracking.ts.
+      import { getAdTracking } from "@/lib/adTracking";
+      getAdTracking();
+    </script>
   </body>
 </html>

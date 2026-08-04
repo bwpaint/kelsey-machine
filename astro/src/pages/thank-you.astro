@@ -1,0 +1,89 @@
+---
+/**
+ * Post-submit confirmation page. Every successful quote/landing form submit
+ * redirects here (see QuoteForm.tsx / LpQuoteForm.tsx).
+ *
+ * Measurement roles:
+ *  - GA4: clean /thank-you page_view → mark as a key event in GA4 admin.
+ *  - Google Ads: fires the SECONDARY (observation-only) conversion
+ *    "KMS Real Lead Form Submit" as a validation channel. The PRIMARY
+ *    conversion ("KMS Quote Form Submit") fires on the form's success
+ *    callback before the redirect — that one trains bidding; this one just
+ *    watches. If the two ever diverge, something broke.
+ *  - Remarketing: visitors here are converters → exclusion audience seed.
+ *
+ * noindex: this page means nothing to searchers and must not rank.
+ */
+import ContentPage from "@/layouts/ContentPage.astro";
+import { getMeta } from "@/lib/rm";
+const seo = await getMeta("/thank-you", {
+  title: "Request Received · Kelsey Machine Services",
+  description:
+    "We got your request. A repair specialist will contact you within one business hour.",
+  noindex: true,
+});
+---
+
+<ContentPage
+  seo={seo}
+  h1="Got It — Your Request Is In"
+  subheading="A repair specialist is reviewing your equipment details right now."
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Request Received" }]}
+  sidebar={false}
+>
+  <div class="content-prose max-w-3xl mx-auto">
+    <h2>What happens next</h2>
+    <ol>
+      <li>
+        <strong>Within 1 business hour</strong> — a KMS repair specialist calls
+        you back to talk through the equipment and the failure. Keep your phone
+        handy; the call will come from <a href="tel:3463501464">346-350-1464</a>.
+      </li>
+      <li>
+        <strong>Straight answers</strong> — we'll tell you whether it's a
+        repair, a rebuild, or not worth fixing, and what it will roughly take.
+        No surprises at invoice.
+      </li>
+      <li>
+        <strong>Freight handled</strong> — if the unit needs to come to our
+        Stafford, TX shop, we coordinate pickup from anywhere in the U.S. or
+        Canada as part of the job.
+      </li>
+    </ol>
+
+    <h2>Equipment down right now?</h2>
+    <p>
+      Don't wait on the callback — our emergency line is answered day and
+      night, every day of the year:
+      <a href="tel:3463501464"><strong>346-350-1464</strong></a> or see
+      <a href="/emergency-service">24/7 emergency service</a>.
+    </p>
+
+    <p>
+      While you wait: every KMS rebuild ships with a written
+      <a href="/warranty">24-month warranty</a> — the longest in the rotating
+      equipment repair industry — and you can see how we work on the
+      <a href="/about">about page</a>.
+    </p>
+  </div>
+
+  <script is:inline>
+    // Secondary (observation-only) Google Ads conversion — "KMS Real Lead
+    // Form Submit". Validates the primary form-event conversion; demoted to
+    // Secondary in Google Ads so it never trains bidding. Session-guarded so
+    // refreshes and back-navigation don't refire it.
+    (function () {
+      try {
+        if (sessionStorage.getItem("kms_ty_conv")) return;
+        sessionStorage.setItem("kms_ty_conv", "1");
+      } catch (e) {
+        /* storage unavailable — fire anyway */
+      }
+      if (typeof gtag === "function") {
+        gtag("event", "conversion", {
+          send_to: "AW-18043825480/v45VCKqj89scEMja-5tD",
+        });
+      }
+    })();
+  </script>
+</ContentPage>

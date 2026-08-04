@@ -85,6 +85,15 @@ export default function QuoteForm({ variant = "hero", theme = "dark" }: Props) {
       // Enhanced conversions: pass user data (email + phone) so Google can
       // match conversions back to ad clicks even when cookies are missing.
       // gtag hashes the values client-side per the enhanced-conversions spec.
+      //
+      // After the conversion is dispatched we hand off to /thank-you: it
+      // confirms next steps for the lead and gives GA4 + the secondary
+      // (observation-only) page-view conversion a clean URL-based signal.
+      // event_callback fires once gtag has sent the hit; the timeout is a
+      // fallback for ad blockers that swallow gtag and never call back.
+      const goToThankYou = () => {
+        if (typeof window !== "undefined") window.location.assign("/thank-you");
+      };
       if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
         const userData: Record<string, string> = {};
         if (form.email.trim()) userData.email = form.email.trim();
@@ -94,7 +103,11 @@ export default function QuoteForm({ variant = "hero", theme = "dark" }: Props) {
         }
         (window as any).gtag("event", "conversion", {
           send_to: "AW-18043825480/iw04CO2Wg7wcEMja-5tD",
+          event_callback: goToThankYou,
         });
+        window.setTimeout(goToThankYou, 1200);
+      } else {
+        goToThankYou();
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please call 346-350-1464.");
