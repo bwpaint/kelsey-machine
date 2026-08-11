@@ -1,25 +1,56 @@
 ---
 /**
- * Minimal PPC landing-page header — logo only, centered, no navigation.
+ * Minimal PPC landing-page header — call button, centered logo, pickup
+ * button. No nav links, no utility bar, no Services dropdown.
  *
  * Landing pages exist to do ONE thing: get the visitor to fill out the
  * form (or call). Every nav link, dropdown, and secondary CTA in the
  * standard site Header.astro is a way for that visitor to leave before
- * converting. This strips all of that out and keeps just the logo for
- * brand trust — still linked to "/" so a visitor who genuinely wants to
- * browse the main site isn't trapped, but nothing here competes with the
- * page's own CTAs for attention.
+ * converting. This strips all of that out but keeps two CTAs that point
+ * BACK at the same conversion goal — Call Now (tel: link, converts by
+ * phone instantly) and Free Pickup (scrolls to #quote) — flanking a
+ * double-size logo for brand trust.
  *
  * Used only where KmsLayout is given headerVariant="minimal" (currently
  * LpPage.astro, i.e. the 5 PPC landing pages). Header.astro is completely
  * untouched — this is a separate, additive component.
  */
-import { KMS_LOGO } from "@/lib/brand";
+import Icon from "@/components/Icons.astro";
+import { C, KMS_LOGO, KMS_PHONE_HREF } from "@/lib/brand";
 ---
-<div class="bg-black" style="padding:1rem 0">
-  <div class="max-w-7xl mx-auto px-4 flex justify-center">
-    <a href="/" aria-label="Kelsey Machine Services home">
-      <img src={KMS_LOGO} alt="Kelsey Machine Services" style="height:48px;width:auto" />
+<div class="bg-black" style="padding:0.65rem 0">
+  <div class="max-w-7xl mx-auto px-3 sm:px-4 flex items-center justify-between gap-2 sm:gap-4">
+
+    <a
+      href={KMS_PHONE_HREF}
+      class="inline-flex items-center gap-1.5 sm:gap-2 text-white no-underline flex-shrink-0"
+      style={`background:${C.green};font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:0.8rem;letter-spacing:0.04em;text-transform:uppercase;padding:0.55rem 0.7rem;border-radius:2px;line-height:1`}
+      aria-label="Call Kelsey Machine Services now"
+    >
+      <Icon name="phone" size={16} />
+      <span class="hidden sm:inline">Call Now</span>
     </a>
+
+    {/*
+      Logo doubled from the original 48px to 96px per request. clamp()
+      keeps that 96px as the true size from ~600px viewports up, but
+      scales down on very narrow phones so it can't force the two flanking
+      buttons to wrap or overflow the row.
+    */}
+    <a href="/" aria-label="Kelsey Machine Services home" class="flex-shrink-0">
+      <img src={KMS_LOGO} alt="Kelsey Machine Services" style="height:clamp(52px, 16vw, 96px);width:auto" />
+    </a>
+
+    <a
+      href="#quote"
+      class="inline-flex items-center gap-1.5 sm:gap-2 text-white no-underline text-right flex-shrink-0"
+      style={`background:${C.green};font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:0.8rem;letter-spacing:0.04em;text-transform:uppercase;padding:0.55rem 0.7rem;border-radius:2px;line-height:1.15`}
+      aria-label="Free pickup, all 50 states — jump to quote form"
+    >
+      <Icon name="truck" size={16} />
+      <span class="hidden sm:inline">Free Pickup<br />All 50 States</span>
+      <span class="sm:hidden">Pickup</span>
+    </a>
+
   </div>
 </div>

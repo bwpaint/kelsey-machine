@@ -18,6 +18,7 @@
 import Header from "@/components/Header.astro";
 import MinimalHeader from "@/components/MinimalHeader.astro";
 import Footer from "@/components/Footer.astro";
+import MinimalFooter from "@/components/MinimalFooter.astro";
 import type { PageMeta } from "@/lib/rm";
 
 // Self-hosted fonts — drop-in replacement for the Google Fonts <link>.
@@ -40,9 +41,12 @@ export interface Props {
   // an exit from the single conversion path. Defaults to the full site
   // header everywhere else. See MinimalHeader.astro.
   headerVariant?: "full" | "minimal";
+  // "minimal" = large logo only, no nav columns, no legal/social links —
+  // pairs with headerVariant="minimal". See MinimalFooter.astro.
+  footerVariant?: "full" | "minimal";
 }
 
-const { seo, headerVariant = "full" } = Astro.props;
+const { seo, headerVariant = "full", footerVariant = "full" } = Astro.props;
 const canonical = seo.canonical || new URL(Astro.url.pathname, Astro.site).href;
 ---
 <!doctype html>
@@ -94,7 +98,7 @@ const canonical = seo.canonical || new URL(Astro.url.pathname, Astro.site).href;
     <main>
       <slot />
     </main>
-    <Footer />
+    {footerVariant === "minimal" ? <MinimalFooter /> : <Footer />}
     <script>
       // Capture Google Ads click attribution (gclid + ValueTrack params) on
       // every page load, persisting it to localStorage so it survives the

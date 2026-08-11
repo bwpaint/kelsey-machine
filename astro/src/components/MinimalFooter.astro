@@ -1,0 +1,25 @@
+---
+/**
+ * Minimal PPC landing-page footer — logo only, no nav, no columns, no
+ * copyright/legal links, no social.
+ *
+ * The full site Footer.astro is a legitimate exit path (Services links,
+ * About, Blog, address, etc.) — exactly the kind of thing a landing page
+ * should not offer. LpPage.astro's own ROW 3 section already closes each
+ * page with a per-service headline pulled from lp-data.ts (e.g. "Blower
+ * Down? We're Ready Right Now.") plus Call/Quote buttons, so by the time
+ * a visitor reaches this component they've already seen the real closing
+ * CTA. This is just the brand sign-off underneath it — nothing to click,
+ * nothing to leave on.
+ *
+ * Used only where KmsLayout is given footerVariant="minimal" (currently
+ * LpPage.astro). Footer.astro is completely untouched — this is a
+ * separate, additive component.
+ */
+import { KMS_LOGO } from "@/lib/brand";
+---
+<div class="bg-black" style="padding:2.5rem 0">
+  <div class="max-w-7xl mx-auto px-4 flex justify-center">
+    <img src={KMS_LOGO} alt="Kelsey Machine Services" style="height:72px;width:auto" />
+  </div>
+</div>
