@@ -84,16 +84,83 @@ const { seo, h1, subheading, service, bullets, row2, row3 } = Astro.props;
           </div>
         </div>
 
-        {/* Right — focused quote form */}
-        <div id="quote" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2rem">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.4rem;color:white;text-transform:uppercase;margin-bottom:0.4rem">Get Your Free Quote</div>
-          <p style="font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.55);margin-bottom:1.25rem">We respond within one business hour. Emergency? Call us directly.</p>
-          <LpQuoteForm client:idle service={service} />
+        {/* Right — message-match banner + focused quote form */}
+        <div>
+          {/*
+            Message-match reinforcement (a la Groas): when a visitor arrives
+            via a Google Ads click carrying a keyword ValueTrack param, show
+            the phrase they searched for right above the form. Reinforces
+            "you're on the right page" at the exact moment of the CTA.
+
+            Hidden by default (server-rendered with no client). The inline
+            script below reveals it ONLY when a keyword param is present, so
+            organic/direct visitors — who have no keyword param — never see
+            a blank or broken box. Runs as a plain inline script (not a React
+            island) so it paints synchronously with the rest of the hero,
+            with zero hydration delay and zero layout shift.
+
+            Google's {keyword} ValueTrack value is the KEYWORD YOU BID ON,
+            not the visitor's literal search query — and it can carry
+            match-type punctuation ([exact], "phrase", +broad+modifier) which
+            gets stripped/cleaned client-side before display. This reads the
+            same alias priority as astro/src/lib/adTracking.ts
+            (keyword, utm_term, adkeyword, ad_keyword) — keep both in sync if
+            that list ever changes.
+          */}
+          <div id="kw-match" hidden style={`background:rgba(120,165,70,0.14);border:1px solid ${C.green};border-radius:4px;padding:0.85rem 1.1rem;margin-bottom:1rem;text-align:center`}>
+            <span style={`color:${C.green};display:inline-flex;vertical-align:middle;margin-right:0.4rem`}><Icon name="check-circle" size={16} /></span>
+            <span style="font-family:'Source Sans 3',sans-serif;font-size:0.92rem;color:white">
+              Searching for <strong id="kw-phrase" style={`color:${C.green}`}></strong>? You're in the right place.
+            </span>
+          </div>
+
+          <div id="quote" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2rem">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.4rem;color:white;text-transform:uppercase;margin-bottom:0.4rem">Get Your Free Quote</div>
+            <p style="font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.55);margin-bottom:1.25rem">We respond within one business hour. Emergency? Call us directly.</p>
+            <LpQuoteForm client:idle service={service} />
+          </div>
         </div>
 
       </div>
     </div>
   </section>
+
+  <script is:inline>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      // Keep in sync with ALIASES.adKeyword in astro/src/lib/adTracking.ts
+      var aliases = ["keyword", "utm_term", "adkeyword", "ad_keyword"];
+      var raw = "";
+      for (var i = 0; i < aliases.length; i++) {
+        var v = params.get(aliases[i]);
+        if (v) { raw = v; break; }
+      }
+      if (!raw) return;
+
+      // Strip Google Ads match-type punctuation: [exact], "phrase". Broad
+      // match's leading "+" is already converted to a literal space by
+      // URLSearchParams during query-string parsing, so no separate handling
+      // needed for that case.
+      var clean = raw
+        .replace(/^[\[\"]+|[\]\"]+$/g, "")
+        .replace(/\+/g, " ")
+        .trim()
+        .replace(/\s+/g, " ");
+      if (!clean) return;
+
+      // Title Case, matching the site's existing headline/ad-copy convention.
+      clean = clean.replace(/\w\S*/g, function (w) {
+        return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+      });
+
+      var phraseEl = document.getElementById("kw-phrase");
+      var boxEl = document.getElementById("kw-match");
+      if (phraseEl && boxEl) {
+        phraseEl.textContent = '"' + clean + '"';
+        boxEl.hidden = false;
+      }
+    })();
+  </script>
 
   {/* ROW 2 — what's included + Why KMS panel */}
   <section class="bg-white" style="padding:4rem 0">
