@@ -3,7 +3,12 @@
  *
  * Differences from the main QuoteForm:
  *   - formType = "landing" (so backend can attribute the lead source)
- *   - Fewer fields: name, email, phone, service (preset by parent)
+ *   - Minimal fields: Name, Email, Phone — no Company, no Message, no
+ *     service picker. Which service the lead is interested in is derived
+ *     automatically from the page they're on (the `service` prop, set
+ *     per-page in lp-data.ts) plus `source` (window.location.pathname),
+ *     both already sent to /api/submit. No dropdown needed — the page
+ *     IS the answer to "what are they interested in."
  *   - Built for dark backgrounds only (LP hero is always dark)
  *   - Fires the same Google Ads conversion on success
  */
@@ -19,13 +24,19 @@ const C = { green: "#78A546", greenDark: "#5E8535" };
 export default function LpQuoteForm({ service }: Props) {
   // NOTE: `hpFax` is the HONEYPOT, not a real field. It renders as name="fax",
   // hidden off-screen. Bots auto-fill it; humans never see it. It used to be
-  // named `company`, which collided with the real Company field added below —
-  // that would have silently discarded every lead who typed their company
-  // (the API returns a FAKE success for honeypot hits). Never name the
-  // honeypot after a field a human might actually fill.
+  // named `company`, which collided with a real Company field this form used
+  // to have — that would have silently discarded every lead who typed their
+  // company (the API returns a FAKE success for honeypot hits). The Company
+  // field is gone now (see header comment), but the honeypot stays named
+  // `fax` regardless — never rename it to anything a human might plausibly
+  // type.
+  //
+  // `interest` is NOT user-editable — it's fixed to the `service` prop
+  // passed in from the page (see lp-data.ts). There used to be a dropdown
+  // here; it's gone. The page a visitor lands on already tells us what
+  // they're interested in.
   const [form, setForm] = useState({
-    name: "", email: "", phone: "", interest: service,
-    company: "", message: "", hpFax: "",
+    name: "", email: "", phone: "", hpFax: "",
   });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -55,9 +66,7 @@ export default function LpQuoteForm({ service }: Props) {
           name: form.name,
           email: form.email,
           phone: form.phone,
-          interest: form.interest,
-          company: form.company,
-          message: form.message,
+          interest: service,
           source: typeof window !== "undefined" ? window.location.pathname : "",
           hp: form.hpFax,
           ...getAdTracking(),
@@ -114,7 +123,20 @@ export default function LpQuoteForm({ service }: Props) {
     );
   }
 
+  const label: React.CSSProperties = {
+    display: "block",
+    fontFamily: "'Source Sans 3',sans-serif",
+    fontSize: "0.7rem",
+    fontWeight: 700,
+    letterSpacing: "0.07em",
+    textTransform: "uppercase",
+    color: "rgba(255,255,255,0.5)",
+    marginBottom: "0.3rem",
+  };
+
   const input: React.CSSProperties = {
+    width: "100%",
+    boxSizing: "border-box",
     padding: "0.7rem 1rem", borderRadius: 2,
     border: "1px solid rgba(255,255,255,0.15)",
     background: "rgba(255,255,255,0.08)",
@@ -123,10 +145,10 @@ export default function LpQuoteForm({ service }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.9rem" }}>
       {/* Honeypot — real users never see or reach this field. name="fax" is
-          deliberate: bots fill it, humans never encounter it, and it cannot
-          collide with a real field. Do NOT rename this to a plausible field. */}
+          deliberate: bots fill it, humans never encounter it. Do NOT rename
+          this to a plausible field. */}
       <input
         type="text"
         name="fax"
@@ -137,37 +159,41 @@ export default function LpQuoteForm({ service }: Props) {
         aria-hidden="true"
         style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
       />
-      <input type="text" placeholder="Your Name *" required style={input}
-             value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} autoComplete="name" />
-      <input type="text" placeholder="Company / Plant" style={input}
-             value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} autoComplete="organization" />
-      <input type="email" placeholder="Email Address" style={input}
-             value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} autoComplete="email" />
-      <input type="tel" placeholder="Phone Number *" required style={input}
-             value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} autoComplete="tel" />
-      <select style={{ ...input, background: "rgba(30,80,128,0.8)" }}
-              value={form.interest} onChange={(e) => setForm({ ...form, interest: e.target.value })}>
-        <option>Centrifuge Repair</option>
-        <option>Gearbox Repair</option>
-        <option>Industrial Blower Repair</option>
-        <option>Industrial Compressor Repair</option>
-        <option>Fluid &amp; Power End Repair</option>
-        <option>Emergency Service</option>
-      </select>
-      {/* Optional, but the single most useful field for judging lead quality —
-          gives the callback something concrete to work from. Never required. */}
-      <textarea placeholder="What's the equipment and what's it doing? (optional)"
-                rows={3}
-                style={{ ...input, resize: "vertical", fontFamily: "'Source Sans 3',sans-serif" }}
-                value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })} />
+
+      <div>
+        <label htmlFor="lp-name" style={label}>Your Name *</label>
+        <input id="lp-name" type="text" required style={input}
+               value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} autoComplete="name" />
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+        <div>
+          <label htmlFor="lp-email" style={label}>Email Address</label>
+          <input id="lp-email" type="email" style={input}
+                 value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} autoComplete="email" />
+        </div>
+        <div>
+          <label htmlFor="lp-phone" style={label}>Phone Number *</label>
+          <input id="lp-phone" type="tel" required style={input}
+                 value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} autoComplete="tel" />
+        </div>
+      </div>
+
       {error && (
         <p style={{ color: "#ff9a9a", fontFamily: "'Source Sans 3',sans-serif", fontSize: "0.82rem", margin: 0 }}>{error}</p>
       )}
+
       <button type="submit" disabled={submitting}
               style={{ background: C.green, color: "white", fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800, fontSize: "1.1rem", letterSpacing: "0.06em", textTransform: "uppercase", padding: "0.9rem", borderRadius: 2, border: "none", cursor: submitting ? "wait" : "pointer", opacity: submitting ? 0.7 : 1 }}>
         {submitting ? "Sending…" : "Get My Free Quote"}
       </button>
+
+      {/* Risk-reversal microcopy — right at the point of conversion, not
+          buried elsewhere on the page. Pre-empts the "what am I signing up
+          for" hesitation a B2B lead has before submitting a form. */}
+      <p style={{ textAlign: "center", fontFamily: "'Source Sans 3',sans-serif", fontSize: "0.78rem", color: "rgba(255,255,255,0.5)", margin: 0 }}>
+        No obligation. No pressure. Just a straight number.
+      </p>
     </form>
   );
 }

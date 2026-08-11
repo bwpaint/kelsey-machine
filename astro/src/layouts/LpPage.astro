@@ -13,6 +13,7 @@ import KmsLayout from "@/layouts/KmsLayout.astro";
 import LpQuoteForm from "@/components/LpQuoteForm.tsx";
 import Icon from "@/components/Icons.astro";
 import { C, KMS_PHONE, KMS_PHONE_HREF } from "@/lib/brand";
+import { LP_TESTIMONIALS } from "@/lib/lp-data";
 import type { PageMeta } from "@/lib/rm";
 
 export interface Props {
@@ -26,6 +27,10 @@ export interface Props {
 }
 
 const { seo, h1, subheading, service, bullets, row2, row3 } = Astro.props;
+
+// LP_TESTIMONIALS (lp-data.ts) now holds 5 real, sourced Google reviews
+// (pulled 2026-08-11) — safe to render.
+const TESTIMONIALS_READY = true;
 ---
 <KmsLayout seo={seo} headerVariant="minimal" footerVariant="minimal">
 
@@ -82,6 +87,32 @@ const { seo, h1, subheading, service, bullets, row2, row3 } = Astro.props;
               </div>
             ))}
           </div>
+
+          {/*
+            Testimonial strip — gated behind TESTIMONIALS_READY (see const
+            above). LP_TESTIMONIALS in lp-data.ts is currently all
+            PLACEHOLDER content; do not flip this to true until those
+            entries hold real, attributable customer quotes. Horizontal
+            scroll (not stacked full-width cards) so five testimonials
+            don't balloon hero height, especially on mobile where this
+            section renders above a long page already.
+          */}
+          {TESTIMONIALS_READY && (
+            <div style="margin-top:1.75rem">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:0.6rem">
+                What Customers Say
+              </div>
+              <div class="flex gap-3 overflow-x-auto" style="scrollbar-width:thin;padding-bottom:0.3rem">
+                {LP_TESTIMONIALS.map((t) => (
+                  <div style="flex:0 0 230px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:0.9rem">
+                    <p style="font-family:'Source Sans 3',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.75);line-height:1.5;margin:0 0 0.6rem">"{t.quote}"</p>
+                    <div style={`font-family:'Barlow',sans-serif;font-weight:700;font-size:0.78rem;color:${C.green}`}>{t.name}</div>
+                    <div style="font-family:'Source Sans 3',sans-serif;font-size:0.74rem;color:rgba(255,255,255,0.45)">{t.company}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right — message-match banner + focused quote form */}
@@ -115,12 +146,43 @@ const { seo, h1, subheading, service, bullets, row2, row3 } = Astro.props;
             <div class="kw-match__phrase-wrap">
               <span id="kw-phrase" class="kw-match__phrase"></span><span class="kw-cursor" aria-hidden="true">|</span>
             </div>
-            <div class="kw-match__label">You're In The Right Place!</div>
+            <div class="kw-match__confirm">You're In The Right Place!</div>
           </div>
 
           <div id="quote" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2rem">
             <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.8rem, 4vw, 2.8rem);color:white;text-transform:uppercase;line-height:1.05;margin-bottom:0.5rem">Get Your Free Quote</div>
-            <p style="font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.55);margin-bottom:1.25rem">We respond within one business hour. Emergency? Call us directly.</p>
+            <p style="font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.6);margin-bottom:1rem">
+              We call you back within 30 minutes. Or speak to a specialist right now — call <a href={KMS_PHONE_HREF} style={`color:${C.green};font-weight:700;text-decoration:none`}>{KMS_PHONE}</a>.
+            </p>
+            {/*
+              Incentive callout — reframes something KMS already does for
+              free (written failure analysis, listed in row2.items below)
+              as a stated reason to convert right now, quantified against
+              what competitors charge for the same thing. Costs nothing new
+              to deliver; it just wasn't being said out loud at the point of
+              conversion. See LP-COPY-CRO-RECOMMENDATIONS-2026-08-11.md.
+
+              Two-column badge layout: left is the price-anchor visual
+              ($250, struck through, "Value" label, then a bold green
+              "Free!" payoff) — right is the plain-English description plus
+              a smaller fine-print line naming the competitor cost. Flex
+              row so it reads left-to-right as one idea, not two.
+            */}
+            <div style={`background:rgba(120,165,70,0.12);border:1px solid ${C.green};border-radius:3px;padding:1rem 1.1rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.1rem`}>
+              <div style="flex-shrink:0;text-align:center;line-height:1">
+                <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.9rem;color:rgba(255,255,255,0.55);text-decoration:line-through;text-decoration-thickness:2px">$250</div>
+                <div style="font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin:0.15rem 0 0.2rem">Value</div>
+                <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.55rem;letter-spacing:0.02em;text-transform:uppercase;color:${C.green}`}>Free!</div>
+              </div>
+              <div style="border-left:1px solid rgba(255,255,255,0.15);padding-left:1.1rem">
+                <p style="font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:0.92rem;color:white;line-height:1.4;margin:0">
+                  Written failure analysis with root cause identification — free.
+                </p>
+                <p style="font-family:'Source Sans 3',sans-serif;font-size:0.74rem;color:rgba(255,255,255,0.5);line-height:1.4;margin:0.4rem 0 0">
+                  Our competition charges $250+ for this service.
+                </p>
+              </div>
+            </div>
             <LpQuoteForm client:idle service={service} />
           </div>
         </div>
@@ -192,6 +254,23 @@ const { seo, h1, subheading, service, bullets, row2, row3 } = Astro.props;
       color: #78A546;
       text-transform: uppercase;
       letter-spacing: -0.01em;
+    }
+    /*
+      "You're In The Right Place!" — bumped to 2.2x the base label size
+      (was riding the same 1x size as "Searching For:", which buried the
+      payoff line under the giant keyword phrase above it). 2.2x keeps it
+      clearly the second-most-prominent element in the box, still smaller
+      than the 3x keyword phrase so the hierarchy reads correctly.
+    */
+    .kw-match__confirm {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: calc(var(--kw-label) * 2.2);
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.95);
+      line-height: 1.15;
+      margin-top: 0.15rem;
     }
     .kw-cursor {
       display: inline-block;

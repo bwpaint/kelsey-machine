@@ -13,7 +13,7 @@ export const LP_DATA = {
     desc:     "Industrial centrifuge repair — decanter, disc-stack, basket. 24-mo warranty, free nationwide pickup, 24/7 emergency. All brands.",
     ogImage:  "/images/centrifuge-repair.webp",
     service:  "Centrifuge Repair",
-    h1:       "Centrifuge Repair — Fast Turnaround, 24-Month Warranty",
+    h1:       "Centrifuge Down? We're Ready Right Now.",
     subheading: "Your centrifuge just went down. Every hour it sits idle costs real money. KMS has been getting decanter, disc-stack, and basket centrifuges back online for over 40 years — faster than the OEM, with a better warranty.",
     bullets: [
       "All centrifuge types: decanter, disc-stack, basket, tubular",
@@ -36,7 +36,7 @@ export const LP_DATA = {
     },
     row3: {
       headline: "Ready to Get Your Centrifuge Back Online?",
-      body: "Don't wait on the OEM. KMS has the experience, the tooling, and the emergency service to get your centrifuge repaired and back in service — fast. Call us now or request a free quote and we'll respond within the hour.",
+      body: "Don't wait on the OEM. KMS has the experience, the tooling, and the emergency service to get your centrifuge repaired and back in service — fast. Call us now or request a free quote and we'll call you back within 30 minutes.",
     },
   },
 
@@ -46,7 +46,7 @@ export const LP_DATA = {
     desc:     "All gearbox types repaired in-house — parallel shaft, planetary, bevel, worm, helical. All brands. 24-mo warranty.",
     ogImage:  "/images/kms-gearbox.webp",
     service:  "Gearbox Repair",
-    h1:       "Industrial Gearbox Repair — All Types, All Brands, Fast",
+    h1:       "Gearbox Down? We're Ready Right Now.",
     subheading: "A gearbox failure can shut down a conveyor, a mixer, a centrifuge drive, or an entire production line. KMS rebuilds all gearbox types — parallel shaft, planetary, bevel, worm, helical — with in-house machining and a 24-month warranty.",
     bullets: [
       "All gearbox types: parallel shaft, planetary, bevel, worm, helical",
@@ -69,7 +69,7 @@ export const LP_DATA = {
     },
     row3: {
       headline: "Gearbox Down? Don't Wait on the OEM.",
-      body: "The OEM's 8-week lead time doesn't care about your downtime costs. KMS does. Call us now or request a free quote — we respond within the hour and can have your gearbox in our shop within 24 hours.",
+      body: "The OEM's 8-week lead time doesn't care about your downtime costs. KMS does. Call us now or request a free quote — we call you back within 30 minutes and can have your gearbox in our shop within 24 hours.",
     },
   },
 
@@ -79,7 +79,7 @@ export const LP_DATA = {
     desc:     "Roots-type, centrifugal, regenerative & screw blower repair. 24-mo warranty, free nationwide pickup, 24/7 emergency.",
     ogImage:  "/images/blower-roots.webp",
     service:  "Industrial Blower Repair",
-    h1:       "Industrial Blower Repair — All Types, Emergency Service Available",
+    h1:       "Blower Down? We're Ready Right Now.",
     subheading: "When your blower goes down, your aeration system, conveying line, or process air supply goes with it. KMS has been rebuilding industrial blowers for over 40 years — faster than the OEM, with a 24-month warranty.",
     bullets: [
       "All blower types: rotary lobe, centrifugal, radial, axial, screw",
@@ -101,7 +101,7 @@ export const LP_DATA = {
       ],
     },
     row3: {
-      headline: "Blower Down? We're Ready Right Now.",
+      headline: "Still Down? We Won't Keep You Waiting.",
       body: "Our 24/7 emergency line is answered every day of the year. When your blower failure is shutting down your operation, call KMS — we respond fast and we back every repair with a 24-month warranty.",
     },
   },
@@ -112,7 +112,7 @@ export const LP_DATA = {
     desc:     "Centrifugal, reciprocating, screw & vane compressor repair. 24-mo warranty, free nationwide pickup. Ingersoll Rand, Atlas Copco.",
     ogImage:  "/images/blower-roots.webp",
     service:  "Industrial Compressor Repair",
-    h1:       "Industrial Compressor Repair — All Types, 24/7 Emergency Service",
+    h1:       "Compressor Down? We're Ready Right Now.",
     subheading: "A compressor failure in a petrochemical plant, gas gathering operation, or industrial facility isn't just an inconvenience — it's a production stoppage. KMS has been rebuilding industrial compressors for over 40 years.",
     bullets: [
       "All compressor types: centrifugal, reciprocating, rotary screw, vane, scroll",
@@ -145,7 +145,7 @@ export const LP_DATA = {
     desc:     "Fluid end, power end & oilfield tool repair for NOV, Gardner Denver, Weatherford, Emsco. 24-mo warranty, 24/7 emergency.",
     ogImage:  "/images/fluid-end-module_97356062.jpg",
     service:  "Fluid & Power End Repair",
-    h1:       "Fluid End & Power End Repair — Rig Downtime Costs Real Money",
+    h1:       "Rig Down? We're Ready Right Now.",
     subheading: "In the oilfield, a mud pump failure doesn't just slow you down — it stops the drill. KMS has been rebuilding fluid ends, power ends, and oilfield tools for over 40 years. We understand rig downtime — and we move fast.",
     bullets: [
       "Fluid end and power end rebuild for all major mud pump brands",
@@ -167,8 +167,50 @@ export const LP_DATA = {
       ],
     },
     row3: {
-      headline: "Rig Down? Call KMS Right Now.",
-      body: "Our 24/7 emergency line is answered every day of the year. We serve all 50 states, Canada, and Mexico. When your mud pump failure is costing you rig time, call KMS — we respond within the hour.",
+      headline: "Every Hour On The Rig Costs You — Call KMS.",
+      body: "Our 24/7 emergency line is answered every day of the year. We serve all 50 states, Canada, and Mexico. When your mud pump failure is costing you rig time, call KMS — we respond within 30 minutes.",
     },
   },
 } as const;
+
+/**
+ * Testimonial strip shown under the trust-badge grid on every /lp/* page.
+ *
+ * Real quotes, sourced from KMS's Google Business Profile reviews (pulled
+ * 2026-08-11, all 5-star). Lightly trimmed for length/readability where
+ * noted — never altered in substance or meaning. If these ever need
+ * updating, pull fresh ones from the GBP listing the same way rather than
+ * paraphrasing from memory.
+ */
+export const LP_TESTIMONIALS = [
+  {
+    theme: "Gearbox — obsolete part solved",
+    quote: "Had a machine down and unable to replace a gearbox due to it being obsolete. Kelsey took care of us in great time at what I'd consider a solid price. I have not had any issues with the gearbox since and we run it every day.",
+    name: "Jeffrey Lenhart",
+    company: "Google Review · 5★",
+  },
+  {
+    theme: "Gearbox — quality & turnaround",
+    quote: "Sent in a Falk gearbox for repair, I was very pleased with the quality of work and the very quick turnaround time.",
+    name: "Paul Mitchell",
+    company: "Google Review · 5★",
+  },
+  {
+    theme: "Centrifuge — spindle rebuild",
+    quote: "I sent my spindle assembly for our commercial centrifuge to KMS and I could not be happier with the result. We've used them several times now with no stops in production. Speedy turnaround with like-new results.",
+    name: "Colin Smith",
+    company: "Google Review · 5★",
+  },
+  {
+    theme: "Gearbox — cost savings & communication",
+    quote: "Kelsey provided excellent service on our equipment. They repaired and rebuilt a gearbox for us quickly and at a fraction of the replacement cost. Communication was clear, and the turnaround time was impressive.",
+    name: "Travis",
+    company: "Google Review · 5★",
+  },
+  {
+    theme: "General trust / relationship",
+    quote: "Kelsey does a fantastic job whenever it comes to machinery. He knows the business, the people, and the equipment.",
+    name: "Rohman L. Perez",
+    company: "Odessa Pumps · Google Review · 5★",
+  },
+] as const;
