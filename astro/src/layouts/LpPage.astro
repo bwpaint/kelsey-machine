@@ -11,6 +11,7 @@
  */
 import KmsLayout from "@/layouts/KmsLayout.astro";
 import LpQuoteForm from "@/components/LpQuoteForm.tsx";
+import LpTestimonialsCarousel from "@/components/LpTestimonialsCarousel.tsx";
 import Icon from "@/components/Icons.astro";
 import { C, KMS_PHONE, KMS_PHONE_HREF } from "@/lib/brand";
 import { LP_TESTIMONIALS } from "@/lib/lp-data";
@@ -31,30 +32,52 @@ const { seo, h1, subheading, service, bullets, row2, row3 } = Astro.props;
 // LP_TESTIMONIALS (lp-data.ts) now holds 5 real, sourced Google reviews
 // (pulled 2026-08-11) — safe to render.
 const TESTIMONIALS_READY = true;
+
+// h1 is authored in lp-data.ts as "<Equipment> Down? We're Ready Right
+// Now." — split on "? " so the first clause can render much larger than
+// the second (per request). If a future h1 doesn't contain "? ", h1Small
+// comes back empty and the whole string just renders as the one big line
+// — not a crash, just loses the two-size treatment for that page.
+const h1Parts = h1.split(/\?\s*/);
+const h1Big = h1Parts[0];
+const h1Small = h1Parts[1] || "";
 ---
 <KmsLayout seo={seo} headerVariant="minimal" footerVariant="minimal">
 
   {/* HERO */}
   <section style={`background:linear-gradient(135deg, ${C.darkBg} 0%, ${C.blueDark} 100%);padding:4rem 0 3rem;min-height:85vh;display:flex;align-items:center`}>
     <div class="max-w-7xl mx-auto px-4 w-full">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
-        {/* Left — headline + incentive badge + copy + bullets + Call + trust badges */}
+        {/* Left — headline + copy + incentive badge + bullets + Call + trust badges */}
         <div>
-          <h1 style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.2rem, 5vw, 3.5rem);color:white;text-transform:uppercase;letter-spacing:-0.02em;line-height:1.05;margin-bottom:1.25rem">
-            {h1}
+          {/*
+            Two-size headline: first clause ("Blower Down") roughly doubled
+            at desktop widths, second clause ("We're Ready Right Now.")
+            left at the original size. The desktop-max nearly doubles
+            (3.5rem -> 7rem) but the mobile floor only bumps modestly
+            (2.2rem -> 2.6rem) — a literal, uncapped 2x on small phones
+            would overflow/wrap badly on longer names like "Centrifuge
+            Down". Flag it if the mobile size should go bigger anyway.
+          */}
+          <h1 style="margin-bottom:1.25rem">
+            <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.6rem, 11vw, 7rem);color:white;text-transform:uppercase;letter-spacing:-0.02em;line-height:0.95">{h1Big}</span>
+            {h1Small && (
+              <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.2rem, 5vw, 3.5rem);color:white;text-transform:uppercase;letter-spacing:-0.02em;line-height:1.05;margin-top:0.2rem">{h1Small}</span>
+            )}
           </h1>
 
+          <p style="font-family:'Source Sans 3',sans-serif;font-size:1.1rem;color:rgba(255,255,255,0.75);line-height:1.7;margin-bottom:1.5rem">
+            {subheading}
+          </p>
+
           {/*
-            $250/Value/Free incentive badge — moved here from the quote
-            panel and doubled in size per request (was 1.9rem/0.62rem/1.55rem
-            in the panel version; now clamp()'d up to roughly 2x at desktop
-            widths, with a mobile-safe floor so it never overflows the
-            column). This is now the primary incentive callout on the page;
-            the quote panel no longer repeats it to avoid showing the same
-            graphic twice in one viewport.
+            $250/Value/Free incentive badge — sits below the subheading now
+            (moved back per request). `lp-incentive-shake` (see <style>
+            below) periodically shakes the whole badge, settles, and shakes
+            again on a loop — respects prefers-reduced-motion.
           */}
-          <div style={`background:rgba(120,165,70,0.14);border:1px solid ${C.green};border-radius:4px;padding:1.5rem 1.75rem;margin-bottom:1.5rem`}>
+          <div class="lp-incentive-shake" style={`background:rgba(120,165,70,0.14);border:1px solid ${C.green};border-radius:4px;padding:1.5rem 1.75rem;margin-bottom:1.5rem`}>
             <div style="text-align:center;line-height:1;margin-bottom:0.75rem">
               <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(2.6rem, 7vw, 3.8rem);color:rgba(255,255,255,0.55);text-decoration:line-through;text-decoration-thickness:3px">$250</span>
               <span style="font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:clamp(0.75rem, 2vw, 1rem);letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin:0 0.5rem">Value</span>
@@ -67,10 +90,6 @@ const TESTIMONIALS_READY = true;
               Our competition charges $250+ for this service.
             </p>
           </div>
-
-          <p style="font-family:'Source Sans 3',sans-serif;font-size:1.1rem;color:rgba(255,255,255,0.75);line-height:1.7;margin-bottom:1.75rem">
-            {subheading}
-          </p>
 
           {/* Bullets trimmed to just equipment types + brands (lp-data.ts) —
               free pickup / warranty / 24-7 emergency are covered by the
@@ -147,10 +166,14 @@ const TESTIMONIALS_READY = true;
 
           <div id="quote" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2rem">
             <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.8rem, 4vw, 2.8rem);color:white;text-transform:uppercase;line-height:1.05;margin-bottom:0.5rem">Get Your Free Quote</div>
-            {/* Callback promise — doubled in size per request (was 0.9rem) */}
-            <p style="font-family:'Source Sans 3',sans-serif;font-size:1.8rem;line-height:1.3;color:rgba(255,255,255,0.75);margin-bottom:1.5rem;font-weight:600">
-              We call you back within 30 minutes. Or speak to a specialist right now — call <a href={KMS_PHONE_HREF} style={`color:${C.green};font-weight:800;text-decoration:none`}>{KMS_PHONE}</a>.
-            </p>
+            {/* Three separate lines instead of one flowing sentence, sized
+                to 2/3 of the previous 1.8rem (was doubled last round; this
+                dials it back down while keeping the 3-line split). */}
+            <div style="font-family:'Source Sans 3',sans-serif;font-size:1.2rem;line-height:1.4;color:rgba(255,255,255,0.75);margin-bottom:1.5rem;font-weight:600">
+              <div>We call you back within 30 minutes.</div>
+              <div>Speak to a specialist right now.</div>
+              <div>Call us at <a href={KMS_PHONE_HREF} style={`color:${C.green};font-weight:800;text-decoration:none`}>{KMS_PHONE}</a>.</div>
+            </div>
             <LpQuoteForm client:idle service={service} />
           </div>
         </div>
@@ -160,30 +183,22 @@ const TESTIMONIALS_READY = true;
   </section>
 
   {/*
-    Testimonials — full-width row of its own, moved out of the hero column
-    per request. Sits below the hero (form) section and above ROW 2 ("what's
-    included"). Deep forest-green background (NOT the brand's lighter
-    --green, #78A546 — that fails WCAG AA against white body text at this
-    font size, roughly 2.8:1) so white text reads at ~8.5:1 contrast,
-    comfortably past the 4.5:1 AA minimum for normal-size text. Cards get a
-    faint dark overlay + border for separation, not a full white card swap,
-    so it still reads as "text on green" rather than "white cards on green."
+    Testimonials — full-width row of its own, between the hero (form)
+    section and ROW 2 ("what's included"). Light background, dark text —
+    the earlier version used a dark-green section with white text; on
+    white/light this flips to standard dark-on-light so contrast is a
+    non-issue (no special-casing needed, unlike white-on-green which
+    failed WCAG AA at body-copy size). Carousel shows 2 at a time, slides
+    one step at a time on a loop, pauses + shows arrows on hover — see
+    LpTestimonialsCarousel.tsx for the implementation.
   */}
   {TESTIMONIALS_READY && (
-    <section style="background:linear-gradient(135deg, #3B5420 0%, #2E4319 100%);padding:3.5rem 0">
-      <div class="max-w-6xl mx-auto px-4">
-        <div style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.5rem, 3vw, 2.1rem);color:white;text-transform:uppercase;letter-spacing:-0.01em;margin-bottom:2rem">
+    <section class="bg-white" style="padding:3.5rem 0">
+      <div class="max-w-5xl mx-auto px-4">
+        <div style={`text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.5rem, 3vw, 2.1rem);color:${C.blueDark};text-transform:uppercase;letter-spacing:-0.01em;margin-bottom:2rem`}>
           What Customers Say
         </div>
-        <div class="flex flex-wrap justify-center gap-4">
-          {LP_TESTIMONIALS.map((t) => (
-            <div style="flex:1 1 260px;max-width:280px;background:rgba(0,0,0,0.14);border:1px solid rgba(255,255,255,0.18);border-radius:4px;padding:1.1rem">
-              <p style="font-family:'Source Sans 3',sans-serif;font-size:0.88rem;color:rgba(255,255,255,0.92);line-height:1.55;margin:0 0 0.75rem">"{t.quote}"</p>
-              <div style="font-family:'Barlow',sans-serif;font-weight:700;font-size:0.82rem;color:white">{t.name}</div>
-              <div style="font-family:'Source Sans 3',sans-serif;font-size:0.74rem;color:rgba(255,255,255,0.75)">{t.company}</div>
-            </div>
-          ))}
-        </div>
+        <LpTestimonialsCarousel client:visible testimonials={LP_TESTIMONIALS} />
       </div>
     </section>
   )}
@@ -278,8 +293,27 @@ const TESTIMONIALS_READY = true;
       animation: kwBlink 0.9s steps(1) infinite;
     }
     @keyframes kwBlink { 50% { opacity: 0; } }
+
+    /*
+      $250 incentive badge — shake, settle, shake again, forever. The
+      wiggle itself only occupies the first ~12% of a 3.5s cycle; the
+      remaining ~88% holds still at 0, which is what reads as "shakes,
+      settles down, shakes again" rather than a continuous jitter.
+    */
+    .lp-incentive-shake {
+      animation: incentiveShake 3.5s ease-in-out infinite;
+    }
+    @keyframes incentiveShake {
+      0%, 12%, 100% { transform: translateX(0) rotate(0deg); }
+      2%  { transform: translateX(-5px) rotate(-1.2deg); }
+      4%  { transform: translateX(5px) rotate(1.2deg); }
+      6%  { transform: translateX(-4px) rotate(-1deg); }
+      8%  { transform: translateX(4px) rotate(1deg); }
+      10% { transform: translateX(-2px) rotate(-0.5deg); }
+    }
     @media (prefers-reduced-motion: reduce) {
       .kw-cursor { animation: none; }
+      .lp-incentive-shake { animation: none; }
     }
   </style>
 
