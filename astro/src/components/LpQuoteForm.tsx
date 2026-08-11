@@ -17,7 +17,16 @@ interface Props {
 const C = { green: "#78A546", greenDark: "#5E8535" };
 
 export default function LpQuoteForm({ service }: Props) {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", interest: service, company: "" });
+  // NOTE: `hpFax` is the HONEYPOT, not a real field. It renders as name="fax",
+  // hidden off-screen. Bots auto-fill it; humans never see it. It used to be
+  // named `company`, which collided with the real Company field added below —
+  // that would have silently discarded every lead who typed their company
+  // (the API returns a FAKE success for honeypot hits). Never name the
+  // honeypot after a field a human might actually fill.
+  const [form, setForm] = useState({
+    name: "", email: "", phone: "", interest: service,
+    company: "", message: "", hpFax: "",
+  });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -28,9 +37,9 @@ export default function LpQuoteForm({ service }: Props) {
       setError("Please add your name and phone so we can call you back.");
       return;
     }
-    // Honeypot — "company" is hidden from real visitors via CSS below. Bots
-    // that auto-fill every field will fill this one; humans never see it.
-    if (form.company.trim()) {
+    // Honeypot — hidden from real visitors via CSS below. Bots that auto-fill
+    // every field will fill this one; humans never see it.
+    if (form.hpFax.trim()) {
       setSubmitting(true);
       setTimeout(() => setSubmitted(true), 600); // fake success, don't hit the API
       return;
@@ -47,8 +56,10 @@ export default function LpQuoteForm({ service }: Props) {
           email: form.email,
           phone: form.phone,
           interest: form.interest,
+          company: form.company,
+          message: form.message,
           source: typeof window !== "undefined" ? window.location.pathname : "",
-          hp: form.company,
+          hp: form.hpFax,
           ...getAdTracking(),
         }),
       });
@@ -113,12 +124,14 @@ export default function LpQuoteForm({ service }: Props) {
 
   return (
     <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-      {/* Honeypot — real users never see or reach this field */}
+      {/* Honeypot — real users never see or reach this field. name="fax" is
+          deliberate: bots fill it, humans never encounter it, and it cannot
+          collide with a real field. Do NOT rename this to a plausible field. */}
       <input
         type="text"
-        name="company"
-        value={form.company}
-        onChange={(e) => setForm({ ...form, company: e.target.value })}
+        name="fax"
+        value={form.hpFax}
+        onChange={(e) => setForm({ ...form, hpFax: e.target.value })}
         tabIndex={-1}
         autoComplete="off"
         aria-hidden="true"
@@ -126,6 +139,8 @@ export default function LpQuoteForm({ service }: Props) {
       />
       <input type="text" placeholder="Your Name *" required style={input}
              value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} autoComplete="name" />
+      <input type="text" placeholder="Company / Plant" style={input}
+             value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} autoComplete="organization" />
       <input type="email" placeholder="Email Address" style={input}
              value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} autoComplete="email" />
       <input type="tel" placeholder="Phone Number *" required style={input}
@@ -139,6 +154,13 @@ export default function LpQuoteForm({ service }: Props) {
         <option>Fluid &amp; Power End Repair</option>
         <option>Emergency Service</option>
       </select>
+      {/* Optional, but the single most useful field for judging lead quality —
+          gives the callback something concrete to work from. Never required. */}
+      <textarea placeholder="What's the equipment and what's it doing? (optional)"
+                rows={3}
+                style={{ ...input, resize: "vertical", fontFamily: "'Source Sans 3',sans-serif" }}
+                value={form.message}
+                onChange={(e) => setForm({ ...form, message: e.target.value })} />
       {error && (
         <p style={{ color: "#ff9a9a", fontFamily: "'Source Sans 3',sans-serif", fontSize: "0.82rem", margin: 0 }}>{error}</p>
       )}

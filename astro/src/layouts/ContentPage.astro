@@ -101,12 +101,23 @@ const { seo, h1, subheading, bgImage, breadcrumbs = [{ label: "Home", href: "/" 
   </div>
 </KmsLayout>
 
-<style>
+{/*
+  MUST be `is:global`. This block styles content delivered through <slot> from
+  the child page. Astro's default scoping stamps a data-astro-cid-* attribute
+  only on elements in THIS component's template — slotted markup never gets it,
+  so scoped rules match nothing and every content page renders as raw text.
+  Do not remove `is:global` without moving these styles into a global sheet.
+*/}
+<style is:global>
   .content-prose h2 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: clamp(1.5rem, 3vw, 2rem); color: #1E5080; text-transform: uppercase; letter-spacing: 0.01em; margin: 2rem 0 1rem; }
   .content-prose h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.2rem; color: #1E5080; text-transform: uppercase; letter-spacing: 0.02em; margin: 1.25rem 0 0.5rem; }
   .content-prose p  { font-family: 'Source Sans 3', sans-serif; font-size: 1.05rem; color: #1A2535; line-height: 1.8; margin-bottom: 1.25rem; }
-  .content-prose ul { font-family: 'Source Sans 3', sans-serif; font-size: 1.05rem; color: #1A2535; line-height: 1.7; margin-bottom: 1.25rem; padding-left: 1.5rem; }
+  .content-prose ul,
+  .content-prose ol { font-family: 'Source Sans 3', sans-serif; font-size: 1.05rem; color: #1A2535; line-height: 1.7; margin-bottom: 1.25rem; padding-left: 1.5rem; }
+  .content-prose ul { list-style: disc; }
+  .content-prose ol { list-style: decimal; }
   .content-prose li { margin-bottom: 0.5rem; }
+  .content-prose li::marker { color: #78A546; font-weight: 700; }
   .content-prose a  { color: #78A546; font-weight: 600; text-decoration: none; }
   .content-prose a:hover { text-decoration: underline; }
   .content-prose strong { color: #1E5080; }
