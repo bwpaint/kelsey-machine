@@ -18,9 +18,6 @@ export const LP_DATA = {
     bullets: [
       "All centrifuge types: decanter, disc-stack, basket, tubular",
       "All major brands: Alfa Laval, Andritz, GEA, Flottweg, Sharples",
-      "Free national pickup — we come to you",
-      "24-month written warranty on every repair",
-      "24/7 emergency service — answered every day of the year",
     ],
     row2: {
       headline: "What's Included in Every Centrifuge Repair",
@@ -52,8 +49,6 @@ export const LP_DATA = {
       "All gearbox types: parallel shaft, planetary, bevel, worm, helical",
       "All major brands: Dodge, Rexnord, Falk, SEW-Eurodrive, Sumitomo",
       "In-house machining — precision restoration to OEM tolerances",
-      "24-month written warranty on every repair",
-      "24/7 emergency service — answered every day of the year",
     ],
     row2: {
       headline: "What's Included in Every Gearbox Repair",
@@ -84,9 +79,6 @@ export const LP_DATA = {
     bullets: [
       "All blower types: rotary lobe, centrifugal, radial, axial, screw",
       "All major brands: Roots/Dresser, Tuthill, Gardner Denver, Kaeser, Aerzen",
-      "Free national pickup — we come to you",
-      "24-month written warranty on every repair",
-      "24/7 emergency service — answered every day of the year",
     ],
     row2: {
       headline: "What's Included in Every Blower Repair",
@@ -117,9 +109,6 @@ export const LP_DATA = {
     bullets: [
       "All compressor types: centrifugal, reciprocating, rotary screw, vane, scroll",
       "All major brands: Ingersoll Rand, Atlas Copco, Gardner Denver, Dresser-Rand",
-      "Free national pickup — we come to you",
-      "24-month written warranty on every repair",
-      "24/7 emergency service — answered every day of the year",
     ],
     row2: {
       headline: "What's Included in Every Compressor Repair",
@@ -150,9 +139,6 @@ export const LP_DATA = {
     bullets: [
       "Fluid end and power end rebuild for all major mud pump brands",
       "Oil-filled tool repair and recertification",
-      "Free national pickup — we come to you",
-      "24-month written warranty on every repair",
-      "24/7 emergency service — answered every day of the year",
     ],
     row2: {
       headline: "What's Included in Every Fluid/Power End Repair",

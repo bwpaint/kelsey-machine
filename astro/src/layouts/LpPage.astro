@@ -39,18 +39,42 @@ const TESTIMONIALS_READY = true;
     <div class="max-w-7xl mx-auto px-4 w-full">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-        {/* Left — copy + bullets + CTAs + trust badges */}
+        {/* Left — headline + incentive badge + copy + bullets + Call + trust badges */}
         <div>
-          <div class="inline-block mb-5" style={`background:${C.green};color:white;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.3rem 0.75rem;border-radius:2px`}>
-            Kelsey Machine Services — Texas-Based, Nationwide
-          </div>
           <h1 style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.2rem, 5vw, 3.5rem);color:white;text-transform:uppercase;letter-spacing:-0.02em;line-height:1.05;margin-bottom:1.25rem">
             {h1}
           </h1>
+
+          {/*
+            $250/Value/Free incentive badge — moved here from the quote
+            panel and doubled in size per request (was 1.9rem/0.62rem/1.55rem
+            in the panel version; now clamp()'d up to roughly 2x at desktop
+            widths, with a mobile-safe floor so it never overflows the
+            column). This is now the primary incentive callout on the page;
+            the quote panel no longer repeats it to avoid showing the same
+            graphic twice in one viewport.
+          */}
+          <div style={`background:rgba(120,165,70,0.14);border:1px solid ${C.green};border-radius:4px;padding:1.5rem 1.75rem;margin-bottom:1.5rem`}>
+            <div style="text-align:center;line-height:1;margin-bottom:0.75rem">
+              <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(2.6rem, 7vw, 3.8rem);color:rgba(255,255,255,0.55);text-decoration:line-through;text-decoration-thickness:3px">$250</span>
+              <span style="font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:clamp(0.75rem, 2vw, 1rem);letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin:0 0.5rem">Value</span>
+              <span style={`font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.2rem, 6vw, 3.1rem);letter-spacing:0.02em;text-transform:uppercase;color:${C.green}`}>Free!</span>
+            </div>
+            <p style="font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:1.05rem;color:white;line-height:1.4;margin:0;text-align:center">
+              Written failure analysis with root cause identification — free.
+            </p>
+            <p style="font-family:'Source Sans 3',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.5);line-height:1.4;margin:0.4rem 0 0;text-align:center">
+              Our competition charges $250+ for this service.
+            </p>
+          </div>
+
           <p style="font-family:'Source Sans 3',sans-serif;font-size:1.1rem;color:rgba(255,255,255,0.75);line-height:1.7;margin-bottom:1.75rem">
             {subheading}
           </p>
 
+          {/* Bullets trimmed to just equipment types + brands (lp-data.ts) —
+              free pickup / warranty / 24-7 emergency are covered by the
+              trust-badge tiles below, so listing them twice was redundant. */}
           <ul class="list-none p-0 m-0 flex flex-col gap-2.5 mb-8">
             {bullets.map((b) => (
               <li class="flex items-center gap-2.5">
@@ -60,15 +84,13 @@ const TESTIMONIALS_READY = true;
             ))}
           </ul>
 
-          <div class="flex flex-wrap gap-3 mb-8">
+          {/* Single Call CTA — "Get Free Quote" and "24/7 Emergency" buttons
+              removed from here (24/7 is already a trust-badge tile below;
+              "Get Free Quote" is still reachable via the sticky mobile bar
+              and ROW 3 below). tel: link, so it's tap-to-call on mobile. */}
+          <div class="mb-8">
             <a href={KMS_PHONE_HREF} class="inline-flex items-center gap-2 text-white no-underline" style={`background:${C.green};font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.9rem 2rem;border-radius:2px`}>
               <Icon name="phone" size={18} /> Call {KMS_PHONE}
-            </a>
-            <a href="#quote" class="inline-flex items-center gap-2 text-white no-underline border-2 border-white/30" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.8rem 2rem;border-radius:2px">
-              Get Free Quote
-            </a>
-            <a href={KMS_PHONE_HREF} class="inline-flex items-center gap-2 text-white no-underline" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.85rem 2rem;border-radius:2px">
-              <Icon name="clock" size={18} /> 24/7 Emergency
             </a>
           </div>
 
@@ -87,32 +109,6 @@ const TESTIMONIALS_READY = true;
               </div>
             ))}
           </div>
-
-          {/*
-            Testimonial strip — gated behind TESTIMONIALS_READY (see const
-            above). LP_TESTIMONIALS in lp-data.ts is currently all
-            PLACEHOLDER content; do not flip this to true until those
-            entries hold real, attributable customer quotes. Horizontal
-            scroll (not stacked full-width cards) so five testimonials
-            don't balloon hero height, especially on mobile where this
-            section renders above a long page already.
-          */}
-          {TESTIMONIALS_READY && (
-            <div style="margin-top:1.75rem">
-              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:0.6rem">
-                What Customers Say
-              </div>
-              <div class="flex gap-3 overflow-x-auto" style="scrollbar-width:thin;padding-bottom:0.3rem">
-                {LP_TESTIMONIALS.map((t) => (
-                  <div style="flex:0 0 230px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:0.9rem">
-                    <p style="font-family:'Source Sans 3',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.75);line-height:1.5;margin:0 0 0.6rem">"{t.quote}"</p>
-                    <div style={`font-family:'Barlow',sans-serif;font-weight:700;font-size:0.78rem;color:${C.green}`}>{t.name}</div>
-                    <div style="font-family:'Source Sans 3',sans-serif;font-size:0.74rem;color:rgba(255,255,255,0.45)">{t.company}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Right — message-match banner + focused quote form */}
@@ -151,38 +147,10 @@ const TESTIMONIALS_READY = true;
 
           <div id="quote" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2rem">
             <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.8rem, 4vw, 2.8rem);color:white;text-transform:uppercase;line-height:1.05;margin-bottom:0.5rem">Get Your Free Quote</div>
-            <p style="font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.6);margin-bottom:1rem">
-              We call you back within 30 minutes. Or speak to a specialist right now — call <a href={KMS_PHONE_HREF} style={`color:${C.green};font-weight:700;text-decoration:none`}>{KMS_PHONE}</a>.
+            {/* Callback promise — doubled in size per request (was 0.9rem) */}
+            <p style="font-family:'Source Sans 3',sans-serif;font-size:1.8rem;line-height:1.3;color:rgba(255,255,255,0.75);margin-bottom:1.5rem;font-weight:600">
+              We call you back within 30 minutes. Or speak to a specialist right now — call <a href={KMS_PHONE_HREF} style={`color:${C.green};font-weight:800;text-decoration:none`}>{KMS_PHONE}</a>.
             </p>
-            {/*
-              Incentive callout — reframes something KMS already does for
-              free (written failure analysis, listed in row2.items below)
-              as a stated reason to convert right now, quantified against
-              what competitors charge for the same thing. Costs nothing new
-              to deliver; it just wasn't being said out loud at the point of
-              conversion. See LP-COPY-CRO-RECOMMENDATIONS-2026-08-11.md.
-
-              Two-column badge layout: left is the price-anchor visual
-              ($250, struck through, "Value" label, then a bold green
-              "Free!" payoff) — right is the plain-English description plus
-              a smaller fine-print line naming the competitor cost. Flex
-              row so it reads left-to-right as one idea, not two.
-            */}
-            <div style={`background:rgba(120,165,70,0.12);border:1px solid ${C.green};border-radius:3px;padding:1rem 1.1rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.1rem`}>
-              <div style="flex-shrink:0;text-align:center;line-height:1">
-                <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.9rem;color:rgba(255,255,255,0.55);text-decoration:line-through;text-decoration-thickness:2px">$250</div>
-                <div style="font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin:0.15rem 0 0.2rem">Value</div>
-                <div style={`font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.55rem;letter-spacing:0.02em;text-transform:uppercase;color:${C.green}`}>Free!</div>
-              </div>
-              <div style="border-left:1px solid rgba(255,255,255,0.15);padding-left:1.1rem">
-                <p style="font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:0.92rem;color:white;line-height:1.4;margin:0">
-                  Written failure analysis with root cause identification — free.
-                </p>
-                <p style="font-family:'Source Sans 3',sans-serif;font-size:0.74rem;color:rgba(255,255,255,0.5);line-height:1.4;margin:0.4rem 0 0">
-                  Our competition charges $250+ for this service.
-                </p>
-              </div>
-            </div>
             <LpQuoteForm client:idle service={service} />
           </div>
         </div>
@@ -190,6 +158,35 @@ const TESTIMONIALS_READY = true;
       </div>
     </div>
   </section>
+
+  {/*
+    Testimonials — full-width row of its own, moved out of the hero column
+    per request. Sits below the hero (form) section and above ROW 2 ("what's
+    included"). Deep forest-green background (NOT the brand's lighter
+    --green, #78A546 — that fails WCAG AA against white body text at this
+    font size, roughly 2.8:1) so white text reads at ~8.5:1 contrast,
+    comfortably past the 4.5:1 AA minimum for normal-size text. Cards get a
+    faint dark overlay + border for separation, not a full white card swap,
+    so it still reads as "text on green" rather than "white cards on green."
+  */}
+  {TESTIMONIALS_READY && (
+    <section style="background:linear-gradient(135deg, #3B5420 0%, #2E4319 100%);padding:3.5rem 0">
+      <div class="max-w-6xl mx-auto px-4">
+        <div style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.5rem, 3vw, 2.1rem);color:white;text-transform:uppercase;letter-spacing:-0.01em;margin-bottom:2rem">
+          What Customers Say
+        </div>
+        <div class="flex flex-wrap justify-center gap-4">
+          {LP_TESTIMONIALS.map((t) => (
+            <div style="flex:1 1 260px;max-width:280px;background:rgba(0,0,0,0.14);border:1px solid rgba(255,255,255,0.18);border-radius:4px;padding:1.1rem">
+              <p style="font-family:'Source Sans 3',sans-serif;font-size:0.88rem;color:rgba(255,255,255,0.92);line-height:1.55;margin:0 0 0.75rem">"{t.quote}"</p>
+              <div style="font-family:'Barlow',sans-serif;font-weight:700;font-size:0.82rem;color:white">{t.name}</div>
+              <div style="font-family:'Source Sans 3',sans-serif;font-size:0.74rem;color:rgba(255,255,255,0.75)">{t.company}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 
   {/*
     Scoped to this component only (not slotted content, so Astro's normal
