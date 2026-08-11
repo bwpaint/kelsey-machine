@@ -16,6 +16,7 @@
  *   - G-FJZRMGRQCD     Google Analytics 4 measurement ID
  */
 import Header from "@/components/Header.astro";
+import MinimalHeader from "@/components/MinimalHeader.astro";
 import Footer from "@/components/Footer.astro";
 import type { PageMeta } from "@/lib/rm";
 
@@ -34,9 +35,14 @@ import "@fontsource/source-sans-3/700.css";
 
 export interface Props {
   seo: PageMeta;
+  // "minimal" = centered logo only, no nav links, no utility bar, no
+  // competing CTA button — for PPC landing pages, where every nav link is
+  // an exit from the single conversion path. Defaults to the full site
+  // header everywhere else. See MinimalHeader.astro.
+  headerVariant?: "full" | "minimal";
 }
 
-const { seo } = Astro.props;
+const { seo, headerVariant = "full" } = Astro.props;
 const canonical = seo.canonical || new URL(Astro.url.pathname, Astro.site).href;
 ---
 <!doctype html>
@@ -84,7 +90,7 @@ const canonical = seo.canonical || new URL(Astro.url.pathname, Astro.site).href;
     <slot name="head" />
   </head>
   <body class="min-h-screen bg-white text-kms-textDark antialiased" style="font-family:'Source Sans 3',sans-serif">
-    <Header />
+    {headerVariant === "minimal" ? <MinimalHeader /> : <Header />}
     <main>
       <slot />
     </main>

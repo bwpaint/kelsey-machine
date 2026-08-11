@@ -1,0 +1,25 @@
+---
+/**
+ * Minimal PPC landing-page header — logo only, centered, no navigation.
+ *
+ * Landing pages exist to do ONE thing: get the visitor to fill out the
+ * form (or call). Every nav link, dropdown, and secondary CTA in the
+ * standard site Header.astro is a way for that visitor to leave before
+ * converting. This strips all of that out and keeps just the logo for
+ * brand trust — still linked to "/" so a visitor who genuinely wants to
+ * browse the main site isn't trapped, but nothing here competes with the
+ * page's own CTAs for attention.
+ *
+ * Used only where KmsLayout is given headerVariant="minimal" (currently
+ * LpPage.astro, i.e. the 5 PPC landing pages). Header.astro is completely
+ * untouched — this is a separate, additive component.
+ */
+import { KMS_LOGO } from "@/lib/brand";
+---
+<div class="bg-black" style="padding:1rem 0">
+  <div class="max-w-7xl mx-auto px-4 flex justify-center">
+    <a href="/" aria-label="Kelsey Machine Services home">
+      <img src={KMS_LOGO} alt="Kelsey Machine Services" style="height:48px;width:auto" />
+    </a>
+  </div>
+</div>

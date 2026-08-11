@@ -27,7 +27,7 @@ export interface Props {
 
 const { seo, h1, subheading, service, bullets, row2, row3 } = Astro.props;
 ---
-<KmsLayout seo={seo}>
+<KmsLayout seo={seo} headerVariant="minimal">
 
   {/* HERO */}
   <section style={`background:linear-gradient(135deg, ${C.darkBg} 0%, ${C.blueDark} 100%);padding:4rem 0 3rem;min-height:85vh;display:flex;align-items:center`}>
@@ -107,15 +107,19 @@ const { seo, h1, subheading, service, bullets, row2, row3 } = Astro.props;
             (keyword, utm_term, adkeyword, ad_keyword) — keep both in sync if
             that list ever changes.
           */}
-          <div id="kw-match" hidden style={`background:rgba(120,165,70,0.14);border:1px solid ${C.green};border-radius:4px;padding:0.85rem 1.1rem;margin-bottom:1rem;text-align:center`}>
-            <span style={`color:${C.green};display:inline-flex;vertical-align:middle;margin-right:0.4rem`}><Icon name="check-circle" size={16} /></span>
-            <span style="font-family:'Source Sans 3',sans-serif;font-size:0.92rem;color:white">
-              Searching for <strong id="kw-phrase" style={`color:${C.green}`}></strong>? You're in the right place.
-            </span>
+          <div id="kw-match" hidden class="kw-match">
+            <div class="kw-match__top">
+              <span class="kw-match__check"><Icon name="check-circle" size={26} /></span>
+              <span class="kw-match__label">Searching For:</span>
+            </div>
+            <div class="kw-match__phrase-wrap">
+              <span id="kw-phrase" class="kw-match__phrase"></span><span class="kw-cursor" aria-hidden="true">|</span>
+            </div>
+            <div class="kw-match__label">You're In The Right Place!</div>
           </div>
 
           <div id="quote" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2rem">
-            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.4rem;color:white;text-transform:uppercase;margin-bottom:0.4rem">Get Your Free Quote</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.8rem, 4vw, 2.8rem);color:white;text-transform:uppercase;line-height:1.05;margin-bottom:0.5rem">Get Your Free Quote</div>
             <p style="font-family:'Source Sans 3',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.55);margin-bottom:1.25rem">We respond within one business hour. Emergency? Call us directly.</p>
             <LpQuoteForm client:idle service={service} />
           </div>
@@ -124,6 +128,84 @@ const { seo, h1, subheading, service, bullets, row2, row3 } = Astro.props;
       </div>
     </div>
   </section>
+
+  {/*
+    Scoped to this component only (not slotted content, so Astro's normal
+    style scoping applies correctly here — see ContentPage.astro for why
+    that distinction matters).
+
+    --kw-label sets the small-text size; the big phrase is defined as
+    calc(--kw-label * 3), so the "3x" ratio holds exactly at every
+    breakpoint by construction rather than by two separately-tuned clamps
+    drifting apart. At the width where the 2-column grid is active (lg+,
+    1024px+), --kw-label lands at 0.85rem -> phrase 2.55rem, which is ~73%
+    of the H1's max size (3.5rem) — close to the requested 75%. A single
+    static ratio can't hit exactly 75% of a fluid clamp() at every viewport
+    simultaneously as 3x a label size; this is the closest consistent
+    compromise. Adjust --kw-label directly if the balance needs tuning.
+  */}
+  <style>
+    .kw-match {
+      --kw-label: 0.72rem;
+      background: rgba(120,165,70,0.14);
+      border: 1px solid #78A546;
+      border-radius: 6px;
+      padding: 1.1rem 1.25rem 1.3rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    @media (min-width: 1024px) {
+      /* Matches the lg: breakpoint where the hero grid goes 2-column
+         (grid-cols-1 lg:grid-cols-2 below) — the only width where this
+         box sits directly beside the H1 for a visible size comparison. */
+      .kw-match { --kw-label: 0.85rem; }
+    }
+    .kw-match__top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.3rem;
+    }
+    .kw-match__check {
+      color: #78A546;
+      display: inline-flex;
+      flex-shrink: 0;
+    }
+    .kw-match__label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: var(--kw-label);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.8);
+    }
+    .kw-match__phrase-wrap {
+      line-height: 1.1;
+      margin: 0.2rem 0 0.55rem;
+      word-break: break-word;
+    }
+    .kw-match__phrase {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: calc(var(--kw-label) * 3);
+      color: #78A546;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+    }
+    .kw-cursor {
+      display: inline-block;
+      font-weight: 400;
+      font-size: calc(var(--kw-label) * 3);
+      color: #78A546;
+      margin-left: 2px;
+      animation: kwBlink 0.9s steps(1) infinite;
+    }
+    @keyframes kwBlink { 50% { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) {
+      .kw-cursor { animation: none; }
+    }
+  </style>
 
   <script is:inline>
     (function () {
@@ -155,10 +237,27 @@ const { seo, h1, subheading, service, bullets, row2, row3 } = Astro.props;
 
       var phraseEl = document.getElementById("kw-phrase");
       var boxEl = document.getElementById("kw-match");
-      if (phraseEl && boxEl) {
-        phraseEl.textContent = '"' + clean + '"';
-        boxEl.hidden = false;
+      if (!phraseEl || !boxEl) return;
+
+      boxEl.hidden = false;
+
+      // Typewriter reveal — keeps the eye on the box at the exact moment a
+      // paid-search visitor lands, reinforcing "this page knows what you
+      // searched for." Respects prefers-reduced-motion: users with that OS
+      // preference get the full phrase instantly, no animation.
+      var reduceMotion = window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduceMotion) {
+        phraseEl.textContent = clean;
+        return;
       }
+      var i = 0;
+      var speed = 38; // ms per character
+      (function typeNext() {
+        phraseEl.textContent = clean.slice(0, i);
+        i++;
+        if (i <= clean.length) setTimeout(typeNext, speed);
+      })();
     })();
   </script>
 
@@ -223,5 +322,28 @@ const { seo, h1, subheading, service, bullets, row2, row3 } = Astro.props;
       </div>
     </div>
   </section>
+
+  {/*
+    Sticky mobile call bar. Not present at lg+ (1024px+) — desktop already
+    has always-visible CTAs in the hero without needing a persistent bar.
+
+    Why: PPC traffic on "equipment down" queries skews mobile and urgent.
+    Once a visitor scrolls past the hero, the only way back to a CTA today
+    is scrolling back up — friction this removes. This is one of the
+    highest-ROI, lowest-effort CRO patterns for local/emergency-service
+    lead gen; pure CSS/HTML, no new dependency.
+
+    The spacer div below reserves equivalent height at the bottom of the
+    page so this fixed-position bar doesn't sit on top of the footer.
+  */}
+  <div class="lg:hidden" style={`position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;background:${C.darkBg};border-top:2px solid ${C.green};box-shadow:0 -4px 16px rgba(0,0,0,0.3);padding-bottom:env(safe-area-inset-bottom)`}>
+    <a href={KMS_PHONE_HREF} class="flex-1 flex items-center justify-center gap-2 text-white no-underline" style={`background:${C.green};font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1rem;letter-spacing:0.04em;text-transform:uppercase;padding:0.9rem 0.5rem`}>
+      <Icon name="phone" size={18} /> Call Now
+    </a>
+    <a href="#quote" class="flex-1 flex items-center justify-center gap-2 text-white no-underline" style="background:rgba(255,255,255,0.08);border-left:1px solid rgba(255,255,255,0.15);font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1rem;letter-spacing:0.04em;text-transform:uppercase;padding:0.9rem 0.5rem">
+      Get Free Quote
+    </a>
+  </div>
+  <div class="lg:hidden" style="height:64px" aria-hidden="true"></div>
 
 </KmsLayout>
