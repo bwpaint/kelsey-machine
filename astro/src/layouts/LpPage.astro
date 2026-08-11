@@ -34,13 +34,28 @@ const { seo, h1, subheading, service, bullets, row2, row3 } = Astro.props;
 const TESTIMONIALS_READY = true;
 
 // h1 is authored in lp-data.ts as "<Equipment> Down? We're Ready Right
-// Now." — split on "? " so the first clause can render much larger than
-// the second (per request). If a future h1 doesn't contain "? ", h1Small
-// comes back empty and the whole string just renders as the one big line
-// — not a crash, just loses the two-size treatment for that page.
-const h1Parts = h1.split(/\?\s*/);
+// Now." — split AFTER the "?" (lookbehind keeps the "?" attached to the
+// first clause: "Blower Down?", not "Blower Down") so the first clause
+// can render much larger than the second. If a future h1 doesn't contain
+// "?", h1Small comes back empty and the whole string just renders as the
+// one big line — not a crash, just loses the two-size treatment.
+const h1Parts = h1.split(/(?<=\?)\s*/);
 const h1Big = h1Parts[0];
 const h1Small = h1Parts[1] || "";
+
+// Font-size for the big headline is computed per-page from h1Big's actual
+// character count, not a flat clamp() — a fixed vw-based size that works
+// for "Rig Down?" (9 chars) will either be too small for "Compressor
+// Down?" (16 chars) or wrap it. 0.58 is an approximate average glyph
+// advance width (as a fraction of font-size) for Barlow Condensed at 900
+// weight, uppercase — deliberately a little conservative (slightly
+// underfills rather than risking overflow/wrap if the estimate is off).
+// container-type:inline-size on the wrapping column (below) makes `cqw`
+// relative to that column's actual rendered width, not the viewport, so
+// this sizes correctly whether the column is half the screen (desktop
+// 2-col) or the full width (mobile, stacked).
+const H1_BIG_CHAR_WIDTH = 0.58;
+const h1BigFontSize = `clamp(2.2rem, calc(100cqw / ${(h1Big.length * H1_BIG_CHAR_WIDTH).toFixed(2)}), 7.5rem)`;
 ---
 <KmsLayout seo={seo} headerVariant="minimal" footerVariant="minimal">
 
@@ -49,19 +64,21 @@ const h1Small = h1Parts[1] || "";
     <div class="max-w-7xl mx-auto px-4 w-full">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
-        {/* Left — headline + copy + incentive badge + bullets + Call + trust badges */}
-        <div>
+        {/* Left — headline + copy + incentive badge + bullets + Call + trust badges.
+            container-type:inline-size makes the h1BigFontSize `cqw` calc
+            (above) relative to THIS column's rendered width. */}
+        <div style="container-type:inline-size">
           {/*
-            Two-size headline: first clause ("Blower Down") roughly doubled
-            at desktop widths, second clause ("We're Ready Right Now.")
-            left at the original size. The desktop-max nearly doubles
-            (3.5rem -> 7rem) but the mobile floor only bumps modestly
-            (2.2rem -> 2.6rem) — a literal, uncapped 2x on small phones
-            would overflow/wrap badly on longer names like "Centrifuge
-            Down". Flag it if the mobile size should go bigger anyway.
+            Two-size headline: first clause ("Blower Down?", "?" kept
+            attached) sized via h1BigFontSize — a per-page calc() based on
+            character count, not a flat clamp(), so it always fills the
+            column width without wrapping regardless of how long the
+            equipment name is. white-space:nowrap is a safety net in case
+            the character-width estimate runs a little hot. Second clause
+            ("We're Ready Right Now.") stays at the original fixed size.
           */}
           <h1 style="margin-bottom:1.25rem">
-            <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.6rem, 11vw, 7rem);color:white;text-transform:uppercase;letter-spacing:-0.02em;line-height:0.95">{h1Big}</span>
+            <span style={`display:block;white-space:nowrap;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:${h1BigFontSize};color:white;text-transform:uppercase;letter-spacing:-0.02em;line-height:0.95`}>{h1Big}</span>
             {h1Small && (
               <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.2rem, 5vw, 3.5rem);color:white;text-transform:uppercase;letter-spacing:-0.02em;line-height:1.05;margin-top:0.2rem">{h1Small}</span>
             )}
@@ -83,10 +100,10 @@ const h1Small = h1Parts[1] || "";
               <span style="font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:clamp(0.75rem, 2vw, 1rem);letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin:0 0.5rem">Value</span>
               <span style={`font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.2rem, 6vw, 3.1rem);letter-spacing:0.02em;text-transform:uppercase;color:${C.green}`}>Free!</span>
             </div>
-            <p style="font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:1.05rem;color:white;line-height:1.4;margin:0;text-align:center">
+            <p style="font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:2.1rem;color:white;line-height:1.25;margin:0;text-align:center">
               Written failure analysis with root cause identification — free.
             </p>
-            <p style="font-family:'Source Sans 3',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.5);line-height:1.4;margin:0.4rem 0 0;text-align:center">
+            <p style="font-family:'Source Sans 3',sans-serif;font-size:1.6rem;color:rgba(255,255,255,0.5);line-height:1.3;margin:0.4rem 0 0;text-align:center">
               Our competition charges $250+ for this service.
             </p>
           </div>
@@ -445,6 +462,12 @@ const h1Small = h1Parts[1] || "";
 
     The spacer div below reserves equivalent height at the bottom of the
     page so this fixed-position bar doesn't sit on top of the footer.
+    IMPORTANT: the bar itself adds `padding-bottom:env(safe-area-inset-bottom)`
+    for the iPhone home-indicator area, so the spacer must reserve that same
+    extra amount — otherwise on notched phones the bar renders taller than
+    the flat 64px spacer, overlaps upward into it, and eats into the
+    footer's own bottom padding (logo looked like it "butted up" against
+    the button — this is the fix for that).
   */}
   <div class="lg:hidden" style={`position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;background:${C.darkBg};border-top:2px solid ${C.green};box-shadow:0 -4px 16px rgba(0,0,0,0.3);padding-bottom:env(safe-area-inset-bottom)`}>
     <a href={KMS_PHONE_HREF} class="flex-1 flex items-center justify-center gap-2 text-white no-underline" style={`background:${C.green};font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1rem;letter-spacing:0.04em;text-transform:uppercase;padding:0.9rem 0.5rem`}>
@@ -454,6 +477,6 @@ const h1Small = h1Parts[1] || "";
       Get Free Quote
     </a>
   </div>
-  <div class="lg:hidden" style="height:64px" aria-hidden="true"></div>
+  <div class="lg:hidden" style="height:calc(64px + env(safe-area-inset-bottom, 0px))" aria-hidden="true"></div>
 
 </KmsLayout>
