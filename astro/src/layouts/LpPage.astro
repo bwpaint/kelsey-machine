@@ -17,14 +17,6 @@ import { C, KMS_PHONE, KMS_PHONE_HREF } from "@/lib/brand";
 import { LP_TESTIMONIALS } from "@/lib/lp-data";
 import type { PageMeta } from "@/lib/rm";
 
-// Self-hosted (matches KmsLayout's @fontsource pattern — no Google Fonts
-// round-trip). Scoped to this LP layout only, not the global KmsLayout,
-// since it's a single decorative flourish word ("Value" in the $250
-// badge) rather than a font used site-wide. Yellowtail = bold brush
-// script, evocative of old newspaper/print-ad signage ("SALE!", "Value!")
-// rather than a formal wedding-invite script.
-import "@fontsource/yellowtail/400.css";
-
 export interface Props {
   seo: PageMeta;
   h1: string;
@@ -66,6 +58,24 @@ const H1_BIG_CHAR_WIDTH = 0.58;
 const h1BigFontSize = `clamp(2.2rem, calc(100cqw / ${(h1Big.length * H1_BIG_CHAR_WIDTH).toFixed(2)}), 7.5rem)`;
 ---
 <KmsLayout seo={seo} headerVariant="minimal" footerVariant="minimal">
+
+  {/*
+    Yellowtail (script font for the "Value" flourish in the $250 badge
+    below) loaded via Google Fonts here rather than self-hosted via
+    @fontsource like the rest of the site's fonts — @fontsource requires
+    adding a package to package.json, which needs pnpm-lock.yaml
+    regenerated to match or Vercel's frozen-lockfile CI install fails
+    (hit this directly: 2026-08-11 deploy broke on ERR_PNPM_OUTDATED_LOCKFILE).
+    A plain <link> needs no lockfile at all. Small one-time perf trade-off
+    (one extra font request) for one decorative word on 5 pages, in
+    exchange for a change that can't break the build. Scoped to this LP
+    layout only via slot="head", not the global KmsLayout.
+  */}
+  <Fragment slot="head">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet" />
+  </Fragment>
 
   {/* HERO */}
   <section style={`background:linear-gradient(135deg, ${C.darkBg} 0%, ${C.blueDark} 100%);padding:4rem 0 3rem;min-height:85vh;display:flex;align-items:center`}>
