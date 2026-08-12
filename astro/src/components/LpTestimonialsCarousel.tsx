@@ -1,8 +1,10 @@
 /**
  * LpTestimonialsCarousel — React island, PPC landing pages only.
  *
- * Continuous, seamless, bidirectional carousel showing 2 testimonials at
- * a time. Auto-advances one card-step on a timer and loops forever;
+ * Continuous, seamless, bidirectional carousel. Shows 3 testimonials at
+ * a time on desktop/tablet, 1 at a time on mobile (<768px) — matches the
+ * hero/ROW 2 content width (max-w-7xl) now that it's 3 cards wide rather
+ * than 2. Auto-advances one card-step on a timer and loops forever;
  * hovering pauses autoplay and reveals prev/next arrows so a visitor can
  * step back or forward manually.
  *
@@ -14,14 +16,29 @@
  * green accent) intentionally mirrors the homepage Testimonials.tsx so
  * the two don't feel like different components.
  *
- * Infinite loop technique: the real testimonial list is padded with 2
- * clones on each end. Autoplay/arrows just increment or decrement an
- * index. Once the index slides onto a clone (which renders identical
- * content to a real position), a timer fires after the CSS transition
- * finishes, disables the transition for one frame, and silently snaps
- * the index back to the equivalent real position — invisible to the
- * visitor because the clone and the real card look the same. Standard
- * technique for this kind of marquee-style carousel.
+ * Infinite loop technique: the real testimonial list is padded with
+ * `visibleCount` clones on each end (enough to fill one full viewport's
+ * worth of cards past the wrap boundary). Autoplay/arrows just increment
+ * or decrement an index. Once the index slides onto a clone (which
+ * renders identical content to a real position), a timer fires after the
+ * CSS transition finishes, disables the transition for one frame, and
+ * silently snaps the index back to the equivalent real position —
+ * invisible to the visitor because the clone and the real card look the
+ * same. Standard technique for this kind of marquee-style carousel.
+ *
+ * Responsive visible-count: card flex-basis is always `100/track.length`
+ * of the TRACK's own width (constant regardless of how many are visible),
+ * and translateX steps by that same `100/track.length` each index step —
+ * both automatically equal exactly "one card" no matter how wide the
+ * track is. The ONLY thing that changes with visibleCount is the track's
+ * own width relative to the viewport (`track.length * (100/visibleCount)%`),
+ * so bumping visibleCount from 1 to 3 needs just that one formula to
+ * change. visibleCount starts at 3 (SSR-safe desktop default — this is a
+ * client:visible island, so the server-rendered markup has no `window`)
+ * and corrects itself client-side in a useEffect via matchMedia, which
+ * causes one harmless reflow on mobile right after hydration rather than
+ * a hydration-mismatch warning from guessing window width during the
+ * render that has to match SSR output.
  */
 import { useEffect, useRef, useState } from "react";
 
@@ -37,8 +54,8 @@ interface Props {
 }
 
 const C = { blueDark: "#1E5080", green: "#78A546", lightBg: "#F4F7FA" };
-const CLONE_COUNT = 2;
 const TRANSITION_MS = 600;
+const MOBILE_QUERY = "(max-width: 767px)";
 
 function Star() {
   return (
@@ -59,10 +76,24 @@ function Chevron({ dir }: { dir: "left" | "right" }) {
 
 export default function LpTestimonialsCarousel({ testimonials, intervalMs = 3800 }: Props) {
   const n = testimonials.length;
-  // With fewer than 3 real testimonials the clone math can't fill 2
-  // visible slots without an obvious repeat — fall back to a static
-  // (non-sliding) row instead of a broken carousel.
-  const canCarousel = n >= 3;
+
+  // Desktop default for the SSR pass (see header comment) — corrected to
+  // 1 on mobile right after hydration via matchMedia.
+  const [visibleCount, setVisibleCount] = useState(3);
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_QUERY);
+    const update = () => setVisibleCount(mq.matches ? 1 : 3);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const CLONE_COUNT = Math.min(visibleCount, n);
+  // With too few real testimonials to fill even one full screen's worth,
+  // the clone math can't fill the visible slots without an obvious
+  // repeat — fall back to a static (non-sliding) row instead of a
+  // broken carousel.
+  const canCarousel = n > visibleCount;
 
   const track = canCarousel
     ? [...testimonials.slice(-CLONE_COUNT), ...testimonials, ...testimonials.slice(0, CLONE_COUNT)]
@@ -73,6 +104,16 @@ export default function LpTestimonialsCarousel({ testimonials, intervalMs = 3800
   const [animate, setAnimate] = useState(true);
   const [hovering, setHovering] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // visibleCount changing (mobile<->desktop resize) changes the clone
+  // padding and thus what index means — reset to the start rather than
+  // trying to preserve position across a re-shaped track. Rare in
+  // practice (most visitors don't resize across the breakpoint mid-view).
+  useEffect(() => {
+    setAnimate(false);
+    setIndex(offset);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleCount]);
 
   const goNext = () => { setAnimate(true); setIndex((i) => i + 1); };
   const goPrev = () => { setAnimate(true); setIndex((i) => i - 1); };
@@ -150,7 +191,7 @@ export default function LpTestimonialsCarousel({ testimonials, intervalMs = 3800
         <div
           style={{
             display: "flex",
-            width: `${track.length * 50}%`,
+            width: `${track.length * (100 / visibleCount)}%`,
             transform: `translateX(-${index * (100 / track.length)}%)`,
             transition: animate ? `transform ${TRANSITION_MS}ms ease` : "none",
           }}

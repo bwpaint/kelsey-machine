@@ -110,11 +110,12 @@ const h1BigFontSize = `clamp(2.2rem, calc(100cqw / ${(h1Big.length * H1_BIG_CHAR
 
           {/* Bullets trimmed to just equipment types + brands (lp-data.ts) —
               free pickup / warranty / 24-7 emergency are covered by the
-              trust-badge tiles below, so listing them twice was redundant. */}
-          <ul class="list-none p-0 m-0 flex flex-col gap-2.5 mb-8">
+              trust-badge tiles below, so listing them twice was redundant.
+              Checkmark icons removed and lines centered per request —
+              reads cleaner as plain centered text under the badge. */}
+          <ul class="list-none p-0 m-0 flex flex-col gap-2.5 mb-8 text-center">
             {bullets.map((b) => (
-              <li class="flex items-center gap-2.5">
-                <span style={`color:${C.green};flex-shrink:0;display:inline-flex`}><Icon name="check-circle" size={16} /></span>
+              <li>
                 <span style="font-family:'Source Sans 3',sans-serif;font-size:0.97rem;color:rgba(255,255,255,0.85)">{b}</span>
               </li>
             ))}
@@ -124,7 +125,7 @@ const h1BigFontSize = `clamp(2.2rem, calc(100cqw / ${(h1Big.length * H1_BIG_CHAR
               removed from here (24/7 is already a trust-badge tile below;
               "Get Free Quote" is still reachable via the sticky mobile bar
               and ROW 3 below). tel: link, so it's tap-to-call on mobile. */}
-          <div class="mb-8">
+          <div class="mb-8 flex justify-center">
             <a href={KMS_PHONE_HREF} class="inline-flex items-center gap-2 text-white no-underline" style={`background:${C.green};font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.9rem 2rem;border-radius:2px`}>
               <Icon name="phone" size={18} /> Call {KMS_PHONE}
             </a>
@@ -205,13 +206,16 @@ const h1BigFontSize = `clamp(2.2rem, calc(100cqw / ${(h1Big.length * H1_BIG_CHAR
     the earlier version used a dark-green section with white text; on
     white/light this flips to standard dark-on-light so contrast is a
     non-issue (no special-casing needed, unlike white-on-green which
-    failed WCAG AA at body-copy size). Carousel shows 2 at a time, slides
-    one step at a time on a loop, pauses + shows arrows on hover — see
-    LpTestimonialsCarousel.tsx for the implementation.
+    failed WCAG AA at body-copy size). Carousel shows 3 at a time on
+    desktop (1 on mobile), slides one step at a time on a loop, pauses +
+    shows arrows on hover — see LpTestimonialsCarousel.tsx for the
+    implementation. Container widened to max-w-7xl to match the hero/
+    ROW 2 content width (was max-w-5xl, too narrow now that 3 cards sit
+    side by side).
   */}
   {TESTIMONIALS_READY && (
     <section class="bg-white" style="padding:3.5rem 0">
-      <div class="max-w-5xl mx-auto px-4">
+      <div class="max-w-7xl mx-auto px-4">
         <div style={`text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.5rem, 3vw, 2.1rem);color:${C.blueDark};text-transform:uppercase;letter-spacing:-0.01em;margin-bottom:2rem`}>
           What Customers Say
         </div>

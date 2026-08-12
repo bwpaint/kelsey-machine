@@ -1,16 +1,19 @@
 /**
- * LpQuoteForm — focused 3-field React island for PPC landing pages.
+ * LpQuoteForm — focused React island for PPC landing pages.
  *
  * Differences from the main QuoteForm:
  *   - formType = "landing" (so backend can attribute the lead source)
- *   - Minimal fields: Name, Email, Phone — no Company, no Message, no
- *     service picker. Which service the lead is interested in is derived
- *     automatically from the page they're on (the `service` prop, set
- *     per-page in lp-data.ts) plus `source` (window.location.pathname),
- *     both already sent to /api/submit. No dropdown needed — the page
- *     IS the answer to "what are they interested in."
+ *   - No Company field.
  *   - Built for dark backgrounds only (LP hero is always dark)
  *   - Fires the same Google Ads conversion on success
+ *
+ * Fields: Name, Email, Phone, Interest (dropdown, defaults to the page's
+ * `service` prop but overridable — a visitor on the blower page might
+ * actually need gearbox work too), Comments (short optional textarea).
+ * Interest + Comments were removed earlier this session to slim the form
+ * down, then added back per a later request — kept them compact (2-row
+ * textarea, single-line select) rather than reverting to the old 3-row
+ * textarea.
  */
 import { useState } from "react";
 import { getAdTracking } from "@/lib/adTracking";
@@ -21,22 +24,25 @@ interface Props {
 
 const C = { green: "#78A546", greenDark: "#5E8535" };
 
+const INTEREST_OPTIONS = [
+  "Centrifuge Repair",
+  "Gearbox Repair",
+  "Industrial Blower Repair",
+  "Industrial Compressor Repair",
+  "Fluid & Power End Repair",
+  "Emergency Service",
+];
+
 export default function LpQuoteForm({ service }: Props) {
   // NOTE: `hpFax` is the HONEYPOT, not a real field. It renders as name="fax",
   // hidden off-screen. Bots auto-fill it; humans never see it. It used to be
   // named `company`, which collided with a real Company field this form used
   // to have — that would have silently discarded every lead who typed their
   // company (the API returns a FAKE success for honeypot hits). The Company
-  // field is gone now (see header comment), but the honeypot stays named
-  // `fax` regardless — never rename it to anything a human might plausibly
-  // type.
-  //
-  // `interest` is NOT user-editable — it's fixed to the `service` prop
-  // passed in from the page (see lp-data.ts). There used to be a dropdown
-  // here; it's gone. The page a visitor lands on already tells us what
-  // they're interested in.
+  // field is gone now, but the honeypot stays named `fax` regardless — never
+  // rename it to anything a human might plausibly type.
   const [form, setForm] = useState({
-    name: "", email: "", phone: "", hpFax: "",
+    name: "", email: "", phone: "", interest: service, comments: "", hpFax: "",
   });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -66,7 +72,8 @@ export default function LpQuoteForm({ service }: Props) {
           name: form.name,
           email: form.email,
           phone: form.phone,
-          interest: service,
+          interest: form.interest,
+          message: form.comments,
           source: typeof window !== "undefined" ? window.location.pathname : "",
           hp: form.hpFax,
           ...getAdTracking(),
@@ -177,6 +184,22 @@ export default function LpQuoteForm({ service }: Props) {
           <input id="lp-phone" type="tel" required style={input}
                  value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} autoComplete="tel" />
         </div>
+      </div>
+
+      <div>
+        <label htmlFor="lp-interest" style={label}>What Do You Need?</label>
+        <select id="lp-interest" style={{ ...input, appearance: "auto" }}
+                value={form.interest} onChange={(e) => setForm({ ...form, interest: e.target.value })}>
+          {INTEREST_OPTIONS.map((opt) => (
+            <option key={opt} value={opt} style={{ color: "#1a1a1a" }}>{opt}</option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label htmlFor="lp-comments" style={label}>Anything Else We Should Know?</label>
+        <textarea id="lp-comments" rows={2} style={{ ...input, resize: "vertical", fontFamily: "'Source Sans 3',sans-serif" }}
+                  value={form.comments} onChange={(e) => setForm({ ...form, comments: e.target.value })} />
       </div>
 
       {error && (
