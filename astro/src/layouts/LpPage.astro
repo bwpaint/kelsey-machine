@@ -13,6 +13,7 @@ import KmsLayout from "@/layouts/KmsLayout.astro";
 import LpQuoteForm from "@/components/LpQuoteForm.tsx";
 import LpTestimonialsCarousel from "@/components/LpTestimonialsCarousel.tsx";
 import Icon from "@/components/Icons.astro";
+import type { IconName } from "@/components/Icons.astro";
 import { C, KMS_PHONE, KMS_PHONE_HREF } from "@/lib/brand";
 import { LP_TESTIMONIALS } from "@/lib/lp-data";
 import type { PageMeta } from "@/lib/rm";
@@ -29,19 +30,19 @@ export interface Props {
 
 const { seo, h1, subheading, service, bullets, row2, row3 } = Astro.props;
 
-// LP_TESTIMONIALS (lp-data.ts) now holds 5 real, sourced Google reviews
-// (pulled 2026-08-11) — safe to render.
-const TESTIMONIALS_READY = true;
-
 // h1 is authored in lp-data.ts as "<Equipment> Down? We're Ready Right
-// Now." — split AFTER the "?" (lookbehind keeps the "?" attached to the
-// first clause: "Blower Down?", not "Blower Down") so the first clause
-// can render much larger than the second. If a future h1 doesn't contain
-// "?", h1Small comes back empty and the whole string just renders as the
-// one big line — not a crash, just loses the two-size treatment.
+// Now." — split AFTER the FIRST "?" (lookbehind keeps the "?" attached to
+// the first clause: "Blower Down?", not "Blower Down") so the first
+// clause can render much larger than the second. If a future h1 doesn't
+// contain "?", h1Small comes back empty and the whole string just renders
+// as the one big line — not a crash, just loses the two-size treatment.
+// h1Parts.slice(1).join("") (not h1Parts[1]) so a headline with a SECOND
+// "?" somewhere in the second clause doesn't silently drop everything
+// after it — split only ever creates a meaningful boundary at the first
+// "?", so anything past that belongs in h1Small, not just the first chunk.
 const h1Parts = h1.split(/(?<=\?)\s*/);
 const h1Big = h1Parts[0];
-const h1Small = h1Parts[1] || "";
+const h1Small = h1Parts.slice(1).join("");
 
 // Font-size for the big headline is computed per-page from h1Big's actual
 // character count, not a flat clamp() — a fixed vw-based size that works
@@ -54,8 +55,19 @@ const h1Small = h1Parts[1] || "";
 // relative to that column's actual rendered width, not the viewport, so
 // this sizes correctly whether the column is half the screen (desktop
 // 2-col) or the full width (mobile, stacked).
+//
+// FLOOR FIX (2026-08-12, code review): the clamp() floor used to be a flat
+// 2.2rem regardless of h1Big's length. clamp(MIN, VAL, MAX) returns MIN
+// whenever VAL < MIN — so for a long headline in a narrow column, the
+// calc() correctly wants a SMALLER size to keep fitting, but the flat
+// floor was forcing it back up to 2.2rem anyway, overflowing the column
+// (this is exactly the kind of long-headline/narrow-viewport combo we're
+// about to see more of once more campaign-specific LP pages ship). 1.5rem
+// is chosen with real margin: it only binds above ~41 characters at a
+// 320px-wide column (the narrowest realistic phone), and none of the
+// current headlines are anywhere close to that.
 const H1_BIG_CHAR_WIDTH = 0.58;
-const h1BigFontSize = `clamp(2.2rem, calc(100cqw / ${(h1Big.length * H1_BIG_CHAR_WIDTH).toFixed(2)}), 7.5rem)`;
+const h1BigFontSize = `clamp(1.5rem, calc(100cqw / ${(h1Big.length * H1_BIG_CHAR_WIDTH).toFixed(2)}), 7.5rem)`;
 ---
 <KmsLayout seo={seo} headerVariant="minimal" footerVariant="minimal">
 
@@ -92,11 +104,16 @@ const h1BigFontSize = `clamp(2.2rem, calc(100cqw / ${(h1Big.length * H1_BIG_CHAR
             character count, not a flat clamp(), so it always fills the
             column width without wrapping regardless of how long the
             equipment name is. white-space:nowrap is a safety net in case
-            the character-width estimate runs a little hot. Second clause
+            the character-width estimate runs a little hot; overflow-x:clip
+            is a second, belt-and-suspenders safety net on top of that —
+            real character widths vary (a "W"/"M"-heavy headline is wider
+            than the 0.58 average assumes), so if the estimate is ever off
+            by a couple pixels this clips the sliver of overflow silently
+            instead of triggering horizontal page scroll. Second clause
             ("We're Ready Right Now.") stays at the original fixed size.
           */}
           <h1 style="margin-bottom:1.25rem">
-            <span style={`display:block;white-space:nowrap;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:${h1BigFontSize};color:white;text-transform:uppercase;letter-spacing:-0.02em;line-height:0.95`}>{h1Big}</span>
+            <span style={`display:block;white-space:nowrap;overflow-x:clip;max-width:100%;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:${h1BigFontSize};color:white;text-transform:uppercase;letter-spacing:-0.02em;line-height:0.95`}>{h1Big}</span>
             {h1Small && (
               <span style="display:block;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.2rem, 5vw, 3.5rem);color:white;text-transform:uppercase;letter-spacing:-0.02em;line-height:1.05;margin-top:0.2rem">{h1Small}</span>
             )}
@@ -115,7 +132,12 @@ const h1BigFontSize = `clamp(2.2rem, calc(100cqw / ${(h1Big.length * H1_BIG_CHAR
           <div class="lp-incentive-shake" style={`background:rgba(120,165,70,0.14);border:1px solid ${C.green};border-radius:4px;padding:1.5rem 1.75rem;margin-bottom:1.5rem`}>
             <div style="text-align:center;line-height:1;margin-bottom:0.75rem">
               <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(2.6rem, 7vw, 3.8rem);color:rgba(255,255,255,0.55);text-decoration:line-through;text-decoration-thickness:3px">$250</span>
-              <span style="font-family:'Yellowtail',cursive;font-weight:400;font-size:clamp(1.5rem, 4vw, 2.3rem);letter-spacing:0;text-transform:none;color:rgba(255,255,255,0.65);margin:0 0.4rem">Value</span>
+              {/* transform: nudged 5px left + rotated 30deg counter-clockwise
+                  (CSS rotate() is clockwise-positive, so -30deg here) so the
+                  "V" dips low and "alue" lifts toward the upper right, per
+                  request. display:inline-block is required for the
+                  transform to apply predictably on an inline element. */}
+              <span style="font-family:'Yellowtail',cursive;font-weight:400;font-size:clamp(1.5rem, 4vw, 2.3rem);letter-spacing:0;text-transform:none;color:#E0DB6C;margin:0 0.4rem;display:inline-block;transform:translateX(-5px) rotate(-30deg)">Value</span>
               <span style={`font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.2rem, 6vw, 3.1rem);letter-spacing:0.02em;text-transform:uppercase;color:${C.green}`}>Free!</span>
             </div>
             <p style="font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:2.1rem;color:white;line-height:1.25;margin:0;text-align:center">
@@ -149,16 +171,18 @@ const h1BigFontSize = `clamp(2.2rem, calc(100cqw / ${(h1Big.length * H1_BIG_CHAR
             </a>
           </div>
 
-          {/* Trust badges */}
+          {/* Trust badges. Typed as IconName[] instead of `as any` at the
+              Icon call below — a typo'd icon name now fails to compile
+              instead of silently rendering nothing at runtime. */}
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {[
+            {([
               { icon: "shield",       label: "24-Month Warranty", sub: "Written, not verbal" },
               { icon: "truck",        label: "Free Pickup",       sub: "All 50 states" },
               { icon: "clock",        label: "24/7 Emergency",    sub: "365 days a year" },
               { icon: "check-circle", label: "40+ Years",         sub: "In business" },
-            ].map((tb) => (
+            ] as { icon: IconName; label: string; sub: string }[]).map((tb) => (
               <div class="text-center" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:1rem">
-                <div style={`color:${C.green};display:flex;justify-content:center;margin-bottom:0.4rem`}><Icon name={tb.icon as any} size={22} /></div>
+                <div style={`color:${C.green};display:flex;justify-content:center;margin-bottom:0.4rem`}><Icon name={tb.icon} size={22} /></div>
                 <div style="font-family:'Barlow',sans-serif;font-weight:700;font-size:0.88rem;color:white;line-height:1.2">{tb.label}</div>
                 <div style="font-family:'Source Sans 3',sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.5);margin-top:0.2rem">{tb.sub}</div>
               </div>
@@ -230,18 +254,19 @@ const h1BigFontSize = `clamp(2.2rem, calc(100cqw / ${(h1Big.length * H1_BIG_CHAR
     shows arrows on hover — see LpTestimonialsCarousel.tsx for the
     implementation. Container widened to max-w-7xl to match the hero/
     ROW 2 content width (was max-w-5xl, too narrow now that 3 cards sit
-    side by side).
+    side by side). Used to be gated behind a TESTIMONIALS_READY flag
+    while LP_TESTIMONIALS still held placeholder copy — that flag was
+    removed 2026-08-12 (dead code, permanently true) once real Google
+    reviews replaced the placeholders for good.
   */}
-  {TESTIMONIALS_READY && (
-    <section class="bg-white" style="padding:3.5rem 0">
-      <div class="max-w-7xl mx-auto px-4">
-        <div style={`text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.5rem, 3vw, 2.1rem);color:${C.blueDark};text-transform:uppercase;letter-spacing:-0.01em;margin-bottom:2rem`}>
-          What Customers Say
-        </div>
-        <LpTestimonialsCarousel client:visible testimonials={LP_TESTIMONIALS} />
+  <section class="bg-white" style="padding:3.5rem 0">
+    <div class="max-w-7xl mx-auto px-4">
+      <div style={`text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.5rem, 3vw, 2.1rem);color:${C.blueDark};text-transform:uppercase;letter-spacing:-0.01em;margin-bottom:2rem`}>
+        What Customers Say
       </div>
-    </section>
-  )}
+      <LpTestimonialsCarousel client:visible testimonials={LP_TESTIMONIALS} />
+    </div>
+  </section>
 
   {/*
     Scoped to this component only (not slotted content, so Astro's normal

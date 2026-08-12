@@ -3,8 +3,15 @@
  * Inline SVG icons — Astro-native, zero JS, zero React bundle.
  * Mirrors the lucide-react icons used in the Vite client.
  */
+// Exported so other files can type an icon name properly (e.g. an array
+// of { icon: IconName, ... } trust-badge entries) instead of reaching for
+// `as any` at the call site — that cast silently defeats the whole point
+// of this union (a typo'd icon name would compile fine and just render
+// nothing at runtime).
+export type IconName = "phone" | "mail" | "map-pin" | "chevron-down" | "chevron-up" | "chevron-left" | "chevron-right" | "menu" | "x" | "arrow-right" | "shield" | "clock" | "star" | "truck" | "zap" | "globe" | "check" | "check-circle";
+
 export interface Props {
-  name: "phone" | "mail" | "map-pin" | "chevron-down" | "chevron-up" | "chevron-left" | "chevron-right" | "menu" | "x" | "arrow-right" | "shield" | "clock" | "star" | "truck" | "zap" | "globe" | "check" | "check-circle";
+  name: IconName;
   size?: number;
   class?: string;
   fill?: string;

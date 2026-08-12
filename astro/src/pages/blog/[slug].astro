@@ -22,7 +22,12 @@ interface Post {
   };
 }
 
-function strip(html: string) { return html.replace(/<[^>]*>/g, "").replace(/&[a-z]+;/gi, " ").trim(); }
+// Entity pattern covers named (&amp;), decimal (&#8217;) and hex (&#x2019;)
+// forms — WP "rendered" strings routinely use the numeric ones (curly
+// apostrophes, dashes), which the old /&[a-z]+;/ pattern missed, leaving
+// literal "&#8217;" text in the h1 and meta description. Keep in sync with
+// the identical helper in blog/index.astro.
+function strip(html: string) { return html.replace(/<[^>]*>/g, "").replace(/&#?[a-z0-9]+;/gi, " ").trim(); }
 function fmtDate(iso: string) {
   try { return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }); }
   catch { return iso; }
@@ -81,6 +86,21 @@ const seo = await getMeta(`/blog/${post.slug}`, {
       </>}
     </div>
 
+    {/* SECURITY NOTE (2026-08-11 review): this renders raw WP post HTML
+        unsanitized. Threat model: any WP author account (not an anonymous
+        site visitor) could inject a <script> here — that requires
+        compromising the CMS's own auth, a separate already-authenticated
+        system, not this frontend. This is a known, common trade-off for
+        headless-WP builds and was flagged as lower-priority/accepted risk
+        rather than must-fix. NOT patched with a hand-rolled regex sanitizer
+        here on purpose — regex-based HTML sanitization is notoriously easy
+        to bypass and would give false confidence. If this needs hardening,
+        the correct fix is a real sanitizer library (e.g. isomorphic-
+        dompurify) run at build time — that adds a new npm dependency, which
+        needs pnpm-lock.yaml regenerated; do that as its own deliberate,
+        tested change, not bundled into an unrelated content/design pass
+        (a same-session dependency add broke the Vercel build once already
+        today — see LP page commit history around 2026-08-11 20:45). */}
     <div set:html={post.content.rendered} />
 
     <hr class="my-10 border-gray-200" />

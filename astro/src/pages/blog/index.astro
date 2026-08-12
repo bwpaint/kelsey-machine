@@ -29,7 +29,11 @@ try {
   console.warn("[blog] WP fetch failed at build:", err);
 }
 
-function strip(html: string) { return html.replace(/<[^>]*>/g, "").replace(/&[a-z]+;/gi, " ").trim(); }
+// Entity pattern covers named (&amp;), decimal (&#8217;) and hex (&#x2019;)
+// forms — WP title/excerpt "rendered" strings routinely use the numeric ones
+// (curly apostrophes, dashes), which the old /&[a-z]+;/ pattern missed,
+// leaving literal "&#8217;" text in card titles and excerpts.
+function strip(html: string) { return html.replace(/<[^>]*>/g, "").replace(/&#?[a-z0-9]+;/gi, " ").trim(); }
 function fmtDate(iso: string) {
   try { return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }); }
   catch { return iso; }
@@ -61,6 +65,11 @@ function fmtDate(iso: string) {
             )}
             <div class="p-5">
               <div style={`color:${C.green};font-family:'Barlow',sans-serif;font-weight:600;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem`}>{fmtDate(p.date)}</div>
+              {/* Same accepted-risk trade-off as blog/[slug].astro's post
+                  body: raw WP-sourced HTML (here just for entity decoding
+                  in titles), threat model is CMS-author-level compromise,
+                  not an anonymous visitor. See that file for the full note
+                  on why this isn't patched with a hand-rolled sanitizer. */}
               <h2 set:html={p.title.rendered} style={`font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.25rem;color:${C.blueDark};line-height:1.2;margin:0 0 0.5rem;text-transform:none`} />
               <p style={`font-family:'Source Sans 3',sans-serif;font-size:0.95rem;color:${C.textMid};line-height:1.6;margin:0`}>{excerpt}…</p>
             </div>

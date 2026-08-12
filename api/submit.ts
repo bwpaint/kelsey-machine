@@ -11,6 +11,21 @@
 //
 // Either way, the browser-facing URL (/api/submit) and the React payload shape
 // are unchanged — see client/src/lib/submitLead.ts.
+//
+// Security notes (2026-08-11 review):
+//   - formType is now allowlisted (ALLOWED_FORM_TYPES) instead of forwarded
+//     verbatim as form_slug — previously any value would ride through to
+//     the WP plugin under our API key.
+//   - All free-text fields are length-capped (see MAX_FIELD_LEN /
+//     MAX_SHORT_FIELD_LEN) so a huge payload can't turn into a huge WP
+//     entry or email.
+//   - Rate limiting is NOT implemented here — a Vercel serverless function
+//     has no shared state between invocations to count requests against,
+//     so this needs a platform-level fix (a Vercel Firewall/WAF rate-limit
+//     rule on /api/submit, or an external store like Upstash/Vercel KV if
+//     app-level limiting is ever needed) rather than something this file
+//     can do alone. The honeypot only stops naive bots; a targeted script
+//     that skips the hp field bypasses it entirely by design.
 
 interface LeadBody {
   formType?: string;
@@ -45,6 +60,28 @@ const SERVICE_LABELS: Record<string, string> = {
   emergency: "Emergency Service",
   other: "Other / Not Sure",
 };
+
+// Every real form_slug the frontend actually sends (verified against
+// astro/src/components/{QuoteForm,LpQuoteForm,NewsletterForm}.tsx). Anyone
+// could otherwise POST an arbitrary formType and have it forwarded verbatim
+// as form_slug to the WP plugin — this endpoint holds the server-side API
+// key, so an attacker could probe/spam any form slug configured in WP
+// under our key. Reject anything outside this list rather than trust the
+// client. Add new values here (and to the frontend) together.
+const ALLOWED_FORM_TYPES = new Set(["quote", "landing", "newsletter"]);
+
+// Hard caps on free-text fields. Without this, a single request can carry
+// a multi-MB `message` or `adParamsRaw` (the raw URL query string) straight
+// through to a WP form entry or a Resend email — inflating storage/quota
+// and giving very little back in return, since nothing legitimate needs
+// paragraphs this long. Generous enough for real use, small enough to
+// stop abuse.
+const MAX_FIELD_LEN = 2000;
+const MAX_SHORT_FIELD_LEN = 200;
+
+function cap(s: string, max: number): string {
+  return s.length > max ? s.slice(0, max) : s;
+}
 
 function esc(s: string): string {
   return s.replace(/[&<>"']/g, (c) =>
@@ -87,9 +124,14 @@ export async function POST(req: Request): Promise<Response> {
     return json({ ok: true }, 200);
   }
 
-  const name = (body.name || "").trim();
-  const email = (body.email || "").trim();
-  const phone = (body.phone || "").trim();
+  // Collapse CR/LF/tabs in name: it's interpolated into the Resend email
+  // *subject* line and WP's sender_nickname — a newline smuggled into a
+  // "name" is a classic header-injection probe, and no legitimate name
+  // contains one. Space-collapse rather than reject so real leads are
+  // never bounced over stray whitespace.
+  const name = cap((body.name || "").replace(/[\r\n\t]+/g, " ").trim(), MAX_SHORT_FIELD_LEN);
+  const email = cap((body.email || "").trim(), MAX_SHORT_FIELD_LEN);
+  const phone = cap((body.phone || "").trim(), MAX_SHORT_FIELD_LEN);
 
   if (!name || (!email && !phone)) {
     return json({ error: "Please include your name and a phone number or email." }, 400);
@@ -98,7 +140,27 @@ export async function POST(req: Request): Promise<Response> {
     return json({ error: "Please enter a valid email address." }, 400);
   }
 
+  // Cap the rest of the free-text fields too — see MAX_FIELD_LEN/
+  // MAX_SHORT_FIELD_LEN comment above. Short = single-line identifiers/
+  // labels, long = things a human might actually type paragraphs into or
+  // that come straight off a URL query string.
+  const company = cap((body.company || "").trim(), MAX_SHORT_FIELD_LEN);
+  const interest = cap((body.interest || "").trim(), MAX_SHORT_FIELD_LEN);
+  const message = cap((body.message || "").trim(), MAX_FIELD_LEN);
+  const source = cap((body.source || "").trim(), MAX_FIELD_LEN);
+  const gclid = cap((body.gclid || "").trim(), MAX_SHORT_FIELD_LEN);
+  const adKeyword = cap((body.adKeyword || "").trim(), MAX_SHORT_FIELD_LEN);
+  const adCampaignId = cap((body.adCampaignId || "").trim(), MAX_SHORT_FIELD_LEN);
+  const adMatchType = cap((body.adMatchType || "").trim(), MAX_SHORT_FIELD_LEN);
+  const adDevice = cap((body.adDevice || "").trim(), MAX_SHORT_FIELD_LEN);
+  const adNetwork = cap((body.adNetwork || "").trim(), MAX_SHORT_FIELD_LEN);
+  const landingPage = cap((body.landingPage || "").trim(), MAX_FIELD_LEN);
+  const adParamsRaw = cap((body.adParamsRaw || "").trim(), MAX_FIELD_LEN);
+
   const formType = body.formType || "quote";
+  if (!ALLOWED_FORM_TYPES.has(formType)) {
+    return json({ error: "Invalid form type." }, 400);
+  }
   const ip = clientIp(req);
   const referer = req.headers.get("referer") || "";
   const ua = req.headers.get("user-agent") || "KMS Website";
@@ -118,26 +180,24 @@ export async function POST(req: Request): Promise<Response> {
       name,
       email,
       phone,
-      company: body.company || "",
-      interest: body.interest || "",
-      service: body.interest
-        ? SERVICE_LABELS[body.interest] || body.interest
-        : "",
-      message: body.message || "",
-      source: body.source || referer,
+      company,
+      interest,
+      service: interest ? SERVICE_LABELS[interest] || interest : "",
+      message,
+      source: source || referer,
       // Ad-click attribution — field keys chosen to match the existing
       // GCLID / Ad Keyword / Ad Campaign ID / Ad Match Type / Ad Device /
       // Landing Page columns. If these still show blank in WP after this
       // ships, the WP-side field_map likely needs to add these keys —
       // that's a WP Admin config check, not a code fix.
-      gclid: body.gclid || "",
-      ad_keyword: body.adKeyword || "",
-      ad_campaign_id: body.adCampaignId || "",
-      ad_match_type: body.adMatchType || "",
-      ad_device: body.adDevice || "",
-      ad_network: body.adNetwork || "",
-      landing_page: body.landingPage || body.source || referer,
-      ad_params_raw: body.adParamsRaw || "",
+      gclid,
+      ad_keyword: adKeyword,
+      ad_campaign_id: adCampaignId,
+      ad_match_type: adMatchType,
+      ad_device: adDevice,
+      ad_network: adNetwork,
+      landing_page: landingPage || source || referer,
+      ad_params_raw: adParamsRaw,
     };
 
     try {
@@ -201,28 +261,26 @@ export async function POST(req: Request): Promise<Response> {
     return json({ error: "Our form is being set up. Please call 346-350-1464." }, 500);
   }
 
-  const service = body.interest
-    ? SERVICE_LABELS[body.interest] || body.interest
-    : "Not specified";
+  const service = interest ? SERVICE_LABELS[interest] || interest : "Not specified";
   const subject =
     `New ${formType} lead — ${name}` +
     (service !== "Not specified" ? ` (${service})` : "");
 
   const rows: Array<[string, string]> = [
     ["Name", name],
-    ["Company / Plant", body.company || "—"],
+    ["Company / Plant", company || "—"],
     ["Phone", phone || "—"],
     ["Email", email || "—"],
     ["Service Needed", service],
-    ["Message", body.message || "—"],
+    ["Message", message || "—"],
     ["Form", formType],
-    ["Submitted from", body.source || referer || "—"],
-    ["GCLID", body.gclid || "—"],
-    ["Ad Keyword", body.adKeyword || "—"],
-    ["Ad Campaign ID", body.adCampaignId || "—"],
-    ["Ad Match Type", body.adMatchType || "—"],
-    ["Ad Device", body.adDevice || "—"],
-    ["Landing Page", body.landingPage || body.source || "—"],
+    ["Submitted from", source || referer || "—"],
+    ["GCLID", gclid || "—"],
+    ["Ad Keyword", adKeyword || "—"],
+    ["Ad Campaign ID", adCampaignId || "—"],
+    ["Ad Match Type", adMatchType || "—"],
+    ["Ad Device", adDevice || "—"],
+    ["Landing Page", landingPage || source || "—"],
   ];
 
   const html =

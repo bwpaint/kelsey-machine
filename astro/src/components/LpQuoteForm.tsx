@@ -16,6 +16,7 @@
  */
 import { useState } from "react";
 import { getAdTracking } from "@/lib/adTracking";
+import { KMS_PHONE, KMS_PHONE_HREF } from "@/lib/brand";
 
 interface Props {
   service: string;
@@ -64,7 +65,9 @@ export default function LpQuoteForm({ service }: Props) {
           phone: form.phone,
           interest: service,
           message: form.comments,
-          source: typeof window !== "undefined" ? window.location.pathname : "",
+          // No typeof-window guard needed — this handler only ever runs
+          // in response to a browser form submit, `window` always exists.
+          source: window.location.pathname,
           hp: form.hpFax,
           ...getAdTracking(),
         }),
@@ -82,10 +85,8 @@ export default function LpQuoteForm({ service }: Props) {
       // Then hand off to /thank-you (see QuoteForm.tsx for the rationale):
       // event_callback fires once the hit is sent; the timeout covers ad
       // blockers that swallow gtag and never call back.
-      const goToThankYou = () => {
-        if (typeof window !== "undefined") window.location.assign("/thank-you");
-      };
-      if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+      const goToThankYou = () => window.location.assign("/thank-you");
+      if (typeof (window as any).gtag === "function") {
         const userData: Record<string, string> = {};
         if (form.email.trim()) userData.email = form.email.trim();
         if (form.phone.trim()) userData.phone_number = form.phone.trim();
@@ -101,7 +102,7 @@ export default function LpQuoteForm({ service }: Props) {
         goToThankYou();
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong. Please call 346-350-1464.");
+      setError(err instanceof Error ? err.message : `Something went wrong. Please call ${KMS_PHONE}.`);
     } finally {
       setSubmitting(false);
     }
@@ -114,7 +115,7 @@ export default function LpQuoteForm({ service }: Props) {
           Got It — We'll Call You Shortly!
         </div>
         <p style={{ fontFamily: "'Source Sans 3',sans-serif", fontSize: "0.9rem", color: "rgba(255,255,255,0.65)", margin: "0.5rem 0 0" }}>
-          For urgent situations call <a href="tel:3463501464" style={{ color: C.green }}>346-350-1464</a>
+          For urgent situations call <a href={KMS_PHONE_HREF} style={{ color: C.green }}>{KMS_PHONE}</a>
         </p>
       </div>
     );

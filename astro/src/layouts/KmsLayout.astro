@@ -20,6 +20,7 @@ import MinimalHeader from "@/components/MinimalHeader.astro";
 import Footer from "@/components/Footer.astro";
 import MinimalFooter from "@/components/MinimalFooter.astro";
 import type { PageMeta } from "@/lib/rm";
+import { safeJsonLd } from "@/lib/jsonld";
 
 // Self-hosted fonts — drop-in replacement for the Google Fonts <link>.
 // Only the weights we actually use, to keep payload minimal.
@@ -83,9 +84,12 @@ const canonical = seo.canonical || new URL(Astro.url.pathname, Astro.site).href;
     <meta name="twitter:description" content={seo.ogDescription} />
     {seo.ogImage && <meta name="twitter:image" content={seo.ogImage} />}
 
-    {/* JSON-LD schema from RM, if present */}
+    {/* JSON-LD schema from RM, if present. Escaped via safeJsonLd — this
+        string comes from the CMS, so a literal "</script>" inside it
+        (in any field the schema was built from) would otherwise close
+        this tag early and let the rest execute as HTML/JS. */}
     {seo.schemaJson && (
-      <script type="application/ld+json" set:html={seo.schemaJson} />
+      <script type="application/ld+json" set:html={safeJsonLd(seo.schemaJson)} />
     )}
 
     <link rel="icon" href="/favicon.ico" />
@@ -107,6 +111,54 @@ const canonical = seo.canonical || new URL(Astro.url.pathname, Astro.site).href;
       // page itself. See src/lib/adTracking.ts.
       import { getAdTracking } from "@/lib/adTracking";
       getAdTracking();
+    </script>
+    <script>
+      // Site-wide tel: click tracking (added 2026-08-12).
+      //
+      // Before this, every `tel:` link on the site (30+ of them, across
+      // header, footer, LP pages, sticky mobile bar) fired nothing — phone
+      // intent was completely invisible in both GA4 and Google Ads. For a
+      // business where the buyer calls from the job site instead of filling
+      // a form, that's not a rounding error, that's most of the funnel.
+      //
+      // Delegated to `document` (not attached per-link) so it covers every
+      // tel: link on every page, including ones rendered by React islands
+      // after hydration, without having to touch each component. Fires:
+      //   1. A GA4 event ("phone_call_click") — mark this as a GA4 Key
+      //      Event in Admin > Events once it starts reporting, or it just
+      //      sits there uncounted the same way form_submit was.
+      //   2. A Google Ads conversion under the new "Click to call" action
+      //      (created 2026-08-12 in Goals > Conversions > Phone call lead >
+      //      Calls from website visits), separate from the pre-existing
+      //      "Calls from ads" action — that one only fires for calls placed
+      //      via the ad's own call extension, not the website's tel: links.
+      //      The two do not overlap and both roll up into the same "Phone
+      //      call lead" goal in the Ads UI.
+      const GADS_CALL_CONVERSION_ID = "AW-18043825480/AtkdCJPSkOAcEMja-5tD";
+
+      document.addEventListener("click", (e) => {
+        const el = e.target;
+        if (!(el instanceof Element)) return;
+        const link = el.closest('a[href^="tel:"]');
+        if (!link) return;
+
+        const href = link.getAttribute("href") || "";
+        const label = link.closest("[data-tel-context]")?.getAttribute("data-tel-context")
+          || document.title;
+
+        if (typeof (window as any).gtag !== "function") return;
+
+        (window as any).gtag("event", "phone_call_click", {
+          event_category: "engagement",
+          event_label: href,
+          page_path: window.location.pathname,
+          link_context: label,
+        });
+
+        (window as any).gtag("event", "conversion", {
+          send_to: GADS_CALL_CONVERSION_ID,
+        });
+      });
     </script>
   </body>
 </html>

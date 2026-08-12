@@ -11,14 +11,27 @@
  * BACK at the same conversion goal — Call Now (tel: link, converts by
  * phone instantly) and Free Pickup (scrolls to #quote).
  *
- * Layout: logo pinned left, then a button group to its right. The group
- * is capped at 50% of the remaining row width at sm+ (leaving a visible
- * gap between logo and buttons rather than the buttons running edge to
- * edge) and both buttons are equal width (flex:1) AND equal height —
- * forced via min-height, since "Free Pickup / All 50 States" wraps to two
- * lines while "Call Now" is one, which used to make them different
- * heights. On the smallest phones the group goes full-width instead of
- * 50% — at ~320px, two already-tight tap targets need the room.
+ * Layout: logo pinned left, then a button group to its right.
+ *
+ * DESKTOP (lg+): the row uses the SAME max-w-7xl/grid-cols-2/gap-12
+ * structure as the hero section below it (LpPage.astro), so the header's
+ * two "columns" are pixel-for-pixel identical to the hero's — logo sits
+ * at the same left edge as the H1, and the button group centers within
+ * the same column the "Industrial Blower Repair" kw-match box sits in.
+ * A prior attempt centered the buttons within the flex "leftover space"
+ * after the logo instead of the actual matching grid column, which
+ * looked centered but didn't line up with anything below it — this
+ * fixes that by making the columns genuinely the same ones.
+ *
+ * MOBILE/TABLET (below lg): unchanged — plain flex row, logo pinned
+ * left (flex-shrink-0), button group taking the remaining width
+ * (flex-1), capped at 50% of that remaining width at sm+ so there's a
+ * visible gap instead of the buttons running edge to edge. Full-width
+ * at the smallest phones — at ~320px two tap targets need the room.
+ *
+ * Both buttons are equal width (flex:1) AND equal height — forced via
+ * min-height, since "Free Pickup / All 50 States" wraps to two lines
+ * while "Call Now" is one, which used to make them different heights.
  *
  * Used only where KmsLayout is given headerVariant="minimal" (currently
  * LpPage.astro, i.e. the 5 PPC landing pages). Header.astro is completely
@@ -28,25 +41,30 @@ import Icon from "@/components/Icons.astro";
 import { C, KMS_LOGO, KMS_PHONE_HREF } from "@/lib/brand";
 ---
 <div class="bg-black" style="padding:0.65rem 0">
-  <div class="max-w-7xl mx-auto px-3 sm:px-4 flex items-center gap-3 sm:gap-4">
+  <div class="max-w-7xl mx-auto px-3 sm:px-4">
+    <div class="flex items-center gap-3 sm:gap-4 lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
 
-    {/*
-      Logo doubled from the original 48px to 96px per an earlier request.
-      clamp() keeps that 96px as the true size from ~600px viewports up,
-      but scales down on very narrow phones.
-    */}
-    <a href="/" aria-label="Kelsey Machine Services home" class="flex-shrink-0">
-      <img src={KMS_LOGO} alt="Kelsey Machine Services" style="height:clamp(52px, 16vw, 96px);width:auto" />
-    </a>
+      {/*
+        Logo doubled from the original 48px to 96px per an earlier request.
+        clamp() keeps that 96px as the true size from ~600px viewports up,
+        but scales down on very narrow phones. lg:justify-self-start is
+        belt-and-suspenders — default grid alignment already puts it at
+        the cell's left edge, this just makes that explicit.
+      */}
+      <a href="/" aria-label="Kelsey Machine Services home" class="flex-shrink-0 lg:justify-self-start">
+        <img src={KMS_LOGO} alt="Kelsey Machine Services" style="height:clamp(52px, 16vw, 96px);width:auto" />
+      </a>
 
-    {/* Button group — right of the logo on mobile/tablet (justify-end,
-        capped at 50% of the remaining row width at sm+ via the inner
-        wrapper's w-[50%]), but centered within this second column at
-        lg+/desktop per request (justify-end -> lg:justify-center). Both
-        buttons get the same min-height so the 2-line "Free Pickup / All
-        50 States" label doesn't make that button taller than "Call Now". */}
-    <div class="flex-1 flex justify-end lg:justify-center min-w-0">
-      <div class="w-full sm:w-[50%] flex items-center gap-2 sm:gap-3 min-w-0">
+      {/* Button group — right of the logo on mobile/tablet (justify-end,
+          capped at 50% of the remaining row width at sm+ via the inner
+          wrapper's w-[50%]); on desktop this div is now a real grid cell
+          matching the hero's right column, and lg:justify-center centers
+          the button group within THAT column (not flex leftover space).
+          Both buttons get the same min-height so the 2-line "Free Pickup
+          / All 50 States" label doesn't make that button taller than
+          "Call Now". */}
+      <div class="flex-1 flex justify-end lg:flex-none lg:justify-center min-w-0">
+        <div class="w-full sm:w-[50%] flex items-center gap-2 sm:gap-3 min-w-0">
 
         <a
           href={KMS_PHONE_HREF}
@@ -72,5 +90,6 @@ import { C, KMS_LOGO, KMS_PHONE_HREF } from "@/lib/brand";
       </div>
     </div>
 
+    </div>
   </div>
 </div>

@@ -157,6 +157,66 @@ export const LP_DATA = {
       body: "Our 24/7 emergency line is answered every day of the year. We serve all 50 states, Canada, and Mexico. When your mud pump failure is costing you rig time, call KMS — we respond within 30 minutes.",
     },
   },
+
+  "vacuum-pump-repair": {
+    url:      "/lp/vacuum-pump-repair",
+    title:    "Vacuum Pump Repair · Busch, Leybold, Edwards · 24-Mo Warranty",
+    desc:     "Liquid ring, rotary vane & dry vacuum pump repair. Busch, Leybold, Edwards, Nash, Welch, Becker. 24-mo warranty, free nationwide pickup.",
+    ogImage:  "/images/blower-roots.webp",
+    service:  "Vacuum Pump Repair",
+    h1:       "Vacuum Pump Down? We're Ready Right Now.",
+    subheading: "A failed vacuum pump doesn't just idle one machine — it stalls whatever process depends on that vacuum: degassing, filtration, drying, packaging, distillation. KMS has been rebuilding industrial vacuum pumps for over 40 years — faster than the OEM, with a 24-month warranty.",
+    bullets: [
+      "All vacuum pump types: liquid ring, rotary vane, rotary screw, dry, oil-sealed",
+      "All major brands: Busch, Leybold, Edwards, Nash, Welch, Becker, Elmo Rietschle",
+    ],
+    row2: {
+      headline: "What's Included in Every Vacuum Pump Repair",
+      body: "Every vacuum pump repair at KMS includes a complete disassembly, written failure analysis, precision machining where needed, and full documentation on delivery. We restore ring and vane clearances, seal surfaces, and rotor fits to OEM specifications — then verify it under actual vacuum before it ships.",
+      items: [
+        "Complete disassembly and inspection",
+        "Written failure analysis with root cause identification",
+        "Ring, vane, and rotor clearance restoration",
+        "Replacement of all bearings, seals, and gaskets",
+        "Vacuum performance testing before shipment",
+        "Complete repair documentation package",
+      ],
+    },
+    row3: {
+      headline: "Vacuum Pump Down? Don't Let The Line Sit Idle.",
+      body: "Every hour without vacuum is a process stopped. KMS responds fast, works fast, and backs every repair with a 24-month warranty. Call us now or request a free quote.",
+    },
+  },
+
+  "emergency-repair": {
+    url:      "/lp/emergency-repair",
+    title:    "24/7 Emergency Industrial Repair · KMS · 24-Mo Warranty",
+    desc:     "Emergency repair for centrifuges, gearboxes, blowers, compressors, vacuum pumps & fluid ends. Answered 24/7, every day of the year. All brands.",
+    ogImage:  "/images/kms-hero-bg.webp",
+    service:  "Emergency Industrial Repair",
+    h1:       "Equipment Down? We're Ready Right Now.",
+    subheading: "It doesn't matter what broke — a centrifuge, a gearbox, a blower, a compressor, a vacuum pump, a mud pump. What matters is getting it back online. KMS answers the emergency line 24 hours a day, every day of the year, and we've been doing it for over 40 years.",
+    bullets: [
+      "One call covers all of it: centrifuges, gearboxes, blowers, compressors, vacuum pumps, fluid/power ends",
+      "Answered live, 24/7/365 — never a machine, never voicemail during business hours",
+    ],
+    row2: {
+      headline: "What Happens When You Call The Emergency Line",
+      body: "No queue, no ticket number, no waiting for a callback window. You get a repair specialist on the phone who's rebuilt this exact type of equipment before, who can tell you what to check right now, and who starts the pickup and repair process the same call if the unit needs to come to our shop.",
+      items: [
+        "Live answer, day or night, every day of the year",
+        "Immediate triage — repair, rebuild, or replace, with a straight answer",
+        "Same-call pickup coordination, all 50 states, Canada, and Mexico",
+        "Direct line to the specialist who works on your equipment type",
+        "Written failure analysis with every repair, not just a parts swap",
+        "24-month warranty on the finished repair — same as any other job",
+      ],
+    },
+    row3: {
+      headline: "Down Right Now? Don't Wait For Morning.",
+      body: "Every hour of downtime is a real cost, and it doesn't stop at 5pm. Call KMS — the same team, the same warranty, any hour you call.",
+    },
+  },
 } as const;
 
 /**

@@ -39,6 +39,25 @@
  * causes one harmless reflow on mobile right after hydration rather than
  * a hydration-mismatch warning from guessing window width during the
  * render that has to match SSR output.
+ *
+ * ACCESSIBILITY / ROBUSTNESS (2026-08-12 fixes from a code review):
+ *   - Arrows used to only appear on `hovering`, which touch devices never
+ *     trigger — mobile visitors (this is mostly mobile PPC traffic) had no
+ *     way to control the carousel at all. Arrows are now also shown on
+ *     keyboard focus and on any device that can't hover (`(hover: none)`
+ *     media query), and autoplay pauses on focus as well as hover so a
+ *     keyboard user isn't fighting an auto-advancing target.
+ *   - `prefers-reduced-motion` now actually stops autoplay and disables
+ *     the slide transition here — previously only LpPage.astro's OWN
+ *     animations respected it, this component kept auto-sliding regardless.
+ *   - Clone cards (the padding copies used for the infinite-loop illusion)
+ *     are marked `aria-hidden` so screen readers don't encounter the same
+ *     testimonial twice.
+ *   - Rapid repeated arrow clicks used to be able to advance the index
+ *     faster than the snap-back timeout could keep up, overrunning the
+ *     clone padding and producing a blank slot / visible jump. `step()`
+ *     now locks via a ref for the duration of one transition, so a click
+ *     mid-transition is ignored instead of compounding.
  */
 import { useEffect, useRef, useState } from "react";
 
@@ -53,9 +72,17 @@ interface Props {
   intervalMs?: number;
 }
 
-const C = { blueDark: "#1E5080", green: "#78A546", lightBg: "#F4F7FA" };
+// greenDark: the brand green (#78A546) is only ~2.7:1 against this card's
+// light background at the company-line's size/weight — fails WCAG AA
+// (needs 4.5:1 for non-large text). greenDark is the same hue darkened to
+// ~5:1, comfortably clearing AA with a bit of margin, while staying
+// visually distinct from blueDark (the name line) so the two-tone
+// hierarchy between name/company is preserved.
+const C = { blueDark: "#1E5080", green: "#78A546", greenDark: "#527429", lightBg: "#F4F7FA" };
 const TRANSITION_MS = 600;
 const MOBILE_QUERY = "(max-width: 767px)";
+const NO_HOVER_QUERY = "(hover: none)";
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
 function Star() {
   return (
@@ -88,6 +115,29 @@ export default function LpTestimonialsCarousel({ testimonials, intervalMs = 3800
     return () => mq.removeEventListener("change", update);
   }, []);
 
+  // Touch/no-hover devices can never trigger `hovering` — arrows need to
+  // just be visible there, not hidden-until-hover. False by default
+  // (matches desktop SSR default above); corrected client-side.
+  const [noHover, setNoHover] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(NO_HOVER_QUERY);
+    const update = () => setNoHover(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  // prefers-reduced-motion: stop autoplay and disable the slide transition
+  // entirely. False by default client-side-correctable like the above.
+  const [reducedMotion, setReducedMotion] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(REDUCED_MOTION_QUERY);
+    const update = () => setReducedMotion(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   const CLONE_COUNT = Math.min(visibleCount, n);
   // With too few real testimonials to fill even one full screen's worth,
   // the clone math can't fill the visible slots without an obvious
@@ -103,7 +153,26 @@ export default function LpTestimonialsCarousel({ testimonials, intervalMs = 3800
   const [index, setIndex] = useState(offset);
   const [animate, setAnimate] = useState(true);
   const [hovering, setHovering] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [focused, setFocused] = useState(false);
+  // Only used by the double-rAF cleanup below (see that effect) — the
+  // autoplay interval no longer needs a ref, its `id` is scoped to the
+  // effect closure and cleaned up directly.
+  const rafCleanupRef = useRef<(() => void) | null>(null);
+
+  // Guards against rapid repeated clicks advancing the index faster than
+  // the snap-back timeout (below) can keep up — without this, two fast
+  // "next" clicks could push the index past the clone padding entirely
+  // (a blank slot renders, then the snap lands on the wrong card). Locked
+  // for one transition's duration; a click while locked is simply ignored
+  // rather than queued, which is the right feel for a carousel arrow.
+  const busyRef = useRef(false);
+  const step = (dir: 1 | -1) => {
+    if (busyRef.current) return;
+    busyRef.current = true;
+    setAnimate(true);
+    setIndex((i) => i + dir);
+    window.setTimeout(() => { busyRef.current = false; }, TRANSITION_MS);
+  };
 
   // visibleCount changing (mobile<->desktop resize) changes the clone
   // padding and thus what index means — reset to the start rather than
@@ -115,8 +184,8 @@ export default function LpTestimonialsCarousel({ testimonials, intervalMs = 3800
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibleCount]);
 
-  const goNext = () => { setAnimate(true); setIndex((i) => i + 1); };
-  const goPrev = () => { setAnimate(true); setIndex((i) => i - 1); };
+  const goNext = () => step(1);
+  const goPrev = () => step(-1);
 
   // Silent wrap once the index has slid onto a clone.
   useEffect(() => {
@@ -131,40 +200,64 @@ export default function LpTestimonialsCarousel({ testimonials, intervalMs = 3800
     }
   }, [index, canCarousel, offset, n]);
 
-  // Re-enable the transition on the next frame after a silent reset, so
-  // the NEXT real step animates normally again.
+  // Re-enable the transition after a silent reset, so the NEXT real step
+  // animates normally again. Double rAF, not single: passive effects
+  // typically run after paint but that's not guaranteed, so a single rAF
+  // could re-enable the transition before the "no transition" state ever
+  // actually painted — the snap-back would then visibly animate as a fast
+  // rewind instead of being invisible. Two nested rAFs guarantee at least
+  // one full paint has happened with the transition off first.
   useEffect(() => {
     if (!animate) {
-      const raf = requestAnimationFrame(() => setAnimate(true));
-      return () => cancelAnimationFrame(raf);
+      const raf1 = requestAnimationFrame(() => {
+        const raf2 = requestAnimationFrame(() => setAnimate(true));
+        rafCleanupRef.current = () => cancelAnimationFrame(raf2);
+      });
+      return () => { cancelAnimationFrame(raf1); rafCleanupRef.current?.(); };
     }
   }, [animate]);
 
-  // Autoplay — off while hovering.
+  // Autoplay — off while hovering OR keyboard-focused (a focused visitor
+  // is actively interacting; an auto-advancing target under their finger/
+  // cursor is a WCAG 2.2.2 pause requirement, not just a nicety), and off
+  // entirely under prefers-reduced-motion. `index` is in the deps so any
+  // step — manual OR auto — restarts the countdown; without this, a
+  // manual click mid-cycle didn't reset the timer, so autoplay could fire
+  // again moments later and feel like a double-advance.
   useEffect(() => {
-    if (!canCarousel || hovering) return;
-    timerRef.current = setInterval(() => setIndex((i) => i + 1), intervalMs);
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [hovering, canCarousel, intervalMs]);
+    if (!canCarousel || hovering || focused || reducedMotion) return;
+    const id = setInterval(() => step(1), intervalMs);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hovering, focused, reducedMotion, canCarousel, intervalMs, index]);
 
+  // Visible when: hovering (desktop, original behavior), keyboard-focused
+  // (so a tabbing visitor can see and reach the control they just landed
+  // on — WCAG 2.4.7), or on any device that can't hover at all (touch —
+  // hidden-until-hover is simply broken there, so just always show them).
+  const arrowsVisible = hovering || focused || noHover;
   const arrowBtn: React.CSSProperties = {
     position: "absolute", top: "50%", transform: "translateY(-50%)",
     width: 40, height: 40, borderRadius: "50%",
     background: "rgba(30,80,128,0.88)", border: "none", cursor: "pointer",
     display: "flex", alignItems: "center", justifyContent: "center",
-    opacity: hovering ? 1 : 0, pointerEvents: hovering ? "auto" : "none",
+    opacity: arrowsVisible ? 1 : 0, pointerEvents: arrowsVisible ? "auto" : "none",
     transition: "opacity 0.2s ease", zIndex: 2,
   };
 
-  const renderCard = (t: Testimonial, key: string | number) => (
-    <div key={key} style={{ flex: `0 0 ${100 / track.length}%`, boxSizing: "border-box", padding: "0 0.6rem" }}>
+  const renderCard = (t: Testimonial, key: string | number, isClone: boolean) => (
+    <div
+      key={key}
+      aria-hidden={isClone || undefined}
+      style={{ flex: `0 0 ${100 / track.length}%`, boxSizing: "border-box", padding: "0 0.6rem" }}
+    >
       <div style={{ background: C.lightBg, borderRadius: 4, padding: "1.4rem 1.5rem", boxShadow: "0 2px 12px rgba(30,80,128,0.08)", height: "100%" }}>
         <div style={{ display: "flex", gap: 2, marginBottom: "0.6rem" }}>
           {[0, 1, 2, 3, 4].map((si) => <Star key={si} />)}
         </div>
         <p style={{ fontFamily: "'Source Sans 3',sans-serif", fontSize: "0.9rem", color: "#2d3748", lineHeight: 1.6, margin: "0 0 1rem" }}>"{t.quote}"</p>
         <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700, fontSize: "0.95rem", color: C.blueDark }}>{t.name}</div>
-        <div style={{ fontFamily: "'Source Sans 3',sans-serif", fontSize: "0.76rem", color: C.green, fontWeight: 600 }}>{t.company}</div>
+        <div style={{ fontFamily: "'Source Sans 3',sans-serif", fontSize: "0.76rem", color: C.greenDark, fontWeight: 600 }}>{t.company}</div>
       </div>
     </div>
   );
@@ -174,7 +267,7 @@ export default function LpTestimonialsCarousel({ testimonials, intervalMs = 3800
       <div style={{ display: "flex", flexWrap: "wrap", gap: "1.2rem", justifyContent: "center" }}>
         {testimonials.map((t, i) => (
           <div key={i} style={{ flex: "0 1 320px" }}>
-            {renderCard(t, i)}
+            {renderCard(t, i, false)}
           </div>
         ))}
       </div>
@@ -184,8 +277,17 @@ export default function LpTestimonialsCarousel({ testimonials, intervalMs = 3800
   return (
     <div
       style={{ position: "relative" }}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Customer testimonials"
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
+      onFocus={() => setFocused(true)}
+      onBlur={(e) => {
+        // Only clear focus once it's left the whole carousel, not just
+        // moved from one arrow to the other within it.
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocused(false);
+      }}
     >
       <div style={{ overflow: "hidden" }}>
         <div
@@ -193,10 +295,10 @@ export default function LpTestimonialsCarousel({ testimonials, intervalMs = 3800
             display: "flex",
             width: `${track.length * (100 / visibleCount)}%`,
             transform: `translateX(-${index * (100 / track.length)}%)`,
-            transition: animate ? `transform ${TRANSITION_MS}ms ease` : "none",
+            transition: animate && !reducedMotion ? `transform ${TRANSITION_MS}ms ease` : "none",
           }}
         >
-          {track.map((t, i) => renderCard(t, i))}
+          {track.map((t, i) => renderCard(t, i, i < offset || i >= offset + n))}
         </div>
       </div>
 

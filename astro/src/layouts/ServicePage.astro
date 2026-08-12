@@ -13,6 +13,7 @@ import QuoteForm from "@/components/QuoteForm.tsx";
 import HeroSlider from "@/components/HeroSlider.astro";
 import { C, KMS_PHONE, KMS_PHONE_HREF } from "@/lib/brand";
 import type { PageMeta } from "@/lib/rm";
+import { safeJsonLd } from "@/lib/jsonld";
 
 export interface Props {
   data: any; // ServiceData — keeping wide so any service file works
@@ -49,10 +50,24 @@ const faqSchema = {
 ---
 <KmsLayout seo={seo}>
 
-  {/* Page-level JSON-LD: Service + Breadcrumb + FAQPage */}
-  <script type="application/ld+json" set:html={JSON.stringify(data.schema)} />
-  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
-  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  {/* Groas dynamic landing-page personalization used to load here via a
+      data.dynamicPersonalization opt-in flag (script from
+      webwize.dynamiclanding.page). Removed 2026-08-11: Groas was
+      discontinued 8/3/26, so that domain was an orphaned third-party
+      script tag with full DOM access on this page — a real risk if the
+      domain ever lapsed and got re-registered by someone else. Flagged
+      in a security review; deleted rather than just disabled, so it
+      can't get silently re-enabled by a future data.dynamicPersonalization
+      = true without someone rediscovering why it was pulled. */}
+
+  {/* Page-level JSON-LD: Service + Breadcrumb + FAQPage. safeJsonLd escapes
+      "<" so a literal "</script>" can't sneak in via any text field and
+      close the tag early — data.schema/faqSchema pull FAQ copy from local
+      service data files (developer-controlled, low risk), but applying it
+      here too keeps every JSON-LD injection site in the repo consistent. */}
+  <script type="application/ld+json" set:html={safeJsonLd(data.schema)} />
+  <script type="application/ld+json" set:html={safeJsonLd(breadcrumbSchema)} />
+  <script type="application/ld+json" set:html={safeJsonLd(faqSchema)} />
 
   {/* ───── Hero ───── */}
   <section
