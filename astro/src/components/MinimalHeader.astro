@@ -39,12 +39,13 @@ import { C, KMS_LOGO, KMS_PHONE_HREF } from "@/lib/brand";
       <img src={KMS_LOGO} alt="Kelsey Machine Services" style="height:clamp(52px, 16vw, 96px);width:auto" />
     </a>
 
-    {/* Button group — right of the logo, capped at 50% of the remaining
-        row width at sm+ via the inner wrapper's w-[50%] + the outer
-        flex-1/justify-end pushing it to the row's right edge. Both
+    {/* Button group — right of the logo on mobile/tablet (justify-end,
+        capped at 50% of the remaining row width at sm+ via the inner
+        wrapper's w-[50%]), but centered within this second column at
+        lg+/desktop per request (justify-end -> lg:justify-center). Both
         buttons get the same min-height so the 2-line "Free Pickup / All
         50 States" label doesn't make that button taller than "Call Now". */}
-    <div class="flex-1 flex justify-end min-w-0">
+    <div class="flex-1 flex justify-end lg:justify-center min-w-0">
       <div class="w-full sm:w-[50%] flex items-center gap-2 sm:gap-3 min-w-0">
 
         <a

@@ -7,13 +7,12 @@
  *   - Built for dark backgrounds only (LP hero is always dark)
  *   - Fires the same Google Ads conversion on success
  *
- * Fields: Name, Email, Phone, Interest (dropdown, defaults to the page's
- * `service` prop but overridable — a visitor on the blower page might
- * actually need gearbox work too), Comments (short optional textarea).
- * Interest + Comments were removed earlier this session to slim the form
- * down, then added back per a later request — kept them compact (2-row
- * textarea, single-line select) rather than reverting to the old 3-row
- * textarea.
+ * Fields: Name, Email, Phone, Comments (short optional textarea). Interest
+ * is NOT user-editable — it's derived automatically from the `service`
+ * prop passed in per-page (lp-data.ts). A dropdown was added briefly and
+ * then removed again per a later request; the page a visitor lands on
+ * already tells us what they're interested in, so a manual picker was
+ * redundant. Comments stays (2-row textarea, kept compact).
  */
 import { useState } from "react";
 import { getAdTracking } from "@/lib/adTracking";
@@ -24,15 +23,6 @@ interface Props {
 
 const C = { green: "#78A546", greenDark: "#5E8535" };
 
-const INTEREST_OPTIONS = [
-  "Centrifuge Repair",
-  "Gearbox Repair",
-  "Industrial Blower Repair",
-  "Industrial Compressor Repair",
-  "Fluid & Power End Repair",
-  "Emergency Service",
-];
-
 export default function LpQuoteForm({ service }: Props) {
   // NOTE: `hpFax` is the HONEYPOT, not a real field. It renders as name="fax",
   // hidden off-screen. Bots auto-fill it; humans never see it. It used to be
@@ -42,7 +32,7 @@ export default function LpQuoteForm({ service }: Props) {
   // field is gone now, but the honeypot stays named `fax` regardless — never
   // rename it to anything a human might plausibly type.
   const [form, setForm] = useState({
-    name: "", email: "", phone: "", interest: service, comments: "", hpFax: "",
+    name: "", email: "", phone: "", comments: "", hpFax: "",
   });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -72,7 +62,7 @@ export default function LpQuoteForm({ service }: Props) {
           name: form.name,
           email: form.email,
           phone: form.phone,
-          interest: form.interest,
+          interest: service,
           message: form.comments,
           source: typeof window !== "undefined" ? window.location.pathname : "",
           hp: form.hpFax,
@@ -187,16 +177,6 @@ export default function LpQuoteForm({ service }: Props) {
       </div>
 
       <div>
-        <label htmlFor="lp-interest" style={label}>What Do You Need?</label>
-        <select id="lp-interest" style={{ ...input, appearance: "auto" }}
-                value={form.interest} onChange={(e) => setForm({ ...form, interest: e.target.value })}>
-          {INTEREST_OPTIONS.map((opt) => (
-            <option key={opt} value={opt} style={{ color: "#1a1a1a" }}>{opt}</option>
-          ))}
-        </select>
-      </div>
-
-      <div>
         <label htmlFor="lp-comments" style={label}>Anything Else We Should Know?</label>
         <textarea id="lp-comments" rows={2} style={{ ...input, resize: "vertical", fontFamily: "'Source Sans 3',sans-serif" }}
                   value={form.comments} onChange={(e) => setForm({ ...form, comments: e.target.value })} />
@@ -214,7 +194,7 @@ export default function LpQuoteForm({ service }: Props) {
       {/* Risk-reversal microcopy — right at the point of conversion, not
           buried elsewhere on the page. Pre-empts the "what am I signing up
           for" hesitation a B2B lead has before submitting a form. */}
-      <p style={{ textAlign: "center", fontFamily: "'Source Sans 3',sans-serif", fontSize: "0.78rem", color: "rgba(255,255,255,0.5)", margin: 0 }}>
+      <p style={{ textAlign: "center", fontFamily: "'Source Sans 3',sans-serif", fontSize: "1.56rem", fontStyle: "italic", color: "rgba(255,255,255,0.5)", margin: 0 }}>
         No obligation. No pressure. Just a straight number.
       </p>
     </form>

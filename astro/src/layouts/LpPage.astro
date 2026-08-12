@@ -17,6 +17,14 @@ import { C, KMS_PHONE, KMS_PHONE_HREF } from "@/lib/brand";
 import { LP_TESTIMONIALS } from "@/lib/lp-data";
 import type { PageMeta } from "@/lib/rm";
 
+// Self-hosted (matches KmsLayout's @fontsource pattern — no Google Fonts
+// round-trip). Scoped to this LP layout only, not the global KmsLayout,
+// since it's a single decorative flourish word ("Value" in the $250
+// badge) rather than a font used site-wide. Yellowtail = bold brush
+// script, evocative of old newspaper/print-ad signage ("SALE!", "Value!")
+// rather than a formal wedding-invite script.
+import "@fontsource/yellowtail/400.css";
+
 export interface Props {
   seo: PageMeta;
   h1: string;
@@ -97,11 +105,11 @@ const h1BigFontSize = `clamp(2.2rem, calc(100cqw / ${(h1Big.length * H1_BIG_CHAR
           <div class="lp-incentive-shake" style={`background:rgba(120,165,70,0.14);border:1px solid ${C.green};border-radius:4px;padding:1.5rem 1.75rem;margin-bottom:1.5rem`}>
             <div style="text-align:center;line-height:1;margin-bottom:0.75rem">
               <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(2.6rem, 7vw, 3.8rem);color:rgba(255,255,255,0.55);text-decoration:line-through;text-decoration-thickness:3px">$250</span>
-              <span style="font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:clamp(0.75rem, 2vw, 1rem);letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin:0 0.5rem">Value</span>
+              <span style="font-family:'Yellowtail',cursive;font-weight:400;font-size:clamp(1.5rem, 4vw, 2.3rem);letter-spacing:0;text-transform:none;color:rgba(255,255,255,0.65);margin:0 0.4rem">Value</span>
               <span style={`font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.2rem, 6vw, 3.1rem);letter-spacing:0.02em;text-transform:uppercase;color:${C.green}`}>Free!</span>
             </div>
             <p style="font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:2.1rem;color:white;line-height:1.25;margin:0;text-align:center">
-              Written failure analysis with root cause identification — free.
+              Written failure analysis with root cause identification — FREE.
             </p>
             <p style="font-family:'Source Sans 3',sans-serif;font-size:1.6rem;color:rgba(255,255,255,0.5);line-height:1.3;margin:0.4rem 0 0;text-align:center">
               Our competition charges $250+ for this service.
@@ -183,11 +191,12 @@ const h1BigFontSize = `clamp(2.2rem, calc(100cqw / ${(h1Big.length * H1_BIG_CHAR
           </div>
 
           <div id="quote" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2rem">
-            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.8rem, 4vw, 2.8rem);color:white;text-transform:uppercase;line-height:1.05;margin-bottom:0.5rem">Get Your Free Quote</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(1.8rem, 4vw, 2.8rem);color:white;text-transform:uppercase;line-height:1.05;margin-bottom:0.5rem;text-align:center">Get Your Free Quote</div>
             {/* Three separate lines instead of one flowing sentence, sized
                 to 2/3 of the previous 1.8rem (was doubled last round; this
-                dials it back down while keeping the 3-line split). */}
-            <div style="font-family:'Source Sans 3',sans-serif;font-size:1.2rem;line-height:1.4;color:rgba(255,255,255,0.75);margin-bottom:1.5rem;font-weight:600">
+                dials it back down while keeping the 3-line split). Centered
+                per request, along with the heading above. */}
+            <div style="font-family:'Source Sans 3',sans-serif;font-size:1.2rem;line-height:1.4;color:rgba(255,255,255,0.75);margin-bottom:1.5rem;font-weight:600;text-align:center">
               <div>We call you back within 30 minutes.</div>
               <div>Speak to a specialist right now.</div>
               <div>Call us at <a href={KMS_PHONE_HREF} style={`color:${C.green};font-weight:800;text-decoration:none`}>{KMS_PHONE}</a>.</div>
