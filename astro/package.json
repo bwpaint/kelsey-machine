@@ -9,10 +9,12 @@
     "prebuild": "npm run sync-public",
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "start": "node ./dist/server/entry.mjs"
   },
   "dependencies": {
     "astro": "^5.0.0",
+    "@astrojs/node": "^9.0.0",
     "@astrojs/react": "^4.0.0",
     "@astrojs/tailwind": "^5.1.0",
     "@astrojs/sitemap": "^3.2.0",
